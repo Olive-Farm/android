@@ -11,6 +11,15 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        deps {
+            from(
+                    files(
+                            "gradle/dependencies.toml"
+                    )
+            )
+        }
+    }
 }
 rootProject.name = "Olive"
 include ':app'
