@@ -11,15 +11,17 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+}
+
+enableFeaturePreview("VERSION_CATALOGS")
+
+dependencyResolutionManagement {
     versionCatalogs {
-        deps {
-            from(
-                    files(
-                            "gradle/dependencies.toml"
-                    )
-            )
+        create("libs") {
+            from(files("gradle/dependencies.toml"))
         }
     }
 }
+
 rootProject.name = "Olive"
-include ':app'
+include(":app")

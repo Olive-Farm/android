@@ -4,6 +4,7 @@ kotlin = "1.7.10"
 ksp = "1.7.10-1.0.6"
 material = "1.6.1"
 compose = "1.2.1"
+composeCompiler = "1.2.1"
 jvmTarget = "1.8"
 androidxActivity = "1.4.0"
 androidxFragment = "1.5.1"
@@ -95,7 +96,7 @@ compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", versi
 compose = [
     "compose",
     "compose-preview",
-    "compose-material", # todo check why couldn't add this dep.
+    "compose-material",
     "compose-ui-tooling-preview",
     "compose-navigation",
     "activity-compose",
