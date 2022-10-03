@@ -1,1 +1,0 @@
-/Users/isaac/androidProjects/Olive/buildSrc/build/classes/kotlin/main/com/farmer/olive/Configuration.class
