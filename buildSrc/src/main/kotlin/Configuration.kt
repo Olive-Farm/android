@@ -9,4 +9,5 @@ object Configuration {
     private const val patchVersion = 1
     const val versionName = "$majorVersion.$minorVersion.$patchVersion"
     const val versionCode = 1
+    const val applicationName = "com.farmer.olive"
 }

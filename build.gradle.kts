@@ -17,3 +17,9 @@ buildscript {
 //        classpath(deps.plugins.hilt.plugin) // todo need to add hilt
     }
 }
+
+allprojects {
+    afterEvaluate {
+        apply("${rootDir}/gradle/common.gradle")
+    }
+}

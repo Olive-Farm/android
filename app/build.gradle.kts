@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.farmer.olive"
+    namespace = Configuration.applicationName
     compileSdk = Configuration.compileSdk
 
     defaultConfig {
-        applicationId = "com.farmer.olive"
+        applicationId = Configuration.applicationName
         minSdk = Configuration.minSdk
         targetSdk = Configuration.targetSdk
         versionCode = Configuration.versionCode
