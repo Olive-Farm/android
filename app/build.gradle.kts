@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle)
+    implementation(libs.lifecycle.viewmodel)
 
     // hilt
     implementation(libs.hilt.android)
