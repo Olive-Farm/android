@@ -4,6 +4,7 @@ kotlin = "1.7.10"
 ksp = "1.7.10-1.0.6"
 material = "1.6.1"
 compose = "1.2.1"
+composeCompiler = "1.2.1"
 jvmTarget = "1.8"
 androidxActivity = "1.4.0"
 androidxFragment = "1.5.1"
@@ -15,7 +16,7 @@ androidXStartup = "1.1.1"
 androidXKtx = "1.9.0"
 recyclerView = "1.2.1"
 okHttp = "4.10.0"
-hilt = "2.42"
+hilt = "2.43.2"
 hiltNavigation = "1.0.0"
 hiltAndroidCompiler = "1.0.0"
 retrofit = "2.9.0"
@@ -43,6 +44,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version = "6.7.2" }
 hilt-plugin = { id = "dagger.hilt.android.plugin", version = "hilt" }
 
+
 [libraries]
 compose = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
@@ -58,6 +60,7 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp
 material = { module = "com.google.android.material:material", version.ref = "material" }
 fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidxFragment" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoom" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoom" }
@@ -95,7 +98,7 @@ compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", versi
 compose = [
     "compose",
     "compose-preview",
-    "compose-material", # todo check why couldn't add this dep.
+    "compose-material",
     "compose-ui-tooling-preview",
     "compose-navigation",
     "activity-compose",
