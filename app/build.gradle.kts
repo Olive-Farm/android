@@ -4,8 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    // todo hilt
-//    id("dagger.hilt.android.plugin")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -32,11 +31,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-    // todo hilt
-//    hilt {
-//        enableAggregatingTask = true
-//    }
 
     kotlinOptions {
         jvmTarget = "1.8"
