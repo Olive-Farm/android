@@ -66,4 +66,7 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
+
+    // other modules
+    implementation(project(":feature-home"))
 }
