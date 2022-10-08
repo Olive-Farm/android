@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Olive"
 include(":app")
+include(":home")

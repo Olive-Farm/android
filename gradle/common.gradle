@@ -5,14 +5,19 @@ def hasApplicationPlugin = pluginManager.hasPlugin("com.android.application")
 
 if (hasLibraryPlugin || hasApplicationPlugin) {
     android {
+        namespace = Configuration.applicationName
         compileSdk = Configuration.compileSdk
+
         defaultConfig {
             minSdk = Configuration.minSdk
             targetSdk = Configuration.targetSdk
+            versionCode = Configuration.versionCode
+            versionName = Configuration.versionName
             if (hasLibraryPlugin) {
                 consumerProguardFiles("consumer-rules.pro")
             }
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         }
 
         compileOptions {
@@ -20,8 +25,16 @@ if (hasLibraryPlugin || hasApplicationPlugin) {
             targetCompatibility = JavaVersion.VERSION_11
         }
 
+        buildFeatures {
+            compose = true
+        }
+
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "1.8"
+        }
+
+        composeOptions {
+            kotlinCompilerExtensionVersion = "1.3.1"
         }
     }
 }
