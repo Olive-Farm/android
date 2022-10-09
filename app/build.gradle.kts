@@ -3,7 +3,7 @@ import com.farmer.olive.Configuration
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    kotlin("kapt")
     id("dagger.hilt.android.plugin")
 }
 
@@ -37,7 +37,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.1"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
 
     buildTypes {
@@ -66,4 +66,8 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
+
+    // other modules
+    implementation(project(":feature-cash-book"))
+    implementation(project(":feature-statistics"))
 }
