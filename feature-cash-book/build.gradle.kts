@@ -21,6 +21,8 @@ dependencies {
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.kotlin.datetime)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 }
