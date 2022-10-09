@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.farmer.feature_main.OliveScreens
+import com.farmer.feature_statistics.StatisticsScreen
+import com.farmer.home.CashbookScreen
 
 @Composable
 fun OliveNavHost(
@@ -12,6 +15,12 @@ fun OliveNavHost(
     composeNavigator: ComposeNavigator
 ) {
     NavHost(navController = navHostController, startDestination = OliveScreens.Main.route) {
+        composable(route = "cash_book") {
+            CashbookScreen()
+        }
+        composable(route = "statistics") {
+            StatisticsScreen()
+        }
         oliveHomeNavigation(
             composeNavigator = composeNavigator,
             navController = navHostController

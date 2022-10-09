@@ -1,7 +1,9 @@
 package com.farmer.feature_main
 
+// todo screen name should be changed to string id
 sealed class OliveScreens(
-    val route: String
+    val route: String,
+    val screenName: String = ""
 ) {
     // home screen
     object Home : OliveScreens("home")
@@ -10,8 +12,8 @@ sealed class OliveScreens(
     object Main : OliveScreens("main")
 
     // cash book screen
-    object CashBook : OliveScreens("cash_book")
+    object CashBook : OliveScreens("cash_book", "Cashbook")
 
     // statistics screen
-    object Statistics : OliveScreens("statistics")
+    object Statistics : OliveScreens("statistics", "Statistics")
 }

@@ -68,6 +68,7 @@ dependencies {
     androidTestImplementation(libs.android.junit)
 
     // other modules
-    implementation(project(":feature-home"))
     implementation(project(":feature-main"))
+    implementation(project(":feature-cash-book"))
+    implementation(project(":feature-statistics"))
 }
