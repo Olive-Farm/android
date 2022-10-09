@@ -1,4 +1,4 @@
-package com.farmer.feature_main
+package com.farmer.olive.ui
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
