@@ -9,7 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.ComposeNavigator
 import com.farmer.olive.ui.OliveMain
 import com.farmer.olive.ui.theme.OliveTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
