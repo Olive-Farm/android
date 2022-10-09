@@ -12,7 +12,8 @@ fun OliveNavHost(
 ) {
     NavHost(navController = navHostController, startDestination = OliveScreens.Main.route) {
         oliveHomeNavigation(
-            composeNavigator = composeNavigator
+            composeNavigator = composeNavigator,
+            navController = navHostController
         )
     }
 }
