@@ -10,7 +10,7 @@ fun OliveNavHost(
     navHostController: NavHostController,
     composeNavigator: ComposeNavigator
 ) {
-    NavHost(navController = navHostController, startDestination = OliveScreens.Home.route) {
+    NavHost(navController = navHostController, startDestination = OliveScreens.Main.route) {
         oliveHomeNavigation(
             composeNavigator = composeNavigator
         )

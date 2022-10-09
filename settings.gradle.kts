@@ -27,3 +27,4 @@ dependencyResolutionManagement {
 rootProject.name = "Olive"
 include(":app")
 include(":feature-home")
+include(":feature-main")

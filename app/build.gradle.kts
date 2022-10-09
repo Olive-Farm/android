@@ -69,4 +69,5 @@ dependencies {
 
     // other modules
     implementation(project(":feature-home"))
+    implementation(project(":feature-main"))
 }

@@ -5,7 +5,6 @@ def hasApplicationPlugin = pluginManager.hasPlugin("com.android.application")
 
 if (hasLibraryPlugin || hasApplicationPlugin) {
     android {
-        namespace = Configuration.applicationName
         compileSdk = Configuration.compileSdk
 
         defaultConfig {

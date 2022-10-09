@@ -5,6 +5,10 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
+android {
+    namespace = "com.farmer.feature_home"
+}
+
 dependencies {
     // base
     implementation(libs.bundles.compose)

@@ -5,4 +5,7 @@ sealed class OliveScreens(
 ) {
     // home screen
     object Home : OliveScreens("home")
+
+    // main screen
+    object Main : OliveScreens("main")
 }
