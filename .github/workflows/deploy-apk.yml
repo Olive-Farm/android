@@ -1,0 +1,39 @@
+name: Deploy debug apk
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  generate-apk:
+    name: Generate and deploy debug apk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Execute Gradle Build
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload to Slack
+        shell: bash
+        run: |
+          curl -F "initial_comment= :white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:" \
+               -F file=@app/build/outputs/apk/debug/app-debug.apk \
+               -F token=${{ secrets.ANDROID_SLACK_BOT_TOKEN }} \
+               -F channels=bot-test https://slack.com/api/files.upload
