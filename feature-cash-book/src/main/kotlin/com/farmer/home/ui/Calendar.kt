@@ -10,7 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,11 +27,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.todayIn
 import java.time.format.TextStyle
 import java.util.*
@@ -48,10 +47,13 @@ fun Calendar(
     val (currentMonth, currentYear) = displayMonth.value to currentDay.year
     val daysInMonth = currentMonth.minLength() // 해당 달이 총 며칠인지
     val year = currentDay.year
+    val monthValue =
+        if (currentMonth.value.toString().length == 1) "0" + currentMonth.value.toString() else currentMonth.value.toString()
+    val startDayOfMonth = "${currentDay.year}-$monthValue-01".toLocalDate()
+    val firstDayOfMonth = startDayOfMonth.dayOfWeek
 
     Column(
         modifier = modifier
-            .background(Color.Green)
             .wrapContentHeight()
             .fillMaxWidth()
             .padding(vertical = 16.dp, horizontal = 8.dp),
@@ -68,6 +70,14 @@ fun Calendar(
                 displayMonth.value = displayMonth.value.plus(1)
             }
         )
+
+        CalendarDates(
+            firstDayOfMonth = firstDayOfMonth,
+            daysInMonth = daysInMonth,
+            currentMonth = currentMonth,
+            currentYear = currentYear,
+            currentDay = currentDay
+        )
     }
 }
 
@@ -78,8 +88,7 @@ private fun CalendarHeader(
     month: Month,
     year: Int,
     onPreviousClick: () -> Unit = {},
-    onNextClick: () -> Unit = {},
-    arrowShown: Boolean = true
+    onNextClick: () -> Unit = {}
 ) {
     val isNext = remember { mutableStateOf(true) }
     Row(
@@ -89,14 +98,15 @@ private fun CalendarHeader(
             .padding(start = 8.dp),
         horizontalArrangement = Arrangement.End
     ) {
+        // calendar title (Ex. January 2022)
         AnimatedContent(
             modifier = Modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
                 .align(Alignment.CenterVertically),
-            targetState = getTitleText(month, year),
+            targetState = getDateTitleText(month, year),
             transitionSpec = {
-                addAnimation(isNext = isNext.value).using(
+                addSlideAnimation(isNext = isNext.value).using(
                     SizeTransform(clip = false)
                 )
             }
@@ -107,37 +117,36 @@ private fun CalendarHeader(
             )
         }
 
-        if (arrowShown) {
-            Row(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .align(Alignment.CenterVertically),
-                horizontalArrangement = Arrangement.End
-            ) {
-                NextMonthIconButton(
-                    modifier = Modifier.wrapContentSize(),
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "Previous Week",
-                    onClick = {
-                        isNext.value = false
-                        onPreviousClick()
-                    }
-                )
-                NextMonthIconButton(
-                    modifier = Modifier.wrapContentSize(),
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Next Month",
-                    onClick = {
-                        isNext.value = true
-                        onNextClick()
-                    }
-                )
-            }
+        // previous, next month icon button
+        Row(
+            modifier = Modifier
+                .wrapContentWidth()
+                .align(Alignment.CenterVertically),
+            horizontalArrangement = Arrangement.End
+        ) {
+            NextMonthIconButton(
+                modifier = Modifier.wrapContentSize(),
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Previous Week",
+                onClick = {
+                    isNext.value = false
+                    onPreviousClick()
+                }
+            )
+            NextMonthIconButton(
+                modifier = Modifier.wrapContentSize(),
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = "Next Month",
+                onClick = {
+                    isNext.value = true
+                    onNextClick()
+                }
+            )
         }
     }
 }
 
-private fun getTitleText(month: Month, year: Int): String {
+private fun getDateTitleText(month: Month, year: Int): String {
     return month.getDisplayName(TextStyle.FULL, Locale.getDefault()).lowercase().replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(
             Locale.getDefault()
@@ -146,7 +155,7 @@ private fun getTitleText(month: Month, year: Int): String {
 }
 
 @OptIn(ExperimentalAnimationApi::class)
-private fun addAnimation(duration: Int = 500, isNext: Boolean): ContentTransform {
+private fun addSlideAnimation(duration: Int = 500, isNext: Boolean): ContentTransform {
     return slideInVertically(animationSpec = tween(durationMillis = duration)) { height -> if (isNext) height else -height } + fadeIn(
         animationSpec = tween(durationMillis = duration)
     ) with slideOutVertically(animationSpec = tween(durationMillis = duration)) { height -> if (isNext) -height else height } + fadeOut(
