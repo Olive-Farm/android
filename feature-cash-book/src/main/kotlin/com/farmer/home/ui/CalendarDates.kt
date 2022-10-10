@@ -40,7 +40,13 @@ fun CalendarDates(
                     val day = getGeneratedDay(it, currentMonth, currentYear)
                     val isCurrentDay = day == currentDay
                     // todo add plus, minus, average text in date
-                    Text(text = day.dayOfMonth.toString())
+                    // todo need to chaneg to CalendarDate.kt
+//                    Text(text = day.dayOfMonth.toString())
+                    CalendarDate(
+                        date = day.dayOfMonth.toString(),
+                        income = "40000",
+                        spend = "5000"
+                    )
                 }
             }
         }
