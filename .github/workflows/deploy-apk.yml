@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-  workflow-dispatch:
+  workflow_dispatch:
 
 jobs:
   generate-apk:
