@@ -38,4 +38,4 @@ jobs:
           curl -F "initial_comment= :white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:" \
                -F file=@app/build/outputs/apk/debug/app-debug.apk \
                -F token=${{ secrets.ANDROID_SLACK_BOT_TOKEN }} \
-               -F channels=android https://slack.com/api/files.upload_v2
+               -F channels=android https://slack.com/api/files_upload_v2
