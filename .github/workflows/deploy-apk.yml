@@ -32,11 +32,17 @@ jobs:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Upload to Slack
-        shell: bash
-        run: |
-          curl -F "initial_comment= :white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:" \
-               -F file=@app/build/outputs/apk/debug/app-debug.apk \
-               -F token=${{ secrets.ANDROID_SLACK_BOT_TOKEN }} \
-               -F channel=C045WAKTQ6Q https://slack.com/api/files_upload_v2
+#       - name: Upload to Slack
+#         shell: bash
+#         run: |
+#           curl -F "initial_comment= :white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:" \
+#                -F file=@app/build/outputs/apk/debug/app-debug.apk \
+#                -F token=${{ secrets.ANDROID_SLACK_BOT_TOKEN }} \
+#                -F channel=C045WAKTQ6Q https://slack.com/api/files_upload_v2
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - name: Upload to Slack
+        run: python deploy.py
