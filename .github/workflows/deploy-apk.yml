@@ -45,4 +45,5 @@ jobs:
       - name: Upload to Slack
         env: 
           ANDROID_SLACK_BOT_TOKEN: ${{ secrets.ANDROID_SLACK_BOT_TOKEN }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
         run: python deploy.py
