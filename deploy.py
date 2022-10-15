@@ -5,6 +5,7 @@ from slack_sdk import WebClient
 
 def main():
     androidSlackBotToken = os.environ['ANDROID_SLACK_BOT_TOKEN']
+    branchName = os.environ['CURRENT_BRANCH']
     androidSlackChannelKey = "C045WAKTQ6Q"
     client = WebClient(token=androidSlackBotToken)
     response = client.files_upload_v2(
