@@ -9,9 +9,9 @@ def main():
     client = WebClient(token=androidSlackBotToken)
     response = client.files_upload_v2(
         file="app/build/outputs/apk/debug/app-debug.apk", 
-        title="Wonjoong test",
+        title="Android apk build",
         channel=androidSlackChannelKey,
-        initial_comment="Wonjoong is testing right now",
+        initial_comment=":white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:",
     )
     response.get("file")
 
