@@ -42,8 +42,15 @@ jobs:
             python -m pip install --upgrade pip
             pip install slack_sdk
 
-      - name: Upload to Slack
+      - id: upload
+        name: Upload to Slack
         env: 
           ANDROID_SLACK_BOT_TOKEN: ${{ secrets.ANDROID_SLACK_BOT_TOKEN }}
           CURRENT_BRANCH: ${{ github.ref_name }}
-        run: python deploy.py
+        run: 
+          echo ::set-output name=permalink::$(python deploy.py)
+        
+      - name: Send permalink
+        run:
+          echo ${{ steps.upload.outputs.permalink }}
+          
