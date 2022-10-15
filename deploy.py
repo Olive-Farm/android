@@ -12,7 +12,7 @@ def main():
         file="app/build/outputs/apk/debug/app-debug.apk", 
         title="Android apk build",
         channel=androidSlackChannelKey,
-        initial_comment=":white_check_mark: ${{ github.ref_name }} branch was successfully build! :white_check_mark:",
+        initial_comment=":white_check_mark:", branchName, "branch was successfully build! :white_check_mark:",
     )
     response.get("file")
 
