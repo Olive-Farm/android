@@ -26,11 +26,11 @@ jobs:
       - name: Execute Gradle Build
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-debug.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+#       - name: Upload APK
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: app-debug.apk
+#           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Setup Python
         uses: actions/setup-python@v4
