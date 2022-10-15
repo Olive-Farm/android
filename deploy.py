@@ -14,7 +14,8 @@ def main():
         initial_comment="Apk was successfully build! :white_check_mark:",
         thread_ts="1665807214.774699"
     )
-    response.get("file")
+    result = response.get("file")
+    print(result['url_private_download'])
 
 
 if __name__ == "__main__":
