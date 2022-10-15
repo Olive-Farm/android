@@ -52,5 +52,5 @@ jobs:
         
       - name: Send permalink
         run:
-          echo @@@permalink is --> ${{ steps.upload.outputs.permalink }}
+          echo @@@permalink is ${{ steps.upload.outputs.permalink }}
           
