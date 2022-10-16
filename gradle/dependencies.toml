@@ -1,12 +1,13 @@
 [versions]
 agp = "7.2.2"
 kotlin = "1.7.20"
+kotlinDatetime = "0.4.0"
 ksp = "1.7.10-1.0.6"
 material = "1.6.1"
 compose = "1.2.1"
 composeCompiler = "1.2.1"
 jvmTarget = "1.8"
-androidxActivity = "1.4.0"
+androidxActivity = "1.6.0"
 androidxFragment = "1.5.1"
 androidxLifecycle = "2.5.1"
 androidxRoom = "2.4.3"
@@ -49,7 +50,7 @@ hilt-plugin = { id = "dagger.hilt.android.plugin", version = "hilt" }
 [libraries]
 compose = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-material = { module = "androidx.compose.material:material", version.ref="compose" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigation" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
@@ -57,6 +58,7 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinDatetime" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidxFragment" }

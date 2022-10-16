@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.farmer.olive.ui.OliveScreens
 import com.farmer.feature_statistics.StatisticsScreen
-import com.farmer.home.CashbookScreen
+import com.farmer.home.ui.CashbookScreen
 
 @Composable
 fun OliveNavHost(
