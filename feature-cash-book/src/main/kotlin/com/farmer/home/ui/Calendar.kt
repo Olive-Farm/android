@@ -23,62 +23,57 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Clock
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.ui.states.CalendarUiState
+import com.farmer.home.ui.states.CalendarViewModel
 import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDate
-import kotlinx.datetime.todayIn
 import java.time.format.TextStyle
 import java.util.*
 
 @Composable
 fun Calendar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CalendarViewModel = hiltViewModel()
 ) {
-    val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    val displayMonth = remember {
-        mutableStateOf(currentDay.month)
-    }
-    val (currentMonth, currentYear) = displayMonth.value to currentDay.year
-    val daysInMonth = currentMonth.minLength() // 해당 달이 총 며칠인지
-    val year = currentDay.year
-    val monthValue =
-        if (currentMonth.value.toString().length == 1) "0" + currentMonth.value.toString() else currentMonth.value.toString()
-    val startDayOfMonth = "${currentDay.year}-$monthValue-01".toLocalDate()
-    val firstDayOfMonth = startDayOfMonth.dayOfWeek
+    val uiState by viewModel.uiState.collectAsState()
+    when (val state = uiState) {
+        is CalendarUiState.CalendarState -> {
+            Column(
+                modifier = modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp, horizontal = 8.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                CalendarHeader(
+                    modifier = Modifier,
+                    month = state.displayMonth,
+                    year = state.displayYear,
+                    onPreviousClick = {
+                                      // todo
+//                        displayMonth.value = displayMonth.value.minus(1)
+                    },
+                    onNextClick = {
+                        // todo
+//                        displayMonth.value = displayMonth.value.plus(1)
+                    }
+                )
 
-    Column(
-        modifier = modifier
-            .wrapContentHeight()
-            .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        CalendarHeader(
-            modifier = Modifier,
-            month = displayMonth.value,
-            year = year,
-            onPreviousClick = {
-                displayMonth.value = displayMonth.value.minus(1)
-            },
-            onNextClick = {
-                displayMonth.value = displayMonth.value.plus(1)
+                CalendarDates(uiState)
             }
-        )
-
-        CalendarDates(
-            firstDayOfMonth = firstDayOfMonth,
-            daysInMonth = daysInMonth,
-            currentMonth = currentMonth,
-            currentYear = currentYear,
-            currentDay = currentDay
-        )
+        }
+        else -> {
+            // todo
+        }
     }
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)

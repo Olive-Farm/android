@@ -15,13 +15,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.random.Random
 
 @Composable
 fun CalendarDate(
     date: String,
-    income: String,
-    spend: String
+    income: Int,
+    spend: Int
 ) {
     Column(
         modifier = Modifier
@@ -38,10 +37,10 @@ fun CalendarDate(
         ) {
             // todo temp data, need to be changed
 //            if (income.isNotEmpty()) {
-            if (Random.nextBoolean()) {
+            if (income > 0) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
-                    text = income,
+                    text = income.toString(),
                     fontSize = 10.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -54,10 +53,11 @@ fun CalendarDate(
             shape = RoundedCornerShape(8.dp),
             backgroundColor = Color.Red
         ) {
-            if (spend.isNotEmpty()) {
+//            if (spend!=0) {
+            if (spend > 0) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
-                    text = spend,
+                    text = spend.toString(),
                     fontSize = 10.sp,
                     color = Color.White,
                     maxLines = 1,
@@ -75,7 +75,7 @@ fun CalendarDate(
 fun CalendarDatePreview() {
     CalendarDate(
         date = "28",
-        income = "500000",
-        spend = "90000"
+        income = 500000,
+        spend = 90000
     )
 }

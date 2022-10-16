@@ -8,23 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
-import kotlinx.datetime.toLocalDate
+import com.farmer.home.ui.states.CalendarUiState
 
 // todo move to viewmodel
 // todo set korean
 val WeekDays = listOf("M", "T", "W", "T", "F", "S", "S")
 
 @Composable
-fun CalendarDates(
-    firstDayOfMonth: DayOfWeek,
-    daysInMonth: Int,
-    currentMonth: Month,
-    currentYear: Int,
-    currentDay: LocalDate
-) {
+fun CalendarDates(uiState: CalendarUiState) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
         columns = GridCells.Fixed(7),
@@ -35,29 +26,19 @@ fun CalendarDates(
                     fontWeight = FontWeight.Normal
                 )
             }
-            items((getInitialDayOfMonth(firstDayOfMonth)..daysInMonth).toList()) {
-                if (it > 0) {
-                    val day = getGeneratedDay(it, currentMonth, currentYear)
-                    val isCurrentDay = day == currentDay
-                    // todo add plus, minus, average text in date
-                    // todo need to chaneg to CalendarDate.kt
-//                    Text(text = day.dayOfMonth.toString())
-                    CalendarDate(
-                        date = day.dayOfMonth.toString(),
-                        income = "40000",
-                        spend = "5000"
-                    )
+            if (uiState is CalendarUiState.CalendarState) {
+                with(uiState) {
+                    items(dateList) {
+                        if (it.dateOfMonth != 0) {
+                            CalendarDate(
+                                date = it.dateOfMonth.toString(),
+                                income = it.sumOfIncome,
+                                spend = it.sumOfSpend
+                            )
+                        }
+                    }
                 }
             }
         }
     )
-}
-
-private fun getInitialDayOfMonth(firstDayOfMonth: DayOfWeek) = -(firstDayOfMonth.value).minus(2)
-
-private fun getGeneratedDay(day: Int, currentMonth: Month, currentYear: Int): LocalDate {
-    val monthValue =
-        if (currentMonth.value.toString().length == 1) "0${currentMonth.value}" else currentMonth.value.toString()
-    val newDay = if (day.toString().length == 1) "0$day" else day
-    return "$currentYear-$monthValue-$newDay".toLocalDate()
 }
