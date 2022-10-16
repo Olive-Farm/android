@@ -56,14 +56,8 @@ fun Calendar(
                     modifier = Modifier,
                     month = state.displayMonth,
                     year = state.displayYear,
-                    onPreviousClick = {
-                                      // todo
-//                        displayMonth.value = displayMonth.value.minus(1)
-                    },
-                    onNextClick = {
-                        // todo
-//                        displayMonth.value = displayMonth.value.plus(1)
-                    }
+                    onPreviousClick = viewModel::moveToPreviousMonth,
+                    onNextClick = viewModel::moveToNextMonth
                 )
 
                 CalendarDates(uiState)

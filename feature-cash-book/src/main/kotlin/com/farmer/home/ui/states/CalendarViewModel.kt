@@ -77,6 +77,42 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun moveToPreviousMonth() {
+        viewModelState.update {
+            if (it is CalendarUiState.CalendarState) {
+                val nextYear = if (it.displayMonth - 1 == Month.DECEMBER) {
+                    it.displayYear - 1
+                } else {
+                    it.displayYear
+                }
+                it.copy(
+                    displayMonth = it.displayMonth - 1,
+                    displayYear = nextYear
+                )
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
+    fun moveToNextMonth() {
+        viewModelState.update {
+            if (it is CalendarUiState.CalendarState) {
+                val nextYear = if (it.displayMonth + 1 == Month.JANUARY) {
+                    it.displayYear + 1
+                } else {
+                    it.displayYear
+                }
+                it.copy(
+                    displayMonth = it.displayMonth + 1,
+                    displayYear = nextYear
+                )
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
     /**
      * @param firstDayOfMonth First day of month as int. (Monday = 1, Saturday = 6)
      *
