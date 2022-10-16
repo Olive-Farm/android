@@ -45,8 +45,81 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
 
         val daysInMonth = displayMonth.minLength()
 
-        val dateList = buildList {
-            (getInitialDayOfMonth(firstDayOfMonth)..daysInMonth).forEach { date ->
+        val dateList = getDateListOfMonth(
+            getInitialDayOfMonth(firstDayOfMonth),
+            daysInMonth,
+            displayMonth,
+            currentYear
+        )
+        viewModelState.update {
+            CalendarUiState.CalendarState(
+                dateList = dateList,
+                displayMonth = displayMonth,
+                displayYear = displayYear,
+                firstDayOfMonth = firstDayOfMonth,
+                startDayOfMonth = startDayOfMonth
+            )
+        }
+    }
+
+    fun moveToPreviousMonth() {
+        viewModelState.update {
+            if (it is CalendarUiState.CalendarState) {
+                val prevYear =
+                    if (it.displayMonth - 1 == Month.DECEMBER) it.displayYear - 1
+                    else it.displayYear
+                val prevMonth = it.displayMonth - 1
+                val firstDayOfMonth = getFirstDayOfMonth(prevYear, prevMonth)
+                val dateList = getDateListOfMonth(
+                    initialDayOfMonth = getInitialDayOfMonth(firstDayOfMonth),
+                    daysInMonth = prevMonth.minLength(),
+                    displayMonth = prevMonth,
+                    currentYear = prevYear
+                )
+                it.copy(
+                    dateList = dateList,
+                    displayMonth = prevMonth,
+                    displayYear = prevYear
+                )
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
+    fun moveToNextMonth() {
+        viewModelState.update {
+            if (it is CalendarUiState.CalendarState) {
+                val nextYear =
+                    if (it.displayMonth + 1 == Month.JANUARY) it.displayYear + 1
+                    else it.displayYear
+                val nextMonth = it.displayMonth + 1
+                val firstDayOfMonth = getFirstDayOfMonth(nextYear, nextMonth)
+                val dateList = getDateListOfMonth(
+                    initialDayOfMonth = getInitialDayOfMonth(firstDayOfMonth),
+                    daysInMonth = nextMonth.minLength(),
+                    displayMonth = nextMonth,
+                    currentYear = nextYear
+                )
+                it.copy(
+                    dateList = dateList,
+                    displayMonth = nextMonth,
+                    displayYear = nextYear
+                )
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
+    private fun getDateListOfMonth(
+        initialDayOfMonth: Int,
+        daysInMonth: Int,
+        displayMonth: Month,
+        currentYear: Int
+    ): List<DateUiInfo> {
+        return buildList {
+            (initialDayOfMonth..daysInMonth).forEach { date ->
                 if (date > 0) {
                     val day = getGeneratedDay(date, displayMonth, currentYear)
                     add(
@@ -63,52 +136,6 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
                     // Means date is not existing at the day of month.
                     add(DateUiInfo.EMPTY)
                 }
-            }
-        }
-
-        viewModelState.update {
-            CalendarUiState.CalendarState(
-                dateList = dateList,
-                displayMonth = displayMonth,
-                displayYear = displayYear,
-                firstDayOfMonth = firstDayOfMonth,
-                startDayOfMonth = startDayOfMonth
-            )
-        }
-    }
-
-    fun moveToPreviousMonth() {
-        viewModelState.update {
-            if (it is CalendarUiState.CalendarState) {
-                val nextYear = if (it.displayMonth - 1 == Month.DECEMBER) {
-                    it.displayYear - 1
-                } else {
-                    it.displayYear
-                }
-                it.copy(
-                    displayMonth = it.displayMonth - 1,
-                    displayYear = nextYear
-                )
-            } else {
-                CalendarUiState.Error("Connection Error. Please try it again.")
-            }
-        }
-    }
-
-    fun moveToNextMonth() {
-        viewModelState.update {
-            if (it is CalendarUiState.CalendarState) {
-                val nextYear = if (it.displayMonth + 1 == Month.JANUARY) {
-                    it.displayYear + 1
-                } else {
-                    it.displayYear
-                }
-                it.copy(
-                    displayMonth = it.displayMonth + 1,
-                    displayYear = nextYear
-                )
-            } else {
-                CalendarUiState.Error("Connection Error. Please try it again.")
             }
         }
     }
@@ -132,6 +159,10 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
             else currentMonth.value.toString()
         val newDay = if (day.toString().length == 1) "0$day" else day
         return "$currentYear-$monthValue-$newDay".toLocalDate()
+    }
+
+    private fun getFirstDayOfMonth(year: Int, month: Month): DayOfWeek {
+        return java.time.LocalDate.of(year, month, 1).dayOfWeek
     }
 
     private companion object {
