@@ -10,8 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.farmer.home.ui.states.CalendarUiState
 
-// todo move to viewmodel
-// todo set korean
 val WeekDays = listOf("M", "T", "W", "T", "F", "S", "S")
 
 @Composable
