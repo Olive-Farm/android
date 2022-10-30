@@ -112,12 +112,33 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun setDetailDialogState() {
-        viewModelState.update {
-            if (it is CalendarUiState.CalendarState) {
-                it.copy(
-                    showDetailDialog = !it.showDetailDialog
-                )
+    fun setDetailDialogState(
+        shouldShow: Boolean,
+        clickedDateOfMonth: Int? = null
+    ) {
+        viewModelState.update { uiState ->
+            if (uiState is CalendarUiState.CalendarState) {
+                // If dialog is already shown, don't have to calculate date info.
+                if (shouldShow) {
+                    var clickedDateUiInfo = DateUiInfo.EMPTY
+                    val newDateList = buildList {
+                        uiState.dateList.forEach { dateInfo ->
+                            val isClickedDate = dateInfo.dateOfMonth == clickedDateOfMonth
+                            val newDateUiInfo = dateInfo.copy(isClickedDate = isClickedDate)
+                            if(isClickedDate) clickedDateUiInfo = newDateUiInfo
+                            add(newDateUiInfo)
+                        }
+                    }
+                    uiState.copy(
+                        dateList = newDateList,
+                        showDetailDialog = !uiState.showDetailDialog,
+                        clickedDateInfo = clickedDateUiInfo
+                    )
+                } else {
+                    uiState.copy(
+                        showDetailDialog = !uiState.showDetailDialog
+                    )
+                }
             } else {
                 CalendarUiState.Error("Connection Error. Please try it again.")
             }
