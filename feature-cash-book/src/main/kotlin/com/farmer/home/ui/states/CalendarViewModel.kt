@@ -112,6 +112,18 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun setDetailDialogState() {
+        viewModelState.update {
+            if (it is CalendarUiState.CalendarState) {
+                it.copy(
+                    showDetailDialog = !it.showDetailDialog
+                )
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
     private fun getDateListOfMonth(
         initialDayOfMonth: Int,
         daysInMonth: Int,

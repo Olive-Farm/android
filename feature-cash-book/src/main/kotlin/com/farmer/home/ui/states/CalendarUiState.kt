@@ -11,7 +11,8 @@ sealed interface CalendarUiState {
         val startDayOfMonth: LocalDate,
         val firstDayOfMonth: DayOfWeek,
         val displayYear: Int,
-        val displayMonth: Month
+        val displayMonth: Month,
+        val showDetailDialog: Boolean = false
     ) : CalendarUiState
 
     data class Loading(

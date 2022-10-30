@@ -1,5 +1,6 @@
 package com.farmer.home.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,11 +21,15 @@ import androidx.compose.ui.unit.sp
 fun CalendarDate(
     date: String,
     income: Int,
-    spend: Int
+    spend: Int,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
             .size(100.dp)
             .padding(2.dp)
     ) {
@@ -76,6 +81,7 @@ fun CalendarDatePreview() {
     CalendarDate(
         date = "28",
         income = 500000,
-        spend = 90000
+        spend = 90000,
+        onClick = {}
     )
 }
