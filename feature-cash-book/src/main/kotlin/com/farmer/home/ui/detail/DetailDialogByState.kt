@@ -27,7 +27,7 @@ fun DetailDialogByState(
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 10.dp, vertical = 90.dp),
+                    .padding(horizontal = 10.dp, vertical = 140.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = Color.White
             ) {
