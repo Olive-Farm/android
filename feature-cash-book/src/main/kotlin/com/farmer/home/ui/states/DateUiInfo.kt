@@ -1,5 +1,8 @@
 package com.farmer.home.ui.states
 
+import kotlinx.datetime.DayOfWeek
+
+
 /**
  * @param dateOfMonth ex) 1, 2, 3 ... 31
  * @param sumOfIncome sum of the income on the date
@@ -9,6 +12,7 @@ package com.farmer.home.ui.states
  */
 data class DateUiInfo(
     val dateOfMonth: Int,
+    val dayOfWeek: DayOfWeek,
     val sumOfIncome: Int,
     val sumOfSpend: Int,
     val incomeList: List<Int>,
@@ -18,6 +22,7 @@ data class DateUiInfo(
     companion object {
         val EMPTY = DateUiInfo(
             dateOfMonth = 0,
+            dayOfWeek = DayOfWeek.MONDAY,
             sumOfIncome = 0,
             sumOfSpend = 0,
             incomeList = emptyList(),

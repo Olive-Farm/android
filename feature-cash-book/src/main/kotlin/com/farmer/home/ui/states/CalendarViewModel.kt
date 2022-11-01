@@ -155,13 +155,24 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
             (initialDayOfMonth..daysInMonth).forEach { date ->
                 if (date > 0) {
                     val day = getGeneratedDay(date, displayMonth, currentYear)
+                    val incomeList = listOf(
+                        (-50000..50000).random(),
+                        (-50000..50000).random(),
+                        (-50000..50000).random()
+                    )
+                    val spendList = listOf(
+                        (-50000..50000).random(),
+                        (-50000..50000).random(),
+                        (-50000..50000).random()
+                    )
                     add(
                         DateUiInfo(
                             dateOfMonth = day.dayOfMonth,
-                            sumOfIncome = (-50000..50000).random(),
-                            sumOfSpend = (-50000..50000).random(),
-                            incomeList = listOf(3000, 20000, 10000),
-                            spendList = listOf(20000, 4000, 1000),
+                            dayOfWeek = day.dayOfWeek,
+                            sumOfIncome = incomeList.sum(),
+                            sumOfSpend = spendList.sum(),
+                            incomeList = incomeList,
+                            spendList = spendList,
                             isClickedDate = false
                         )
                     )
