@@ -156,14 +156,14 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
                 if (date > 0) {
                     val day = getGeneratedDay(date, displayMonth, currentYear)
                     val incomeList = listOf(
-                        (-50000..50000).random(),
-                        (-50000..50000).random(),
-                        (-50000..50000).random()
+                        (1..50000).random(),
+                        (1..50000).random(),
+                        (1..50000).random()
                     )
                     val spendList = listOf(
-                        (-50000..50000).random(),
-                        (-50000..50000).random(),
-                        (-50000..50000).random()
+                        (-50000..-1).random(),
+                        (-50000..-1).random(),
+                        (-50000..-1).random()
                     )
                     add(
                         DateUiInfo(
