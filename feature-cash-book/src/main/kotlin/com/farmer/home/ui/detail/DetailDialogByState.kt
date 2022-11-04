@@ -36,7 +36,8 @@ fun DetailDialogByState(
                 color = Color.White
             ) {
                 DetailDialog(
-                    dateInfo = uiState.clickedDateInfo
+                    dateInfo = uiState.clickedDateInfo,
+                    isDialogEditMode = uiState.isDialogEditMode
                 )
             }
         }

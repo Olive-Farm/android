@@ -125,7 +125,7 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
                         uiState.dateList.forEach { dateInfo ->
                             val isClickedDate = dateInfo.dateOfMonth == clickedDateOfMonth
                             val newDateUiInfo = dateInfo.copy(isClickedDate = isClickedDate)
-                            if(isClickedDate) clickedDateUiInfo = newDateUiInfo
+                            if (isClickedDate) clickedDateUiInfo = newDateUiInfo
                             add(newDateUiInfo)
                         }
                     }
@@ -141,6 +141,18 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
                 }
             } else {
                 CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
+    fun changeEditModeState() {
+        viewModelState.update { uiState ->
+            if (uiState is CalendarUiState.CalendarState) {
+                uiState.copy(
+                    isDialogEditMode = !(uiState.isDialogEditMode)
+                )
+            } else {
+                errorCalendarUiState()
             }
         }
     }
@@ -208,6 +220,9 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     private fun getFirstDayOfMonth(year: Int, month: Month): DayOfWeek {
         return java.time.LocalDate.of(year, month, 1).dayOfWeek
     }
+
+    private fun errorCalendarUiState() =
+        CalendarUiState.Error("Connection Error. Please try it again.")
 
     private companion object {
         private const val VALUE_TO_MODIFY_START_DATE = 2

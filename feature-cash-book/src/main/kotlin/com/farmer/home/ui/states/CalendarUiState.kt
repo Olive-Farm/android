@@ -13,7 +13,8 @@ sealed interface CalendarUiState {
         val displayYear: Int,
         val displayMonth: Month,
         val showDetailDialog: Boolean = false,
-        val clickedDateInfo: DateUiInfo = DateUiInfo.EMPTY
+        val clickedDateInfo: DateUiInfo = DateUiInfo.EMPTY,
+        val isDialogEditMode: Boolean = false
     ) : CalendarUiState
 
     data class Loading(
