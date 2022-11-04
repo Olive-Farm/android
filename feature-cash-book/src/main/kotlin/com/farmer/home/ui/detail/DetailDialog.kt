@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,5 +88,9 @@ fun DetailDialog(
             text = "Sum of spend : ${dateInfo.sumOfSpend.toCommaString()} ￦",
             fontWeight = FontWeight.Bold
         )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(modifier = Modifier.align(Alignment.End), imageVector = Icons.Default.Edit, contentDescription = null, tint = Color.Gray)
     }
 }
