@@ -112,6 +112,51 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun setDetailDialogState(
+        shouldShow: Boolean,
+        clickedDateOfMonth: Int? = null
+    ) {
+        viewModelState.update { uiState ->
+            if (uiState is CalendarUiState.CalendarState) {
+                // If dialog is already shown, don't have to calculate date info.
+                if (shouldShow) {
+                    var clickedDateUiInfo = DateUiInfo.EMPTY
+                    val newDateList = buildList {
+                        uiState.dateList.forEach { dateInfo ->
+                            val isClickedDate = dateInfo.dateOfMonth == clickedDateOfMonth
+                            val newDateUiInfo = dateInfo.copy(isClickedDate = isClickedDate)
+                            if (isClickedDate) clickedDateUiInfo = newDateUiInfo
+                            add(newDateUiInfo)
+                        }
+                    }
+                    uiState.copy(
+                        dateList = newDateList,
+                        showDetailDialog = !uiState.showDetailDialog,
+                        clickedDateInfo = clickedDateUiInfo
+                    )
+                } else {
+                    uiState.copy(
+                        showDetailDialog = !uiState.showDetailDialog
+                    )
+                }
+            } else {
+                CalendarUiState.Error("Connection Error. Please try it again.")
+            }
+        }
+    }
+
+    fun changeEditModeState() {
+        viewModelState.update { uiState ->
+            if (uiState is CalendarUiState.CalendarState) {
+                uiState.copy(
+                    isDialogEditMode = !(uiState.isDialogEditMode)
+                )
+            } else {
+                errorCalendarUiState()
+            }
+        }
+    }
+
     private fun getDateListOfMonth(
         initialDayOfMonth: Int,
         daysInMonth: Int,
@@ -122,13 +167,24 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
             (initialDayOfMonth..daysInMonth).forEach { date ->
                 if (date > 0) {
                     val day = getGeneratedDay(date, displayMonth, currentYear)
+                    val incomeList = listOf(
+                        (1..50000).random(),
+                        (1..50000).random(),
+                        (1..50000).random()
+                    )
+                    val spendList = listOf(
+                        (-50000..-1).random(),
+                        (-50000..-1).random(),
+                        (-50000..-1).random()
+                    )
                     add(
                         DateUiInfo(
                             dateOfMonth = day.dayOfMonth,
-                            sumOfIncome = (-50000..50000).random(),
-                            sumOfSpend = (-50000..50000).random(),
-                            incomeList = listOf(3000, 20000, 10000),
-                            spendList = listOf(20000, 4000, 1000),
+                            dayOfWeek = day.dayOfWeek,
+                            sumOfIncome = incomeList.sum(),
+                            sumOfSpend = spendList.sum(),
+                            incomeList = incomeList,
+                            spendList = spendList,
                             isClickedDate = false
                         )
                     )
@@ -164,6 +220,9 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     private fun getFirstDayOfMonth(year: Int, month: Month): DayOfWeek {
         return java.time.LocalDate.of(year, month, 1).dayOfWeek
     }
+
+    private fun errorCalendarUiState() =
+        CalendarUiState.Error("Connection Error. Please try it again.")
 
     private companion object {
         private const val VALUE_TO_MODIFY_START_DATE = 2

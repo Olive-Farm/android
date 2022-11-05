@@ -8,12 +8,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.ui.detail.DetailDialogByState
 import com.farmer.home.ui.states.CalendarUiState
+import com.farmer.home.ui.states.CalendarViewModel
 
 val WeekDays = listOf("M", "T", "W", "T", "F", "S", "S")
 
 @Composable
-fun CalendarDates(uiState: CalendarUiState) {
+fun CalendarDates(
+    uiState: CalendarUiState,
+    viewModel: CalendarViewModel = hiltViewModel()
+) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
         columns = GridCells.Fixed(7),
@@ -31,7 +37,13 @@ fun CalendarDates(uiState: CalendarUiState) {
                             CalendarDate(
                                 date = it.dateOfMonth.toString(),
                                 income = it.sumOfIncome,
-                                spend = it.sumOfSpend
+                                spend = it.sumOfSpend,
+                                onClick = {
+                                    viewModel.setDetailDialogState(
+                                        shouldShow = true,
+                                        clickedDateOfMonth = it.dateOfMonth
+                                    )
+                                }
                             )
                         }
                     }
@@ -39,4 +51,6 @@ fun CalendarDates(uiState: CalendarUiState) {
             }
         }
     )
+
+    DetailDialogByState(uiState, viewModel)
 }

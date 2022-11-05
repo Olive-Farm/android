@@ -1,5 +1,6 @@
 package com.farmer.home.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,16 +16,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.random.Random
 
 @Composable
 fun CalendarDate(
     date: String,
     income: Int,
-    spend: Int
+    spend: Int,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
             .size(100.dp)
             .padding(2.dp)
     ) {
@@ -37,7 +43,7 @@ fun CalendarDate(
         ) {
             // todo temp data, need to be changed
 //            if (income.isNotEmpty()) {
-            if (income > 0) {
+//            if (Random.nextBoolean()) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
                     text = income.toString(),
@@ -45,7 +51,7 @@ fun CalendarDate(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            }
+//            }
         }
         Spacer(modifier = Modifier.size(2.dp))
         Card(
@@ -54,7 +60,7 @@ fun CalendarDate(
             backgroundColor = Color.Red
         ) {
 //            if (spend!=0) {
-            if (spend > 0) {
+//            if (Random.nextBoolean()) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
                     text = spend.toString(),
@@ -63,7 +69,7 @@ fun CalendarDate(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            }
+//            }
         }
     }
 }
@@ -76,6 +82,7 @@ fun CalendarDatePreview() {
     CalendarDate(
         date = "28",
         income = 500000,
-        spend = 90000
+        spend = 90000,
+        onClick = {}
     )
 }
