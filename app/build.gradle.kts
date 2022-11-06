@@ -48,6 +48,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("benchmark") {
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = true
+        }
     }
 }
 
