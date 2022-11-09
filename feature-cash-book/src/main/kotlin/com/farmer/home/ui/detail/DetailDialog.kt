@@ -12,15 +12,21 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -97,24 +103,34 @@ fun DetailDialog(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(
-            onClick = {
-                viewModel.changeEditModeState()
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) {
+        Row {
+            var inputText by remember { mutableStateOf(TextFieldValue("")) }
             if (isDialogEditMode) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    tint = Color.Gray
+                TextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    value = inputText,
+                    onValueChange = { inputText = it }
                 )
             } else {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            IconButton(onClick = { viewModel.changeEditModeState() }) {
+                if (isDialogEditMode) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+                }
             }
         }
     }
