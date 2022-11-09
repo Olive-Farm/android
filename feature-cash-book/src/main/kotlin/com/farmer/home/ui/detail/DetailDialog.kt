@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +55,9 @@ fun DetailDialog(
 
         LazyColumn {
             itemsIndexed(dateInfo.incomeList) { index, incomeData ->
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     val titleVisibility = if (index == 0) 1f else 0f
                     Text(
                         text = "Income",
@@ -63,12 +67,28 @@ fun DetailDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = incomeData.toCommaString(), color = Color.Green)
                     Text(text = "￦")
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (isDialogEditMode) {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(0.dp)
+                                .size(16.dp),
+                            onClick = { /* todo */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
             }
             itemsIndexed(dateInfo.spendList) { index, spendData ->
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     val titleVisibility = if (index == 0) 1f else 0f
                     Text(
                         text = "Spend",
@@ -78,6 +98,20 @@ fun DetailDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = spendData.toCommaString(), color = Color.Red)
                     Text(text = "￦")
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (isDialogEditMode) {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(0.dp)
+                                .size(16.dp),
+                            onClick = { /* todo */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
