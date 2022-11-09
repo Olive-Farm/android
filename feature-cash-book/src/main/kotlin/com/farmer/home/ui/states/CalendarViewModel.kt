@@ -132,7 +132,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
                     uiState.copy(
                         dateList = newDateList,
                         showDetailDialog = !uiState.showDetailDialog,
-                        clickedDateInfo = clickedDateUiInfo
+                        clickedDateInfo = clickedDateUiInfo,
+                        isDialogEditMode = false
                     )
                 } else {
                     uiState.copy(
