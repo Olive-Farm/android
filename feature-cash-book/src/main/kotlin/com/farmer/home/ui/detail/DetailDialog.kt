@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.ui.BlueAlpha200
+import com.farmer.home.ui.RedAlpha200
 import com.farmer.home.ui.states.CalendarViewModel
 import com.farmer.home.ui.states.DateUiInfo
 import com.farmer.home.util.toCommaString
@@ -65,7 +67,7 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = incomeData.toCommaString(), color = Color.Green)
+                    Text(text = incomeData.toCommaString(), color = RedAlpha200)
                     Text(text = "￦")
                     Spacer(modifier = Modifier.weight(1f))
                     if (isDialogEditMode) {
@@ -96,7 +98,7 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = spendData.toCommaString(), color = Color.Red)
+                    Text(text = spendData.toCommaString(), color = BlueAlpha200)
                     Text(text = "￦")
                     Spacer(modifier = Modifier.weight(1f))
                     if (isDialogEditMode) {

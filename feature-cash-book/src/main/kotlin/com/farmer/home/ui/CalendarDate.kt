@@ -38,7 +38,7 @@ fun CalendarDate(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
-            backgroundColor = Color(0xFFFF5252) // red alpha 200
+            backgroundColor = RedAlpha200
         ) {
             // todo temp data, need to be changed
 //            if (income.isNotEmpty()) {
@@ -57,7 +57,7 @@ fun CalendarDate(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
-            backgroundColor = Color(0xFF448AFF) // blue alpha 200
+            backgroundColor = BlueAlpha200
         ) {
 //            if (spend!=0) {
 //            if (Random.nextBoolean()) {
