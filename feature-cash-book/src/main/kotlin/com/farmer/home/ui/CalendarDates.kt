@@ -7,13 +7,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.model.OliveDateList
 import com.farmer.home.ui.detail.DetailDialogByState
 import com.farmer.home.ui.states.CalendarUiState
 import com.farmer.home.ui.states.CalendarViewModel
-
-val WeekDays = listOf("M", "T", "W", "T", "F", "S", "S")
 
 @Composable
 fun CalendarDates(
@@ -24,10 +24,11 @@ fun CalendarDates(
         modifier = Modifier.fillMaxWidth(),
         columns = GridCells.Fixed(7),
         content = {
-            items(WeekDays) {
+            items(OliveDateList.list) {
                 Text(
-                    text = it,
-                    fontWeight = FontWeight.Normal
+                    text = it.shortDayOfTheWeek,
+                    fontWeight = FontWeight.Normal,
+                    color = it.textColor
                 )
             }
             if (uiState is CalendarUiState.CalendarState) {
