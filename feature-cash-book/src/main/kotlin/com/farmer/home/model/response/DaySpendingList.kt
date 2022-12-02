@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class DaySpendingList(
+data class DaySpendingList(
     @SerialName("time")
     val time: String = String.EMPTY,
     @SerialName("name")

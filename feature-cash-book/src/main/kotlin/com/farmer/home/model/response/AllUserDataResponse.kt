@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class AllUserDataResponse(
+data class AllUserDataResponse(
     @SerialName("userId")
     val userId: String = String.EMPTY,
     @SerialName("userSpendingList")

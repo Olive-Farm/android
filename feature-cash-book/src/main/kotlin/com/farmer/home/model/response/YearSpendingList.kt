@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class YearSpendingList(
+data class YearSpendingList(
     @SerialName("month")
     val month: String = String.EMPTY,
     @SerialName("monthSpendingList")

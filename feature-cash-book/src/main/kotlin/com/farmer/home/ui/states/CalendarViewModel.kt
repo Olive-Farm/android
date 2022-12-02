@@ -2,6 +2,7 @@ package com.farmer.home.ui.states
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farmer.home.data.CashBookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +19,9 @@ import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : ViewModel() {
+class CalendarViewModel @Inject constructor(
+    private val repository: CashBookRepository
+) : ViewModel() {
 
     private val viewModelState: MutableStateFlow<CalendarUiState> =
         MutableStateFlow(CalendarUiState.Loading(isLoading = true))
