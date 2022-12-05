@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -35,6 +36,8 @@ class CalendarViewModel @Inject constructor(
         )
 
     init {
+        getUserData()
+
         val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
         val displayMonth = currentDay.month
         val displayYear = currentDay.year
@@ -227,6 +230,12 @@ class CalendarViewModel @Inject constructor(
 
     private fun errorCalendarUiState() =
         CalendarUiState.Error("Connection Error. Please try it again.")
+
+    private fun getUserData() {
+        viewModelScope.launch {
+            repository.getAllUserData()
+        }
+    }
 
     private companion object {
         private const val VALUE_TO_MODIFY_START_DATE = 2

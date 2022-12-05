@@ -1,8 +1,8 @@
 package com.farmer.home.data
 
-import com.farmer.home.model.response.AllUserDataResponse
+import com.farmer.home.model.response.AllUserData
 
 interface CashBookRepository {
 
-    suspend fun getAllUserData(): AllUserDataResponse
+    suspend fun getAllUserData(): List<AllUserData>
 }

@@ -11,7 +11,7 @@ data class DaySpendingList(
     @SerialName("name")
     val name: String = String.EMPTY,
     @SerialName("amount")
-    val amount: String = String.EMPTY,
+    val amount: Int = 0,
     @SerialName("category")
     val category: String = String.EMPTY,
     @SerialName("method")

@@ -5,8 +5,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AllUserDataResponse(
-    @SerialName("userId")
+data class AllUserData(
+    @SerialName("userID")
     val userId: String = String.EMPTY,
     @SerialName("userSpendingList")
     val userSpendingList: List<UserSpendingList> = emptyList()

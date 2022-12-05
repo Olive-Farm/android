@@ -1,10 +1,10 @@
 package com.farmer.home.data.remote
 
-import com.farmer.home.model.response.AllUserDataResponse
+import com.farmer.home.model.response.AllUserData
 import retrofit2.http.GET
 
-internal interface CashBookApi {
+interface CashBookApi {
 
-    @GET("/list/user")
-    suspend fun getAllUserData(): AllUserDataResponse
+    @GET("list/user")
+    suspend fun getAllUserData(): List<AllUserData>
 }

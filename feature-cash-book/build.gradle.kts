@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.kotlin.datetime)
     implementation(libs.kotlin.serialization)
     implementation(libs.retrofit)
+    // todo
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
