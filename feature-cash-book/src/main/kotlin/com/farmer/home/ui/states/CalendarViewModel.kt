@@ -3,6 +3,8 @@ package com.farmer.home.ui.states
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.home.data.CashBookRepository
+import com.farmer.home.model.response.AllUserData
+import com.farmer.home.util.toKotlinDateTimeMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,7 +14,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDate
@@ -27,6 +28,8 @@ class CalendarViewModel @Inject constructor(
     private val viewModelState: MutableStateFlow<CalendarUiState> =
         MutableStateFlow(CalendarUiState.Loading(isLoading = true))
 
+    private val allUserDateInfoList = mutableListOf<DateUiInfo>()
+
     // UI state exposed to the UI
     val uiState: StateFlow<CalendarUiState> = viewModelState
         .stateIn(
@@ -36,35 +39,37 @@ class CalendarViewModel @Inject constructor(
         )
 
     init {
-        getUserData()
+        viewModelScope.launch {
+            getUserData()
 
-        val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
-        val displayMonth = currentDay.month
-        val displayYear = currentDay.year
-        val (currentMonth, currentYear) = displayMonth.value to currentDay.year
-        val monthStartsWithZero =
-            if (currentMonth.toString().length == 1) "0$currentMonth"
-            else currentMonth.toString()
+            val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
+            val displayMonth = currentDay.month
+            val displayYear = currentDay.year
+            val (currentMonth, currentYear) = displayMonth.value to currentDay.year
+            val monthStartsWithZero =
+                if (currentMonth.toString().length == 1) "0$currentMonth"
+                else currentMonth.toString()
 
-        val startDayOfMonth = "${currentDay.year}-$monthStartsWithZero-01".toLocalDate()
-        val firstDayOfMonth = startDayOfMonth.dayOfWeek
+            val startDayOfMonth = "${currentDay.year}-$monthStartsWithZero-01".toLocalDate()
+            val firstDayOfMonth = startDayOfMonth.dayOfWeek
 
-        val daysInMonth = displayMonth.minLength()
+            val daysInMonth = displayMonth.minLength()
 
-        val dateList = getDateListOfMonth(
-            getInitialDayOfMonth(firstDayOfMonth),
-            daysInMonth,
-            displayMonth,
-            currentYear
-        )
-        viewModelState.update {
-            CalendarUiState.CalendarState(
-                dateList = dateList,
-                displayMonth = displayMonth,
-                displayYear = displayYear,
-                firstDayOfMonth = firstDayOfMonth,
-                startDayOfMonth = startDayOfMonth
+            val dateList = getDateListOfMonth(
+                getInitialDayOfMonth(firstDayOfMonth),
+                daysInMonth,
+                displayMonth,
+                currentYear
             )
+            viewModelState.update {
+                CalendarUiState.CalendarState(
+                    dateList = dateList,
+                    displayMonth = displayMonth,
+                    displayYear = displayYear,
+                    firstDayOfMonth = firstDayOfMonth,
+                    startDayOfMonth = startDayOfMonth
+                )
+            }
         }
     }
 
@@ -173,26 +178,18 @@ class CalendarViewModel @Inject constructor(
         return buildList {
             (initialDayOfMonth..daysInMonth).forEach { date ->
                 if (date > 0) {
-                    val day = getGeneratedDay(date, displayMonth, currentYear)
-                    val incomeList = listOf(
-                        (1..50000).random(),
-                        (1..50000).random(),
-                        (1..50000).random()
-                    )
-                    val spendList = listOf(
-                        (-50000..-1).random(),
-                        (-50000..-1).random(),
-                        (-50000..-1).random()
-                    )
-                    add(
-                        DateUiInfo(
-                            dateOfMonth = day.dayOfMonth,
-                            dayOfWeek = day.dayOfWeek,
-                            sumOfIncome = incomeList.sum(),
-                            sumOfSpend = spendList.sum(),
-                            incomeList = incomeList,
-                            spendList = spendList,
-                            isClickedDate = false
+                    val currentDateInfo =
+                        allUserDateInfoList.find {
+                            it.year == currentYear &&
+                            it.month == displayMonth &&
+                            it.dateOfMonth == date
+                        }
+                    if (currentDateInfo != null) add(currentDateInfo)
+                    else add(
+                        DateUiInfo.EMPTY.copy(
+                            year = currentYear,
+                            month = displayMonth,
+                            dateOfMonth = date
                         )
                     )
                 } else {
@@ -213,17 +210,6 @@ class CalendarViewModel @Inject constructor(
         firstDayOfMonth: DayOfWeek
     ): Int = -(firstDayOfMonth.value).minus(VALUE_TO_MODIFY_START_DATE)
 
-    /**
-     * @return Local date with day, currentMonth and currentYear
-     */
-    private fun getGeneratedDay(day: Int, currentMonth: Month, currentYear: Int): LocalDate {
-        val monthValue =
-            if (currentMonth.value.toString().length == 1) "0${currentMonth.value}"
-            else currentMonth.value.toString()
-        val newDay = if (day.toString().length == 1) "0$day" else day
-        return "$currentYear-$monthValue-$newDay".toLocalDate()
-    }
-
     private fun getFirstDayOfMonth(year: Int, month: Month): DayOfWeek {
         return java.time.LocalDate.of(year, month, 1).dayOfWeek
     }
@@ -231,10 +217,52 @@ class CalendarViewModel @Inject constructor(
     private fun errorCalendarUiState() =
         CalendarUiState.Error("Connection Error. Please try it again.")
 
-    private fun getUserData() {
-        viewModelScope.launch {
-            repository.getAllUserData()
+    /**
+     * Get user data from server.
+     */
+    private suspend fun getUserData() {
+        val dateUiInfoList = repository.getAllUserData().toDateUiInfoList()
+        allUserDateInfoList.clear()
+        allUserDateInfoList.addAll(dateUiInfoList)
+    }
+
+    /**
+     * mapper from server type to ui type.
+     * If the server specification changes, we just need to change this function.
+     * @return list of view type date info, which is DateUiInfo
+     */
+    private fun List<AllUserData>.toDateUiInfoList(): List<DateUiInfo> {
+        val dateUiInfoList = mutableListOf<DateUiInfo>()
+        this.firstOrNull()?.userSpendingList?.forEach { userSpendingList ->
+            userSpendingList.yearSpendingList.forEach { yearSpendingList ->
+                yearSpendingList.monthSpendingList.forEach { monthSpendingList ->
+                    monthSpendingList.daySpendingList.forEach { daySpendingList ->
+                        dateUiInfoList.add(
+                            DateUiInfo(
+                                year = userSpendingList.year.toIntOrNull() ?: -1,
+                                month = yearSpendingList.month.toKotlinDateTimeMonth(),
+                                dateOfMonth = monthSpendingList.day.toIntOrNull() ?: -1,
+                                dayOfWeek = DayOfWeek.MONDAY, // todo 수정해야 함. 그냥 월요일로 넣어둠.
+                                sumOfIncome = monthSpendingList.daySpendingList
+                                    .filter { it.amount > 0 }
+                                    .sumOf { it.amount },
+                                sumOfSpend = monthSpendingList.daySpendingList
+                                    .filter { it.amount < 0 }
+                                    .sumOf { it.amount },
+                                incomeList = monthSpendingList.daySpendingList
+                                    .filter { it.amount > 0 }
+                                    .map { it.amount },
+                                spendList = monthSpendingList.daySpendingList
+                                    .filter { it.amount < 0 }
+                                    .map { it.amount },
+                                isClickedDate = false
+                            )
+                        )
+                    }
+                }
+            }
         }
+        return dateUiInfoList.toList()
     }
 
     private companion object {
