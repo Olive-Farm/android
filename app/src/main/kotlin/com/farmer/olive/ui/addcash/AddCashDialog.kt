@@ -1,30 +1,75 @@
 package com.farmer.olive.ui.addcash
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.olive.ui.MainViewModel
 
 @Composable
-fun AddCashDialog() {
+fun AddCashDialog(
+    viewModel: MainViewModel = hiltViewModel()
+) {
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
-        var tempText by remember { mutableStateOf(TextFieldValue("")) }
-        TextField(value = tempText, onValueChange = { tempText = it })
+        var timeText by remember { mutableStateOf(TextFieldValue("")) }
+        var nameText by remember { mutableStateOf(TextFieldValue("")) }
+        var amountText by remember { mutableStateOf(TextFieldValue("")) }
+        TextField(
+            label = {
+                Text("Time")
+            },
+            value = timeText,
+            onValueChange = { timeText = it }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        TextField(
+            label = {
+                Text("Name")
+            },
+            value = nameText,
+            onValueChange = { nameText = it }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        TextField(
+            label = {
+                Text("Amount")
+            },
+            value = amountText,
+            onValueChange = { amountText = it },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Row {
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = {
+                viewModel.sendInputCashData(
+                    timeText.text,
+                    nameText.text,
+                    amountText.text
+                )
+            }) {
+                Icon(Icons.Filled.Check, contentDescription = null)
+            }
+        }
     }
-}
-
-@Preview
-@Composable
-fun AddCashDialogPreview() {
-    AddCashDialog()
 }

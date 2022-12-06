@@ -12,10 +12,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,17 +30,13 @@ fun OliveMain(
     composeNavigator: ComposeNavigator,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    var showDialog by remember { mutableStateOf(false) }
-
     OliveTheme {
         val navHostController = rememberNavController()
 
         // show add dialog if needed
-        if (showDialog) {
+        if (viewModel.showDialog.value) {
             Dialog(
-                onDismissRequest = {
-                    showDialog = !showDialog
-                },
+                onDismissRequest = { viewModel.showDialog.value = false },
                 properties = DialogProperties(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true
@@ -73,7 +65,7 @@ fun OliveMain(
             floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = Green500,
-                    onClick = { showDialog = !showDialog }
+                    onClick = { viewModel.showDialog.value = true }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null)
                 }

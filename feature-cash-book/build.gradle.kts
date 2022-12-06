@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.kotlin.serialization)
     implementation(libs.retrofit)
     implementation(libs.kotlin.serialization.converter)
+    implementation(libs.okhttp.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)

@@ -8,7 +8,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -22,10 +24,17 @@ internal object CashBookNetworkModule {
     private const val BASE_URL = "http://${IFCONFIG_ADDRESS_ENVIRONMENT_0}:8080/olivebook/"
 
     @OptIn(ExperimentalSerializationApi::class)
-    private fun provideRetrofit() = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(Json.asConverterFactory(MediaType.parse("application/json")!!))
-        .build()
+    private fun provideRetrofit(): Retrofit {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        val httpClient = OkHttpClient.Builder()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpClient.addInterceptor(httpLoggingInterceptor)
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaTypeOrNull()!!))
+            .client(httpClient.build())
+            .build()
+    }
 
     @Provides
     @Singleton
