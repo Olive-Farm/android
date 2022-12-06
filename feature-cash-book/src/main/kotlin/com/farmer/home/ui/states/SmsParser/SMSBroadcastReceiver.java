@@ -1,11 +1,23 @@
 package com.farmer.home.ui.states.SmsParser;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.telephony.SmsMessage;
+import android.util.Log;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SMSBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-    private static final String TAG = "SMSBroadcastReceiver";
+    public static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+    public static final String TAG = "SMSBroadcastReceiver";
+
+    public SMSBroadcastReceiver() {
+
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -14,10 +26,10 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction() == SMS_RECEIVED) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                Object[] pdus = (Object[])bundle.get("pdus");
+                Object[] pdus = (Object[]) bundle.get("pdus");
                 final SmsMessage[] messages = new SmsMessage[pdus.length];
                 for (int i = 0; i < pdus.length; i++) {
-                    messages[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                    messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                 }
                 if (messages.length > -1) {
                     Log.i(TAG, "Message recieved: " + messages[0].getMessageBody());
@@ -31,17 +43,37 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                     Pattern r = Pattern.compile(pattern); // Create a Pattern object
                     Matcher m = r.matcher(line); // Now Create matcher object
 
-                    TextView tv = MainActivity.tv;
+//                     String tv ="";
 
                     if(m.find()) {
-                        tv.setText(m.group(0) + "\n" + m.group(1) + "\n" + m.group(2));
+                        System.out.println(m.group(0) + "\n" + m.group(1) + "\n" + m.group(2));
                     }else {
-                        tv.setText("NO MATCH");
+                        System.out.println("NO MATCH");
                     }
                 }
             }
         }
     }
+
+//    public void onReceive(Context context, Intent intent) {
+//        Bundle bundle = intent.getExtras();
+//        SmsMessage[] msgs = null;
+//        String str = "";
+//        if (bundle != null)
+//        {
+//            Object[] pdus = (Object[]) bundle.get("pdus");
+//            msgs = new SmsMessage[pdus.length];
+//            for (int i=0; i<msgs.length; i++){
+//                msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+//                str += "SMS from " + msgs[i].getOriginatingAddress();
+//                str += " :";
+//                str += msgs[i].getMessageBody().toString();
+//                str += "\n";
+//            }
+//            Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
 
 }
 

@@ -28,11 +28,18 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <receiver android:name="SMSBroadcastReceiver" >
+        <receiver
+                android:name=".SMSBroadcastReceiver"
+                android:exported="true"
+                android:enabled="true"
+                android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
             </intent-filter>
         </receiver>
+
     </application>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
+
 </manifest>
