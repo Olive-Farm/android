@@ -22,11 +22,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.olive.ui.MainViewModel
+import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
 fun AddCashDialog(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: CalendarViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
@@ -62,7 +62,7 @@ fun AddCashDialog(
         Row {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
-                viewModel.sendInputCashData(
+                viewModel.sendInputCashDataAndDismiss(
                     timeText.text,
                     nameText.text,
                     amountText.text

@@ -20,6 +20,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.rememberNavController
+import com.farmer.home.ui.states.CalendarViewModel
 import com.farmer.olive.navigation.OliveNavHost
 import com.farmer.olive.ui.addcash.AddCashDialog
 import com.farmer.olive.ui.theme.Green500
@@ -28,15 +29,16 @@ import com.farmer.olive.ui.theme.OliveTheme
 @Composable
 fun OliveMain(
     composeNavigator: ComposeNavigator,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
     OliveTheme {
         val navHostController = rememberNavController()
 
         // show add dialog if needed
-        if (viewModel.showDialog.value) {
+        if (calendarViewModel.showDialog.value) {
             Dialog(
-                onDismissRequest = { viewModel.showDialog.value = false },
+                onDismissRequest = { calendarViewModel.showDialog.value = false },
                 properties = DialogProperties(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true
@@ -65,7 +67,7 @@ fun OliveMain(
             floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = Green500,
-                    onClick = { viewModel.showDialog.value = true }
+                    onClick = { calendarViewModel.showDialog.value = true }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null)
                 }

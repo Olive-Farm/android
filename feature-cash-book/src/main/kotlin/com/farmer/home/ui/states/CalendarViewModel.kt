@@ -1,5 +1,6 @@
 package com.farmer.home.ui.states
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.home.data.CashBookRepository
@@ -38,39 +39,27 @@ class CalendarViewModel @Inject constructor(
             viewModelState.value
         )
 
-    init {
+    val showDialog = mutableStateOf(false)
+
+    fun sendInputCashDataAndDismiss(
+        time: String,
+        name: String,
+        amount: String
+    ) {
         viewModelScope.launch {
-            getUserData()
-
-            val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
-            val displayMonth = currentDay.month
-            val displayYear = currentDay.year
-            val (currentMonth, currentYear) = displayMonth.value to currentDay.year
-            val monthStartsWithZero =
-                if (currentMonth.toString().length == 1) "0$currentMonth"
-                else currentMonth.toString()
-
-            val startDayOfMonth = "${currentDay.year}-$monthStartsWithZero-01".toLocalDate()
-            val firstDayOfMonth = startDayOfMonth.dayOfWeek
-
-            val daysInMonth = displayMonth.minLength()
-
-            val dateList = getDateListOfMonth(
-                getInitialDayOfMonth(firstDayOfMonth),
-                daysInMonth,
-                displayMonth,
-                currentYear
-            )
-            viewModelState.update {
-                CalendarUiState.CalendarState(
-                    dateList = dateList,
-                    displayMonth = displayMonth,
-                    displayYear = displayYear,
-                    firstDayOfMonth = firstDayOfMonth,
-                    startDayOfMonth = startDayOfMonth
-                )
+            kotlin.runCatching {
+                repository.addCashData(time, name, amount.toIntOrNull() ?: -1)
+            }.onSuccess {
+                showDialog.value = false
+                fetchData()
+            }.onFailure {
+                // todo show error snackbar
             }
         }
+    }
+
+    init {
+        fetchData()
     }
 
     fun moveToPreviousMonth() {
@@ -165,6 +154,41 @@ class CalendarViewModel @Inject constructor(
                 )
             } else {
                 errorCalendarUiState()
+            }
+        }
+    }
+
+    private fun fetchData() {
+        viewModelScope.launch {
+            getUserData()
+
+            val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
+            val displayMonth = currentDay.month
+            val displayYear = currentDay.year
+            val (currentMonth, currentYear) = displayMonth.value to currentDay.year
+            val monthStartsWithZero =
+                if (currentMonth.toString().length == 1) "0$currentMonth"
+                else currentMonth.toString()
+
+            val startDayOfMonth = "${currentDay.year}-$monthStartsWithZero-01".toLocalDate()
+            val firstDayOfMonth = startDayOfMonth.dayOfWeek
+
+            val daysInMonth = displayMonth.minLength()
+
+            val dateList = getDateListOfMonth(
+                getInitialDayOfMonth(firstDayOfMonth),
+                daysInMonth,
+                displayMonth,
+                currentYear
+            )
+            viewModelState.update {
+                CalendarUiState.CalendarState(
+                    dateList = dateList,
+                    displayMonth = displayMonth,
+                    displayYear = displayYear,
+                    firstDayOfMonth = firstDayOfMonth,
+                    startDayOfMonth = startDayOfMonth
+                )
             }
         }
     }
