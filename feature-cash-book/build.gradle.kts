@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -22,6 +23,10 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.kotlin.datetime)
+    implementation(libs.kotlin.serialization)
+    implementation(libs.retrofit)
+    implementation(libs.kotlin.serialization.converter)
+    implementation(libs.okhttp.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)

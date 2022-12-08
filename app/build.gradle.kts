@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -66,6 +67,10 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
+
+    implementation(libs.kotlin.serialization)
+    implementation(libs.retrofit)
+    implementation(libs.kotlin.serialization.converter)
 
     // other modules
     implementation(project(":feature-cash-book"))

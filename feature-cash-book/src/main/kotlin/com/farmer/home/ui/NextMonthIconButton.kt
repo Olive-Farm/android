@@ -1,8 +1,6 @@
 package com.farmer.home.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton

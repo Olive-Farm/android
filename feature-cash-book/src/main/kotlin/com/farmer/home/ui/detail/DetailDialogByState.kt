@@ -12,8 +12,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.home.ui.states.CalendarUiState
 import com.farmer.home.ui.states.CalendarViewModel
-
-private const val DIALOG_HEIGHT = 460
+import com.farmer.home.util.DIALOG_HEIGHT
 
 @Composable
 fun DetailDialogByState(
