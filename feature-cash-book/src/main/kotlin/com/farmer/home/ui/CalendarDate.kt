@@ -40,9 +40,7 @@ fun CalendarDate(
             shape = RoundedCornerShape(8.dp),
             backgroundColor = RedAlpha200
         ) {
-            // todo temp data, need to be changed
-//            if (income.isNotEmpty()) {
-//            if (Random.nextBoolean()) {
+            if (income != 0) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
                     text = income.toString(),
@@ -51,7 +49,7 @@ fun CalendarDate(
                     overflow = TextOverflow.Ellipsis,
                     color = Color.White
                 )
-//            }
+            }
         }
         Spacer(modifier = Modifier.size(2.dp))
         Card(
@@ -59,8 +57,7 @@ fun CalendarDate(
             shape = RoundedCornerShape(8.dp),
             backgroundColor = BlueAlpha200
         ) {
-//            if (spend!=0) {
-//            if (Random.nextBoolean()) {
+            if (spend != 0) {
                 Text(
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
                     text = spend.toString(),
@@ -69,7 +66,7 @@ fun CalendarDate(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-//            }
+            }
         }
     }
 }
