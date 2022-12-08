@@ -22,10 +22,42 @@ class MyReceiver : BroadcastReceiver() {
                     val content = message?.messageBody.toString()
                     Log.e("@@@sender", "sender : ${sender}")
                     Log.e("@@@content", "content : ${content}")
+
+                    val regex = """([0-9]*,[0-9]*,*[0-9]*)*원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+) """.toRegex()
+                    val matchResult = regex.find(content)
+                    val (date, inst, amount, time, memo) = matchResult!!.destructured
+                    Log.d("날짜 추출 ",date)
+                    Log.d("할부 추출 ",inst)
+                    Log.d("금액 추출 ",amount)
+                    Log.d("시간 추출 ", time)
+                    Log.d("내역 추출 ", memo)
+
                 }
             }
         }
     }
+
+//    override fun onReceive(context: Context?, intent: Intent?) {
+//        if(intent?.action.equals("android.provider.Telephony.SMS_RECEIVED")){
+//            val bundle = intent?.extras
+//            val messages = parseSmsMessage(bundle!!)
+//
+//            if(messages?.size!! > 0){
+//                val content = messages[0]?.messageBody.toString()
+//                val amount = content?.replace("(([0-9]*,*[0-9]*)*원) ".toRegex(),"").toString()
+//                val date = content?.replace("([0-9]*\\/[0-9]*) ".toRegex(),"").toString()
+//                val regex = """([0-9]*:[0-9]*) (.+)""".toRegex()
+//                val matchResult = regex.find("Mickey Mouse is 95 years old")
+//                val (time, memo) = matchResult!!.destructured
+//                Log.d("날짜 추출 ",content)
+//                Log.d("날짜 추출 ",date)
+//                Log.d("금액 추출 ",amount)
+//                Log.d("시간 추출 ", time)
+//                Log.d("시간 추출 ", memo)
+//            }
+//        }
+//    }
+
 
     private fun parseSmsMessage(bundle: Bundle): Array<SmsMessage?>? {
         // PDU: Protocol Data Units
