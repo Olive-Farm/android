@@ -13,8 +13,10 @@ import com.farmer.home.ui.states.CalendarViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 
+
 class MyReceiver : BroadcastReceiver() {
 
+    @Composable
     override fun onReceive(context: Context, intent: Intent) {
 
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
@@ -38,6 +40,7 @@ class MyReceiver : BroadcastReceiver() {
                     Log.d("할부 추출 ", inst)
                     Log.d("금액 추출 ", amount)
                     Log.d("내역 추출 ", memo)
+
                 }
             }
         }
