@@ -12,6 +12,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -20,7 +21,8 @@ internal object CashBookNetworkModule {
 
     // IFCONFIG_ADDRESS_ENVIRONMENT_0 value is different for each device.
     // Use "ipconfig getifaddr en0" command in terminal to get the value.
-    private const val IFCONFIG_ADDRESS_ENVIRONMENT_0 = "192.168.0.5"
+    //원래 192.168.0.5
+    private const val IFCONFIG_ADDRESS_ENVIRONMENT_0 = "192.168.1.208"
     private const val BASE_URL = "http://${IFCONFIG_ADDRESS_ENVIRONMENT_0}:8080/olivebook/"
 
     @OptIn(ExperimentalSerializationApi::class)

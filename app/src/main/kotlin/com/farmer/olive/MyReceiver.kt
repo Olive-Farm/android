@@ -6,11 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.telephony.SmsMessage
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.data.CashBookRepository
+import com.farmer.home.ui.states.CalendarViewModel
+import com.farmer.home.ui.states.SMSModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDateTime
 
+abstract class MyReceiver : BroadcastReceiver() {
+    abstract val repository: CashBookRepository
 
-class MyReceiver : BroadcastReceiver() {
-
+    @Composable
     override fun onReceive(context: Context, intent: Intent) {
+
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         Log.e("@@@onReceive", "나와랏!")
         intent.extras?.let {
@@ -25,13 +34,14 @@ class MyReceiver : BroadcastReceiver() {
 
                     val regex = """([0-9]*,[0-9]*,*[0-9]*)*원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+) """.toRegex()
                     val matchResult = regex.find(content)
-                    val (date, inst, amount, time, memo) = matchResult!!.destructured
-                    Log.d("날짜 추출 ",date)
-                    Log.d("할부 추출 ",inst)
-                    Log.d("금액 추출 ",amount)
-                    Log.d("시간 추출 ", time)
+                    val (amount, inst, date, time, memo) = matchResult!!.destructured
+                    val datetime = date.replace("/", "-")
+                    val arrangetime = LocalDateTime.now().year.toString() + "-" + datetime + " " + time
+                    Log.d("시간 추출 ", arrangetime)
+                    Log.d("할부 추출 ", inst)
+                    Log.d("금액 추출 ", amount)
                     Log.d("내역 추출 ", memo)
-
+                    repository.addCashData(arrangetime, memo, amount.toInt())
                 }
             }
         }
