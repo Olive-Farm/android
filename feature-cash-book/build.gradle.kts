@@ -30,4 +30,6 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
+    implementation("androidx.lifecycle:lifecycle-runtime-testing:2.5.1")
+    testImplementation("io.mockk:mockk:1.12.4")
 }
