@@ -36,7 +36,7 @@ class CalendarViewModelTest {
     }
 
     @Test
-    fun 값을_입력하면_데이터_추가_후_다이얼로그_끄기() {
+    fun `값을_입력하면_데이터_추가_후_다이얼로그_끄기`() {
         runTest {
             // given
             val viewModel = CalendarViewModel(cashBookRepository)
@@ -54,7 +54,7 @@ class CalendarViewModelTest {
     }
 
     @Test
-    fun 화면_초기화시_state는_loading_state() {
+    fun `화면_초기화시_state는_loading_state`() {
         runTest {
             // given
             coEvery { cashBookRepository.getAllUserData() } returns emptyList()
