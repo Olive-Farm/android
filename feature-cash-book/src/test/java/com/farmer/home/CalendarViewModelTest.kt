@@ -49,7 +49,7 @@ class CalendarViewModelTest {
             viewModel.sendInputCashDataAndDismiss(time, name, amount)
 
             // then
-            assert(viewModel.showDialog.value)
+            assert(!viewModel.showDialog.value)
         }
     }
 
