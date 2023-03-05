@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.farmer.home.data.CashBookRepository
 import com.farmer.home.model.response.AllUserData
 import com.farmer.home.util.toKotlinDateTimeMonth
+import com.farmer.network.BaseResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -205,8 +206,8 @@ class CalendarViewModel @Inject constructor(
                     val currentDateInfo =
                         allUserDateInfoList.find {
                             it.year == currentYear &&
-                            it.month == displayMonth &&
-                            it.dateOfMonth == date
+                                    it.month == displayMonth &&
+                                    it.dateOfMonth == date
                         }
                     if (currentDateInfo != null) add(currentDateInfo)
                     else add(
@@ -245,9 +246,17 @@ class CalendarViewModel @Inject constructor(
      * Get user data from server.
      */
     private suspend fun getUserData() {
-        val dateUiInfoList = repository.getAllUserData().toDateUiInfoList()
-        allUserDateInfoList.clear()
-        allUserDateInfoList.addAll(dateUiInfoList)
+        when (repository.getAllUserData()) {
+            is BaseResponse.Success -> {
+                val dateUiInfoList = repository.getAllUserData().data?.toDateUiInfoList()
+                if (dateUiInfoList.isNullOrEmpty()) return
+                allUserDateInfoList.clear()
+                allUserDateInfoList.addAll(dateUiInfoList)
+            }
+            is BaseResponse.Error -> {
+                // todo show error snack bar
+            }
+        }
     }
 
     /**

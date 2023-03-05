@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.farmer.feature_home"
+    namespace = "com.farmer.network"
 }
 
 dependencies {
@@ -21,15 +21,4 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
-
-    implementation(libs.kotlin.datetime)
-    implementation(libs.kotlin.serialization)
-    implementation(libs.retrofit)
-    implementation(libs.kotlin.serialization.converter)
-    implementation(libs.okhttp.interceptor)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.android.junit)
-
-    implementation(project(":network"))
 }
