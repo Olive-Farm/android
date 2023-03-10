@@ -85,8 +85,7 @@ private fun CalendarHeader(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 8.dp),
-        horizontalArrangement = Arrangement.End
+            .padding(start = 8.dp)
     ) {
         // calendar title (Ex. January 2022)
         AnimatedContent(

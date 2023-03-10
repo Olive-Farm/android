@@ -7,10 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.farmer.feature_home"
+    namespace = "com.farmer.data"
 }
 
 dependencies {
+
     // base
     implementation(libs.bundles.compose)
     implementation(libs.core.ktx)
@@ -22,15 +23,16 @@ dependencies {
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    // room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // kotlinx
     implementation(libs.kotlin.datetime)
     implementation(libs.kotlin.serialization)
-    implementation(libs.retrofit)
     implementation(libs.kotlin.serialization.converter)
-    implementation(libs.okhttp.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
-
-    implementation(project(":network"))
-    implementation(project(":data"))
 }
