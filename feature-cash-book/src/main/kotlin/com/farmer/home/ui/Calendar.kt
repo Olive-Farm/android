@@ -57,8 +57,8 @@ fun Calendar(
                     modifier = Modifier,
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
-                    onPreviousClick = { }, // todo
-                    onNextClick = { } // todo
+                    onPreviousClick = tempViewModel::moveToPreviousMonth,
+                    onNextClick = tempViewModel::moveToNextMonth
                 )
 
                 CalendarDates(state)

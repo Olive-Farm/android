@@ -13,8 +13,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
@@ -35,8 +38,11 @@ class TempCalendarViewModel @Inject constructor(
         )
 
     fun moveToNextMonth() {
-        // todo
-//        _currentMonth.value++
+        _currentLocalDate.value = _currentLocalDate.value.plus(DatePeriod(months = 1))
+    }
+
+    fun moveToPreviousMonth() {
+        _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 1))
     }
 }
 

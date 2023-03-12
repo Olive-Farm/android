@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.home.model.OliveDateList
-import com.farmer.home.ui.detail.DetailDialogByState
 import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
