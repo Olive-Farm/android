@@ -55,8 +55,8 @@ fun Calendar(
             ) {
                 CalendarHeader(
                     modifier = Modifier,
-                    month = state.dateViewInfo.first().dateInfo?.date?.month ?: Month.JANUARY,
-                    year = state.dateViewInfo.first().dateInfo?.date?.year ?: -1,
+                    month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
+                    year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
                     onPreviousClick = { }, // todo
                     onNextClick = { } // todo
                 )

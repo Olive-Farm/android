@@ -36,7 +36,7 @@ fun CalendarDates(
                     it.dateInfo?.date?.dayOfMonth.toString()
                     it.dateInfo?.history?.spendList?.earnList?.sumOf { data -> data.price }
                     CalendarDate(
-                        date = it.dateInfo?.date.toString(),
+                        date = it.dateInfo?.date?.dayOfMonth.toString(),
                         income = it.dateInfo?.history?.spendList?.spendList?.sumOf { data ->
                             data.price
                         } ?: 0,
