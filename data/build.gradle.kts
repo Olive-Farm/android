@@ -20,12 +20,16 @@ dependencies {
 
     // hilt
     implementation(libs.hilt.android)
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:2.8.1")
     kapt(libs.hilt.compiler)
 
     // room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+
+    // gson
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // kotlinx
     implementation(libs.kotlin.datetime)

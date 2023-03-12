@@ -40,14 +40,12 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel = hiltViewModel(),
     tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
-    val tempUiState: com.farmer.home.ui.CalendarUiState by tempViewModel.calendarUiState.collectAsState()
-    when (val state = tempUiState) {
-        is com.farmer.home.ui.CalendarUiState.Success -> {
+    val uiState: CalendarUiState by tempViewModel.calendarUiState.collectAsState()
+    when (val state = uiState) {
+        is CalendarUiState.Success -> {
             Column(
                 modifier = modifier
                     .wrapContentHeight()
@@ -59,11 +57,11 @@ fun Calendar(
                     modifier = Modifier,
                     month = state.dateViewInfo.first().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.first().dateInfo?.date?.year ?: -1,
-                    onPreviousClick = viewModel::moveToPreviousMonth,
-                    onNextClick = viewModel::moveToNextMonth
+                    onPreviousClick = { }, // todo
+                    onNextClick = { } // todo
                 )
 
-                CalendarDates(uiState)
+                CalendarDates(state)
             }
         }
 

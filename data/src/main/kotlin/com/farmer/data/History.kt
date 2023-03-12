@@ -23,24 +23,25 @@ data class History(
     @SerialName("category")
     val category: String = "", // 식비, 교통비
     @SerialName("transact")
-    val spendList: Transact,
+    val spendList: Transact = Transact(),
     @PrimaryKey(autoGenerate = true)
+    @SerialName("id")
     val id: Long = 0
 ) {
 
     @Serializable
     data class Transact(
         @SerialName("spend_list")
-        val spendList: List<TransactData>,
+        val spendList: List<TransactData> = emptyList(),
         @SerialName("earn_list")
-        val earnList: List<TransactData>
+        val earnList: List<TransactData> = emptyList()
     ) {
         @Serializable
         data class TransactData(
             @SerialName("price")
-            val price: Int,
+            val price: Int = -1,
             @SerialName("item")
-            val item: String
+            val item: String = ""
         )
     }
 }

@@ -1,24 +1,31 @@
 package com.farmer.data
 
 import androidx.room.TypeConverter
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class HistoryTypeConverter {
+
+    private val json = Json
+
     @TypeConverter
-    fun fromTransact(transact: History.Transact): String {
-        return "${transact.spendList},${transact.earnList}"
+    fun fromHistory(value: History?): String? {
+        return if (value == null) null else json.encodeToString(value)
     }
 
     @TypeConverter
-    fun toTransact(value: String): History.Transact {
-        val (spendListString, earnListString) = value.split(",")
-        val spendList = spendListString.split(";").map {
-            val (price, item) = it.split("|")
-            History.Transact.TransactData(price.toInt(), item)
-        }
-        val earnList = earnListString.split(";").map {
-            val (price, item) = it.split("|")
-            History.Transact.TransactData(price.toInt(), item)
-        }
-        return History.Transact(spendList, earnList)
+    fun toHistory(value: String?): History? {
+        return if (value == null) null else json.decodeFromString(value)
+    }
+
+    @TypeConverter
+    fun fromTransact(value: History.Transact?): String? {
+        return if (value == null) null else json.encodeToString(value)
+    }
+
+    @TypeConverter
+    fun toTransact(value: String?): History.Transact? {
+        return if (value.isNullOrBlank()) null else json.decodeFromString(value)
     }
 }
