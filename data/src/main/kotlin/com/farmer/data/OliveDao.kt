@@ -12,5 +12,5 @@ interface OliveDao {
     suspend fun insertHistory(history: History)
 
     @Query("SELECT * FROM HistoryList WHERE month = :month")
-    suspend fun getHistoryByMonth(month: String): List<History>
+    suspend fun getHistoryByMonth(month: Int): List<History>
 }
