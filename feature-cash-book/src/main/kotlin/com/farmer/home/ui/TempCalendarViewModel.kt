@@ -54,7 +54,7 @@ private fun calendarUiState(
     return monthHistoryList
         .map { dateInfoList ->
             // 달력 첫 부분의 빈 부분 갯수
-            val emptyFirstDateCount = dateInfoList.first().date.dayOfWeek.value - 1
+            val emptyFirstDateCount = dateInfoList.first().date.dayOfWeek.value
             val dateViewInfoList = buildList {
                 repeat(emptyFirstDateCount) {
                     add(DateViewInfo(dateInfo = null, isEmptyDate = true))
