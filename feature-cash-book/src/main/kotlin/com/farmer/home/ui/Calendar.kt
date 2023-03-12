@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.states.CalendarUiState
 import com.farmer.home.ui.states.CalendarViewModel
 import kotlinx.datetime.Month
 import java.time.format.TextStyle
@@ -41,11 +40,14 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel = hiltViewModel()
+    viewModel: CalendarViewModel = hiltViewModel(),
+    tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    when (val state = uiState) {
-        is CalendarUiState.CalendarState -> {
+    // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
+    val tempUiState: com.farmer.home.ui.CalendarUiState by tempViewModel.calendarUiState.collectAsState()
+    when (val state = tempUiState) {
+        is com.farmer.home.ui.CalendarUiState.Success -> {
             Column(
                 modifier = modifier
                     .wrapContentHeight()
@@ -55,8 +57,8 @@ fun Calendar(
             ) {
                 CalendarHeader(
                     modifier = Modifier,
-                    month = state.displayMonth,
-                    year = state.displayYear,
+                    month = state.dateViewInfo.first().dateInfo?.date?.month ?: Month.JANUARY,
+                    year = state.dateViewInfo.first().dateInfo?.date?.year ?: -1,
                     onPreviousClick = viewModel::moveToPreviousMonth,
                     onNextClick = viewModel::moveToNextMonth
                 )
@@ -64,6 +66,7 @@ fun Calendar(
                 CalendarDates(uiState)
             }
         }
+
         else -> {
             // todo
         }

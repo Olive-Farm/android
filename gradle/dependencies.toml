@@ -56,6 +56,7 @@ compose-material = { module = "androidx.compose.material:material", version.ref 
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigation" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }

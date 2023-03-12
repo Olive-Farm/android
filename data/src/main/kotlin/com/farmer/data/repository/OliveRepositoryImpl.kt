@@ -23,8 +23,8 @@ class OliveRepositoryImpl @Inject constructor(
             datesInMonth.forEach { date ->
                 val dateInfo = historyData.find { data ->
                     data.year == date.year &&
-                        data.month == date.monthNumber &&
-                        data.date == date.dayOfMonth
+                            data.month == date.monthNumber &&
+                            data.date == date.dayOfMonth
                 }?.let {
                     DateInfo(date, it)
                 } ?: DateInfo(date, null)
@@ -43,8 +43,17 @@ class OliveRepositoryImpl @Inject constructor(
     }
 
     private fun getDatesInMonth(currentDate: LocalDate): List<LocalDate> {
-        val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber}")
+        val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber.addZero()}")
         val daysInMonth = yearMonth.month.length(yearMonth.isLeapYear)
         return (1..daysInMonth).map { LocalDate(yearMonth.year, yearMonth.month.value, it) }
+    }
+
+    // todo extension으로 빼기
+    private fun Int.addZero(): String {
+        return if (this in 0..9) {
+            "0$this"
+        } else {
+            this.toString()
+        }
     }
 }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-internal class TempCalendarViewModel @Inject constructor(
+class TempCalendarViewModel @Inject constructor(
     repository: OliveRepository
 ) : ViewModel() {
     private val _currentLocalDate =
@@ -61,7 +61,7 @@ private fun calendarUiState(
         }
 }
 
-internal sealed interface CalendarUiState {
+sealed interface CalendarUiState {
     data class Success(val dateViewInfo: List<DateViewInfo>) : CalendarUiState
     object Error : CalendarUiState
     object Loading : CalendarUiState

@@ -167,8 +167,6 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch {
             getUserData()
             insertTempData()
-            val temp = repo.getHistoryByMonth("3")
-            Log.e("@@@temp", ".$temp")
 
             val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
             val displayMonth = currentDay.month
@@ -309,38 +307,44 @@ class CalendarViewModel @Inject constructor(
     private suspend fun insertTempData() {
         repo.insertHistory(
             History(
-                year = "2023",
-                month = "3",
-                date = "4",
+                year = 2023,
+                month = 3,
+                date = 4,
                 dayOfWeek = "MON",
                 tool = "sms",
                 memo = "Ate dinner",
                 category = "식사비",
-                price = "+5000"
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
             )
         )
         repo.insertHistory(
             History(
-                year = "2023",
-                month = "3",
-                date = "15",
+                year = 2023,
+                month = 3,
+                date = 4,
                 dayOfWeek = "MON",
                 tool = "sms",
                 memo = "Ate dinner",
                 category = "식사비",
-                price = "+30000"
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
             )
         )
         repo.insertHistory(
             History(
-                year = "2023",
-                month = "3",
-                date = "40",
+                year = 2023,
+                month = 3,
+                date = 4,
                 dayOfWeek = "MON",
                 tool = "sms",
                 memo = "Ate dinner",
                 category = "식사비",
-                price = "-20000"
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
             )
         )
     }
