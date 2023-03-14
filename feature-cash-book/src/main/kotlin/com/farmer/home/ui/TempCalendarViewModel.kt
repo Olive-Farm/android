@@ -2,6 +2,7 @@ package com.farmer.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farmer.data.DateInfo
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -26,6 +28,16 @@ import javax.inject.Inject
 class TempCalendarViewModel @Inject constructor(
     repository: OliveRepository
 ) : ViewModel() {
+    private val _dialogUiState =
+        MutableStateFlow(
+            DialogUiState(
+                shouldShowPostDialog = false,
+                clickedDateInfo = null,
+                isEditMode = false
+            )
+        )
+    val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()
+
     private val _currentLocalDate =
         MutableStateFlow(Clock.System.todayIn(TimeZone.currentSystemDefault()))
     val calendarUiState: StateFlow<CalendarUiState> =
@@ -43,6 +55,13 @@ class TempCalendarViewModel @Inject constructor(
 
     fun moveToPreviousMonth() {
         _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 1))
+    }
+
+    fun setShowPostDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
+        _dialogUiState.value = _dialogUiState.value.copy(
+            shouldShowPostDialog = shouldShow,
+            clickedDateInfo = clickedDateInfo
+        )
     }
 }
 
@@ -72,3 +91,9 @@ sealed interface CalendarUiState {
     object Error : CalendarUiState
     object Loading : CalendarUiState
 }
+
+data class DialogUiState(
+    val shouldShowPostDialog: Boolean,
+    val clickedDateInfo: DateInfo?,
+    val isEditMode: Boolean
+)

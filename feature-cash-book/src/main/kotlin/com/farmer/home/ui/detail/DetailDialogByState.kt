@@ -10,35 +10,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.states.CalendarUiState
-import com.farmer.home.ui.states.CalendarViewModel
+import com.farmer.home.ui.DialogUiState
+import com.farmer.home.ui.TempCalendarViewModel
 import com.farmer.home.util.DIALOG_HEIGHT
 
 @Composable
 fun DetailDialogByState(
-    uiState: CalendarUiState,
-    viewModel: CalendarViewModel = hiltViewModel()
+    dialogUiState: DialogUiState,
+    viewModel: TempCalendarViewModel = hiltViewModel()
 ) {
-    if (uiState is CalendarUiState.CalendarState && uiState.showDetailDialog) {
-        Dialog(
-            onDismissRequest = {
-                viewModel.setDetailDialogState(shouldShow = false)
-            },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true
-            )
+    Dialog(
+        onDismissRequest = {
+            viewModel.setShowPostDialog(shouldShow = false, null)
+        },
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        )
+    ) {
+        Surface(
+            modifier = Modifier.height(DIALOG_HEIGHT.dp),
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White
         ) {
-            Surface(
-                modifier = Modifier.height(DIALOG_HEIGHT.dp),
-                shape = RoundedCornerShape(8.dp),
-                color = Color.White
-            ) {
-                DetailDialog(
-                    dateInfo = uiState.clickedDateInfo,
-                    isDialogEditMode = uiState.isDialogEditMode
-                )
-            }
+            DetailDialog(
+                dateInfo = dialogUiState.clickedDateInfo,
+                // todo
+                isDialogEditMode = false,
+            )
         }
     }
 }

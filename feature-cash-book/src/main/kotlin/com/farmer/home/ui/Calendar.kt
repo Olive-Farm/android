@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.states.CalendarViewModel
+import com.farmer.home.ui.detail.DetailDialogByState
 import kotlinx.datetime.Month
 import java.time.format.TextStyle
 import java.util.*
@@ -40,10 +40,11 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    tempViewModel: TempCalendarViewModel = hiltViewModel()
+    viewmodel: TempCalendarViewModel = hiltViewModel()
 ) {
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
-    val uiState: CalendarUiState by tempViewModel.calendarUiState.collectAsState()
+    val uiState: CalendarUiState by viewmodel.calendarUiState.collectAsState()
+    val dialogUiState: DialogUiState by viewmodel.dialogUiState.collectAsState()
     when (val state = uiState) {
         is CalendarUiState.Success -> {
             Column(
@@ -57,11 +58,16 @@ fun Calendar(
                     modifier = Modifier,
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
-                    onPreviousClick = tempViewModel::moveToPreviousMonth,
-                    onNextClick = tempViewModel::moveToNextMonth
+                    onPreviousClick = viewmodel::moveToPreviousMonth,
+                    onNextClick = viewmodel::moveToNextMonth
                 )
 
                 CalendarDates(state)
+            }
+
+            // todo dialog ui state 정해진 이후에 여기 코드 추가하기
+            if (dialogUiState.shouldShowPostDialog) {
+                DetailDialogByState(state, dialogUiState)
             }
         }
 

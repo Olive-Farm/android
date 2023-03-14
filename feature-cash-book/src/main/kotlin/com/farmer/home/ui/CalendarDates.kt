@@ -10,12 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.home.model.OliveDateList
-import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
 fun CalendarDates(
     uiState: CalendarUiState.Success,
-    viewModel: CalendarViewModel = hiltViewModel(),
     tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     LazyVerticalGrid(
@@ -43,37 +41,14 @@ fun CalendarDates(
                             data.price
                         } ?: 0,
                         onClick = {
-                            viewModel.setDetailDialogState(
+                            tempViewModel.setShowPostDialog(
                                 shouldShow = true,
-                                clickedDateOfMonth = it.dateInfo?.date?.dayOfMonth
+                                clickedDateInfo = it.dateInfo
                             )
                         }
                     )
                 }
             }
-
-//            if (uiState is CalendarUiState.CalendarState) {
-//                with(uiState) {
-//                    items(dateList) {
-//                        if (it.dateOfMonth != 0) {
-//                            CalendarDate(
-//                                date = it.dateOfMonth.toString(),
-//                                income = it.sumOfIncome,
-//                                spend = it.sumOfSpend,
-//                                onClick = {
-//                                    viewModel.setDetailDialogState(
-//                                        shouldShow = true,
-//                                        clickedDateOfMonth = it.dateOfMonth
-//                                    )
-//                                }
-//                            )
-//                        }
-//                    }
-//                }
-//            }
         }
     )
-
-    // todo dialog
-//    DetailDialogByState(uiState, viewModel)
 }
