@@ -31,6 +31,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 
+    implementation("androidx.compose.foundation:foundation:1.4.0-rc01")
+
     implementation(project(":network"))
     implementation(project(":data"))
 }

@@ -67,7 +67,7 @@ fun Calendar(
 
             // todo dialog ui state 정해진 이후에 여기 코드 추가하기
             if (dialogUiState.shouldShowPostDialog) {
-                DetailDialogByState(state, dialogUiState)
+                DetailDialogByState(dialogUiState)
             }
         }
 
