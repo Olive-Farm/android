@@ -52,10 +52,9 @@ class TempCalendarViewModel @Inject constructor(
     }
 
     fun setShowDetailDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
-        _dialogUiState.value = DialogUiState.DetailDialog(
-            shouldShowDetailDialog = shouldShow,
-            clickedDateInfo = clickedDateInfo
-        )
+        _dialogUiState.value =
+            if (shouldShow) DialogUiState.DetailDialog(clickedDateInfo)
+            else DialogUiState.NotShowing
     }
 }
 
@@ -88,7 +87,7 @@ sealed interface CalendarUiState {
 
 sealed interface DialogUiState {
     data class DetailDialog(
-        val shouldShowDetailDialog: Boolean,
+//        val shouldShowDetailDialog: Boolean,
         val clickedDateInfo: DateInfo?,
     ) : DialogUiState
 
