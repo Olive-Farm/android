@@ -64,18 +64,21 @@ fun Calendar(
 
                 CalendarDates(state)
             }
-
-            // todo dialog ui state 정해진 이후에 여기 코드 추가하기
-            if (dialogUiState.shouldShowPostDialog) {
-                DetailDialogByState(dialogUiState)
+        }
+        else -> {}
+    }
+    when (val state = dialogUiState) {
+        is DialogUiState.DetailDialog -> {
+            // todo dialog ui state 정해진 이후에 여기 코드 추가하기¬
+            if (state.shouldShowDetailDialog) {
+                DetailDialogByState(state)
             }
         }
+        is DialogUiState.PostDialog -> {
 
-        else -> {
-            // todo
         }
+        else -> {}
     }
-
 }
 
 @OptIn(ExperimentalAnimationApi::class)

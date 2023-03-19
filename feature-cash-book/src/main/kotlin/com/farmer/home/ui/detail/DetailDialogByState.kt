@@ -10,18 +10,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.DialogUiState
+import com.farmer.home.ui.DialogUiState.DetailDialog
 import com.farmer.home.ui.TempCalendarViewModel
 import com.farmer.home.util.DIALOG_HEIGHT
 
 @Composable
 fun DetailDialogByState(
-    dialogUiState: DialogUiState,
+    dialogUiState: DetailDialog,
     viewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     Dialog(
         onDismissRequest = {
-            viewModel.setShowPostDialog(shouldShow = false, null)
+            viewModel.setShowDetailDialog(shouldShow = false, null)
         },
         properties = DialogProperties(
             dismissOnBackPress = true,

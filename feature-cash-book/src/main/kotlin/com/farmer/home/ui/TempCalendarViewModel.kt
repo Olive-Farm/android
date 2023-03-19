@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.data.DateInfo
 import com.farmer.data.repository.OliveRepository
+import com.farmer.home.ui.detail.DetailDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,14 +29,7 @@ import javax.inject.Inject
 class TempCalendarViewModel @Inject constructor(
     repository: OliveRepository
 ) : ViewModel() {
-    private val _dialogUiState =
-        MutableStateFlow(
-            DialogUiState(
-                shouldShowPostDialog = false,
-                clickedDateInfo = null,
-                isEditMode = false
-            )
-        )
+    private val _dialogUiState = MutableStateFlow<DialogUiState>(DialogUiState.NotShowing)
     val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()
 
     private val _currentLocalDate =
@@ -57,9 +51,9 @@ class TempCalendarViewModel @Inject constructor(
         _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 1))
     }
 
-    fun setShowPostDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
-        _dialogUiState.value = _dialogUiState.value.copy(
-            shouldShowPostDialog = shouldShow,
+    fun setShowDetailDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
+        _dialogUiState.value = DialogUiState.DetailDialog(
+            shouldShowDetailDialog = shouldShow,
             clickedDateInfo = clickedDateInfo
         )
     }
@@ -92,8 +86,17 @@ sealed interface CalendarUiState {
     object Loading : CalendarUiState
 }
 
-data class DialogUiState(
-    val shouldShowPostDialog: Boolean,
-    val clickedDateInfo: DateInfo?,
-    val isEditMode: Boolean
-)
+sealed interface DialogUiState {
+    data class DetailDialog(
+        val shouldShowDetailDialog: Boolean,
+        val clickedDateInfo: DateInfo?,
+    ) : DialogUiState
+
+    data class PostDialog(
+        val shouldShowDetailDialog: Boolean,
+//        val clickedDateInfo: DateInfo?,
+//        val isEditMode: Boolean
+    ) : DialogUiState
+
+    object NotShowing : DialogUiState
+}

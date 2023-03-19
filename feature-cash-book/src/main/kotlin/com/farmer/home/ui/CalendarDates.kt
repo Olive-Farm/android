@@ -41,7 +41,7 @@ fun CalendarDates(
                             data.price
                         } ?: 0,
                         onClick = {
-                            tempViewModel.setShowPostDialog(
+                            tempViewModel.setShowDetailDialog(
                                 shouldShow = true,
                                 clickedDateInfo = it.dateInfo
                             )
