@@ -55,9 +55,9 @@ fun Calendar(
             ) {
                 CalendarHeader(
                     modifier = Modifier,
+                    onPreviousClick = viewModel::moveToPreviousMonth,
                     month = state.displayMonth,
                     year = state.displayYear,
-                    onPreviousClick = viewModel::moveToPreviousMonth,
                     onNextClick = viewModel::moveToNextMonth
                 )
 

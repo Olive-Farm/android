@@ -22,12 +22,13 @@ class MyReceiver : BroadcastReceiver(
             messages?.let { messageList ->
                 messageList.forEach { message ->
                     val sender = message?.originatingAddress
-                    val content = message?.messageBody.toString()
+                    val temp_content = message?.messageBody.toString()
+                    val content = temp_content.replace("\n", " ").replace("("," ").replace(")", " ")
                     Log.e("@@@sender", "sender : ${sender}")
                     Log.e("@@@content", "content : ${content}")
 
-                    val regex = """([0-9]*,[0-9]*,*[0-9]*)*원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)""".toRegex()
-                    val matchResult = regex.find(content)
+                    val regex_kookmin = """([0-9]*,[0-9]*,*[0-9]*)*원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)[^\S원]""".toRegex()
+                    val matchResult = regex_kookmin.find(content)
                     var (amount, inst, date, time, memo) = matchResult!!.destructured
                     date = date.replace("/", "-")
                     val arrangetime = LocalDateTime.now().year.toString() + "-" + date + " " + time + ":" + LocalDateTime.now().second.toString()
