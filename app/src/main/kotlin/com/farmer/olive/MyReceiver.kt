@@ -17,22 +17,41 @@ class MyReceiver : BroadcastReceiver(
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         //Log.e("@@@onReceive", "나와랏!")
         intent.extras?.let {
-            val messages = parseSmsMessage(it)
+            var messages = parseSmsMessage(it)
             //Log.e("@@@message", "메시지 : $messages")
             messages?.let { messageList ->
                 messageList.forEach { message ->
-                    val sender = message?.originatingAddress
-                    val temp_content = message?.messageBody.toString()
-                    val content = temp_content.replace("\n", " ").replace("("," ").replace(")", " ")
+                    var sender = message?.originatingAddress
+                    var temp_content = message?.messageBody.toString()
+                    var content = temp_content.replace("\n", " ").replace("("," ").replace(")", " ")
                     Log.e("@@@sender", "sender : ${sender}")
                     Log.e("@@@content", "content : ${content}")
 
-                    val regex_kookmin = """([0-9]*,[0-9]*,*[0-9]*)*원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)[^\S원]""".toRegex()
-                    val matchResult = regex_kookmin.find(content)
-                    var (amount, inst, date, time, memo) = matchResult!!.destructured
-                    date = date.replace("/", "-")
-                    val arrangetime = LocalDateTime.now().year.toString() + "-" + date + " " + time + ":" + LocalDateTime.now().second.toString()
-                    amount = amount.replace(",", "")
+                    val regex_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)\s(?:.+원)""".toRegex()
+                    val regex_not_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)""".toRegex()
+
+
+                    var (amount, inst, date, time, memo) = arrayOf<String>("-", "-", "-", "-", "-")
+                    var matchResult_total = regex_total.find(content)
+                    var matchResult_non_total = regex_not_total.find(content)
+                    try{
+                        amount=matchResult_total!!.destructured.component1()
+                        inst=matchResult_total!!.destructured.component2()
+                        date=matchResult_total!!.destructured.component3()
+                        time=matchResult_total!!.destructured.component4()
+                        memo=matchResult_total!!.destructured.component5()
+
+                    } catch(e: Exception){
+                        amount=matchResult_non_total!!.destructured.component1()
+                        inst=matchResult_non_total!!.destructured.component2()
+                        date=matchResult_non_total!!.destructured.component3()
+                        time=matchResult_non_total!!.destructured.component4()
+                        memo=matchResult_non_total!!.destructured.component5()
+                    }
+
+                    date = date!!.replace("/", "-")
+                    var arrangetime = LocalDateTime.now().year.toString() + "-" + date + " " + time + ":" + LocalDateTime.now().second.toString()
+                    amount = amount!!.replace(",", "")
                     Log.d("시간 추출 ", arrangetime)
                     Log.d("할부 추출 ", inst)
                     Log.d("금액 추출 ", amount)
