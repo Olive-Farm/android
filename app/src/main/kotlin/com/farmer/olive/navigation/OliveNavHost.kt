@@ -14,12 +14,11 @@ import com.farmer.home.ui.TempCalendarViewModel
 @Composable
 fun OliveNavHost(
     navHostController: NavHostController,
-    composeNavigator: ComposeNavigator,
-    calendarViewModel: TempCalendarViewModel = hiltViewModel()
+    composeNavigator: ComposeNavigator
 ) {
     NavHost(navController = navHostController, startDestination = OliveScreens.CashBook.route) {
         composable(route = "cash_book") {
-            CashbookScreen(calendarViewModel)
+            CashbookScreen()
         }
         composable(route = "statistics") {
             StatisticsScreen()

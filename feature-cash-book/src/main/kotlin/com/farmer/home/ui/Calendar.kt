@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.PostDialog
 import com.farmer.home.ui.detail.DetailDialogByState
 import kotlinx.datetime.Month
@@ -42,7 +43,7 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewModel: TempCalendarViewModel
+    viewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
     val uiState: CalendarUiState by viewModel.calendarUiState.collectAsState()
