@@ -1,5 +1,6 @@
 package com.farmer.home.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.data.DateInfo
@@ -57,9 +58,18 @@ class TempCalendarViewModel @Inject constructor(
     }
 
     fun setShowPostDialog(shouldShow: Boolean) {
+        Log.e("@@@vm", "2shouldShow : ${shouldShow}")
+        Log.e(
+            "@@@vm",
+            "2is current state PostDialog : ${_dialogUiState.value is DialogUiState.PostDialog}"
+        )
         _dialogUiState.value =
             if (shouldShow) DialogUiState.PostDialog
             else DialogUiState.NotShowing
+        Log.e(
+            "@@@vm",
+            "2is current state PostDialog : ${_dialogUiState.value is DialogUiState.PostDialog}"
+        )
     }
 }
 

@@ -1,6 +1,5 @@
 package com.farmer.home.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.PostDialog
 import com.farmer.home.ui.detail.DetailDialogByState
 import kotlinx.datetime.Month
@@ -42,11 +40,12 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewmodel: TempCalendarViewModel = hiltViewModel()
+    viewmodel: TempCalendarViewModel
 ) {
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
     val uiState: CalendarUiState by viewmodel.calendarUiState.collectAsState()
     val dialogUiState: DialogUiState by viewmodel.dialogUiState.collectAsState()
+    viewmodel.dialogUiState.collectAsState()
     when (val state = uiState) {
         is CalendarUiState.Success -> {
             Column(
@@ -67,24 +66,15 @@ fun Calendar(
                 CalendarDates(state)
             }
         }
-        else -> {}
+
+        else -> Unit
     }
     when (val state = dialogUiState) {
-        is DialogUiState.DetailDialog -> {
-            Log.e("@@@calendar", "in1 - detail dialog")
-            DetailDialogByState(state)
-        }
-        is DialogUiState.PostDialog -> {
-            // todo 왜 여기로 안들어와지는지 확인해보기
-            Log.e("@@@calendar", "in2 - postdialog")
+        is DialogUiState.DetailDialog -> DetailDialogByState(state)
+        is DialogUiState.PostDialog ->
             PostDialog(onDismissRequest = { viewmodel.setShowPostDialog(false) })
-        }
-        is DialogUiState.NotShowing -> {
-            Log.e("@@@calendar", "in3 - notshowing")
-        }
-        else -> {
-            Log.e("@@@calendar", "in4 - else")
-        }
+
+        is DialogUiState.NotShowing -> Unit
     }
 }
 
