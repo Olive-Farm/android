@@ -37,15 +37,17 @@ import kotlinx.datetime.Month
 import java.time.format.TextStyle
 import java.util.*
 
+// todo 이렇게 viewModel을 주입받는 것은 좋은 방법이 아닌 것 같아 다시 찾아보기
+// 아예 최상위로 빼줘도 될 것 같음.
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewmodel: TempCalendarViewModel
+    viewModel: TempCalendarViewModel
 ) {
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
-    val uiState: CalendarUiState by viewmodel.calendarUiState.collectAsState()
-    val dialogUiState: DialogUiState by viewmodel.dialogUiState.collectAsState()
-    viewmodel.dialogUiState.collectAsState()
+    val uiState: CalendarUiState by viewModel.calendarUiState.collectAsState()
+    val dialogUiState: DialogUiState by viewModel.dialogUiState.collectAsState()
+    viewModel.dialogUiState.collectAsState()
     when (val state = uiState) {
         is CalendarUiState.Success -> {
             Column(
@@ -59,8 +61,8 @@ fun Calendar(
                     modifier = Modifier,
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
-                    onPreviousClick = viewmodel::moveToPreviousMonth,
-                    onNextClick = viewmodel::moveToNextMonth
+                    onPreviousClick = viewModel::moveToPreviousMonth,
+                    onNextClick = viewModel::moveToNextMonth
                 )
 
                 CalendarDates(state)
@@ -72,7 +74,7 @@ fun Calendar(
     when (val state = dialogUiState) {
         is DialogUiState.DetailDialog -> DetailDialogByState(state)
         is DialogUiState.PostDialog ->
-            PostDialog(onDismissRequest = { viewmodel.setShowPostDialog(false) })
+            PostDialog(onDismissRequest = { viewModel.setShowPostDialog(false) })
 
         is DialogUiState.NotShowing -> Unit
     }
