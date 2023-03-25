@@ -1,6 +1,5 @@
 package com.example.feature_post
 
-import android.util.Log
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -13,7 +12,6 @@ import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun PostDialog(onDismissRequest: () -> Unit) {
-    Log.e("@@@postDialog", "in")
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(

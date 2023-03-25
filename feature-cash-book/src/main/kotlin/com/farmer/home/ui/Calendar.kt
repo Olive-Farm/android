@@ -38,8 +38,6 @@ import kotlinx.datetime.Month
 import java.time.format.TextStyle
 import java.util.*
 
-// todo 이렇게 viewModel을 주입받는 것은 좋은 방법이 아닌 것 같아 다시 찾아보기
-// 아예 최상위로 빼줘도 될 것 같음.
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
@@ -48,7 +46,6 @@ fun Calendar(
     // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
     val uiState: CalendarUiState by viewModel.calendarUiState.collectAsState()
     val dialogUiState: DialogUiState by viewModel.dialogUiState.collectAsState()
-    viewModel.dialogUiState.collectAsState()
     when (val state = uiState) {
         is CalendarUiState.Success -> {
             Column(

@@ -9,11 +9,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.rememberNavController
-import com.farmer.home.ui.TempCalendarViewModel
+import com.example.feature_post.PostDialog
 import com.farmer.olive.navigation.OliveNavHost
 import com.farmer.olive.ui.theme.Green500
 import com.farmer.olive.ui.theme.OliveTheme
@@ -22,31 +24,16 @@ import com.farmer.olive.ui.theme.OliveTheme
 fun OliveMain(
     composeNavigator: ComposeNavigator,
     viewModel: MainViewModel = hiltViewModel(),
-//    calendarViewModel: CalendarViewModel = hiltViewModel(),
-    tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     OliveTheme {
+        val dialogState = viewModel.postDialogState.collectAsState()
         val navHostController = rememberNavController()
-
-        // show add dialog if needed
-        // todo 옮기기
-//        if (calendarViewModel.showDialog.value) {
-//            Dialog(
-//                onDismissRequest = { calendarViewModel.showDialog.value = false },
-//                properties = DialogProperties(
-//                    dismissOnBackPress = true,
-//                    dismissOnClickOutside = true
-//                )
-//            ) {
-//                Surface(
-//                    modifier = Modifier.height(460.dp),
-//                    shape = RoundedCornerShape(8.dp),
-//                    color = Color.White
-//                ) {
-//                    AddCashDialog()
-//                }
-//            }
-//        }
+        ShowPostDialogByState(
+            dialogState = dialogState,
+            onDismissRequest = {
+                viewModel.setShowPostDialog(false)
+            }
+        )
 
         Scaffold(
             floatingActionButtonPosition = FabPosition.Center,
@@ -62,8 +49,7 @@ fun OliveMain(
                 FloatingActionButton(
                     backgroundColor = Green500,
                     onClick = {
-                        tempViewModel.setShowPostDialog(true)
-//                        calendarViewModel.showDialog.value = true
+                        viewModel.setShowPostDialog(true)
                     }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null)
@@ -73,5 +59,19 @@ fun OliveMain(
         ) { _ ->
             OliveNavHost(navHostController = navHostController, composeNavigator = composeNavigator)
         }
+    }
+}
+
+@Composable
+private fun ShowPostDialogByState(
+    dialogState: State<PostDialogState>,
+    onDismissRequest: () -> Unit
+) {
+    when (dialogState.value) {
+        PostDialogState.ShowDialog -> {
+            PostDialog(onDismissRequest = { onDismissRequest() })
+        }
+
+        PostDialogState.NotShowingDialog -> Unit
     }
 }

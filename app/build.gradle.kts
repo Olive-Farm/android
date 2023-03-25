@@ -75,4 +75,5 @@ dependencies {
     // other modules
     implementation(project(":feature-cash-book"))
     implementation(project(":feature-statistics"))
+    implementation(project(":feature-post"))
 }
