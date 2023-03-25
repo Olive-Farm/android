@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.data.DateInfo
 import com.farmer.data.repository.OliveRepository
-import com.farmer.home.ui.detail.DetailDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +55,12 @@ class TempCalendarViewModel @Inject constructor(
             if (shouldShow) DialogUiState.DetailDialog(clickedDateInfo)
             else DialogUiState.NotShowing
     }
+
+    fun setShowPostDialog(shouldShow: Boolean) {
+        _dialogUiState.value =
+            if (shouldShow) DialogUiState.PostDialog
+            else DialogUiState.NotShowing
+    }
 }
 
 private fun calendarUiState(
@@ -86,16 +91,9 @@ sealed interface CalendarUiState {
 }
 
 sealed interface DialogUiState {
-    data class DetailDialog(
-//        val shouldShowDetailDialog: Boolean,
-        val clickedDateInfo: DateInfo?,
-    ) : DialogUiState
+    data class DetailDialog(val clickedDateInfo: DateInfo?) : DialogUiState
 
-    data class PostDialog(
-        val shouldShowDetailDialog: Boolean,
-//        val clickedDateInfo: DateInfo?,
-//        val isEditMode: Boolean
-    ) : DialogUiState
+    object PostDialog : DialogUiState
 
     object NotShowing : DialogUiState
 }

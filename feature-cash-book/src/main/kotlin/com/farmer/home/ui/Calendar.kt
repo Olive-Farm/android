@@ -1,5 +1,6 @@
 package com.farmer.home.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feature_post.PostDialog
 import com.farmer.home.ui.detail.DetailDialogByState
 import kotlinx.datetime.Month
 import java.time.format.TextStyle
@@ -69,12 +71,20 @@ fun Calendar(
     }
     when (val state = dialogUiState) {
         is DialogUiState.DetailDialog -> {
+            Log.e("@@@calendar", "in1 - detail dialog")
             DetailDialogByState(state)
         }
         is DialogUiState.PostDialog -> {
-
+            // todo 왜 여기로 안들어와지는지 확인해보기
+            Log.e("@@@calendar", "in2 - postdialog")
+            PostDialog(onDismissRequest = { viewmodel.setShowPostDialog(false) })
         }
-        else -> {}
+        is DialogUiState.NotShowing -> {
+            Log.e("@@@calendar", "in3 - notshowing")
+        }
+        else -> {
+            Log.e("@@@calendar", "in4 - else")
+        }
     }
 }
 

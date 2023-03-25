@@ -1,5 +1,6 @@
-package com.farmer.olive.ui.addcash
+package com.example.feature_post
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,15 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.TempCalendarViewModel
-import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
-fun AddCashDialog(
-    viewModel: CalendarViewModel = hiltViewModel(),
-    tempViewModel: TempCalendarViewModel = hiltViewModel()
+fun AddCash(
+//    viewModel: CalendarViewModel = hiltViewModel(),
+//    tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
+    Log.e("@@@addCash", "in")
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
@@ -65,11 +64,11 @@ fun AddCashDialog(
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
                 // todo tempviewmodel로 옮기기
-                viewModel.sendInputCashDataAndDismiss(
-                    timeText.text,
-                    nameText.text,
-                    amountText.text
-                )
+//                viewModel.sendInputCashDataAndDismiss(
+//                    timeText.text,
+//                    nameText.text,
+//                    amountText.text
+//                )
             }) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }

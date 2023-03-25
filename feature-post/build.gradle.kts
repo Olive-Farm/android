@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.farmer.feature_home"
+    namespace = "com.farmer.feature_post"
 }
 
 dependencies {
@@ -31,9 +31,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 
-    implementation("androidx.compose.foundation:foundation:1.4.0-rc01")
-
     implementation(project(":network"))
     implementation(project(":data"))
-    implementation(project(":feature-post"))
 }
