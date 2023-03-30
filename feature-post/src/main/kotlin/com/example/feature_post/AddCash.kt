@@ -31,24 +31,25 @@ import java.util.*
 
 @Composable
 fun AddCash(
-    // todo
-//    viewModel: CalendarViewModel = hiltViewModel(),
-//    tempViewModel: TempCalendarViewModel = hiltViewModel()
+    onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
-    Log.e("@@@addCash", "in")
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
         var nameText by remember { mutableStateOf(TextFieldValue("")) }
         var amountText by remember { mutableStateOf(TextFieldValue("")) }
         val calendar = Calendar.getInstance()
-        val timeState = remember { mutableStateOf("") }
+        val yearState = remember { mutableStateOf(0) }
+        val monthState = remember { mutableStateOf(0) }
+        val dayOfMonthState = remember { mutableStateOf(0) }
         val context = LocalContext.current
         val timePickerDialog = DatePickerDialog(
             context,
             { view, year, month, dayOfMonth ->
-                timeState.value = "날짜 : ${month}월 ${dayOfMonth}일"
+                yearState.value = year
+                monthState.value = month
+                dayOfMonthState.value = dayOfMonth
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
@@ -76,22 +77,24 @@ fun AddCash(
         }) {
             Text("날짜 선택")
         }
-        Text(text = timeState.value)
+        Text(text = "${yearState.value}/${monthState.value}/${dayOfMonthState.value}")
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
-                // todo
-//                viewModel.postCashData(
-//                    UserPostInput()
-//                )
+                viewModel.postCashData(
+                    UserPostInput(
+                        year = yearState.value,
+                        month = monthState.value + 1,
+                        date = dayOfMonthState.value,
+                        name = nameText.text,
+                        amount = amountText.text
+                    )
+                )
+                onDismissRequest()
             }) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
         }
     }
-}
-
-private fun showDatePickerDialog() {
-
 }

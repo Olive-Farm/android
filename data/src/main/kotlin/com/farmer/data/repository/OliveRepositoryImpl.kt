@@ -35,11 +35,36 @@ class OliveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertHistory(history: History) {
-        dao.insertHistory(history = history)
+        val originHistory = dao.getHistoryByDate(
+            year = history.year,
+            month = history.month,
+            date = history.date
+        )
+        if (originHistory != null) {
+            val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
+            val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList
+            val newHistory = History(
+                year = originHistory.year,
+                month = originHistory.month,
+                date = originHistory.date,
+                dayOfWeek = originHistory.dayOfWeek,
+                tool = originHistory.tool,
+                memo = originHistory.memo,
+                category = originHistory.category,
+                spendList = History.Transact(
+                    spendList = newSpendList,
+                    earnList = newEarnedList
+                ),
+                id = originHistory.id
+            )
+            dao.insertHistory(history = newHistory)
+        } else {
+            dao.insertHistory(history = history)
+        }
     }
 
     private suspend fun getHistoryByCurrentDate(currentDate: LocalDate): List<History> {
-        return dao.getHistoryByMonth(month = currentDate.month.value)
+        return dao.getHistoryByMonth(month = currentDate.month.value) ?: emptyList()
     }
 
     private fun getDatesInMonth(currentDate: LocalDate): List<LocalDate> {

@@ -24,7 +24,7 @@ fun PostDialog(onDismissRequest: () -> Unit) {
             shape = RoundedCornerShape(8.dp),
             color = Color.White
         ) {
-            AddCash()
+            AddCash(onDismissRequest)
         }
     }
 }
