@@ -51,6 +51,11 @@ class TempCalendarViewModel @Inject constructor(
         _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 1))
     }
 
+    // todo swip refresh 추가해서, 금액 추가했는데 추가 안됐을 경우 대응하기.
+    fun refreshMonth() {
+//        _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 0))
+    }
+
     fun setShowDetailDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
         _dialogUiState.value =
             if (shouldShow) DialogUiState.DetailDialog(clickedDateInfo)
@@ -58,18 +63,9 @@ class TempCalendarViewModel @Inject constructor(
     }
 
     fun setShowPostDialog(shouldShow: Boolean) {
-        Log.e("@@@vm", "2shouldShow : ${shouldShow}")
-        Log.e(
-            "@@@vm",
-            "2is current state PostDialog : ${_dialogUiState.value is DialogUiState.PostDialog}"
-        )
         _dialogUiState.value =
             if (shouldShow) DialogUiState.PostDialog
             else DialogUiState.NotShowing
-        Log.e(
-            "@@@vm",
-            "2is current state PostDialog : ${_dialogUiState.value is DialogUiState.PostDialog}"
-        )
     }
 }
 
