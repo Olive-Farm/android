@@ -76,4 +76,6 @@ dependencies {
     implementation(project(":feature-cash-book"))
     implementation(project(":feature-statistics"))
     implementation(project(":feature-post"))
+    implementation(project(":feature-settings"))
+    implementation(project(":navigator"))
 }

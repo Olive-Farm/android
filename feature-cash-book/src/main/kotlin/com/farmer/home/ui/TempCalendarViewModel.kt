@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.data.DateInfo
 import com.farmer.data.repository.OliveRepository
+import com.farmer.navigator.SettingsActivityNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TempCalendarViewModel @Inject constructor(
-    repository: OliveRepository
+    repository: OliveRepository,
+    val settingsActivityNavigator: SettingsActivityNavigator
 ) : ViewModel() {
     private val _dialogUiState = MutableStateFlow<DialogUiState>(DialogUiState.NotShowing)
     val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()

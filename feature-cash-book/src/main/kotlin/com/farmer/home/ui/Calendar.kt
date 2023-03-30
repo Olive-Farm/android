@@ -13,15 +13,19 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,11 +33,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feature_post.PostDialog
 import com.farmer.home.ui.detail.DetailDialogByState
+import com.farmer.navigator.SettingsActivityNavigator
 import kotlinx.datetime.Month
 import java.time.format.TextStyle
 import java.util.*
@@ -60,7 +67,8 @@ fun Calendar(
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
                     onPreviousClick = viewModel::moveToPreviousMonth,
-                    onNextClick = viewModel::moveToNextMonth
+                    onNextClick = viewModel::moveToNextMonth,
+                    settingsActivityNavigator = viewModel.settingsActivityNavigator
                 )
 
                 CalendarDates(state)
@@ -85,7 +93,8 @@ private fun CalendarHeader(
     month: Month,
     year: Int,
     onPreviousClick: () -> Unit = {},
-    onNextClick: () -> Unit = {}
+    onNextClick: () -> Unit = {},
+    settingsActivityNavigator: SettingsActivityNavigator
 ) {
     val isNext = remember { mutableStateOf(true) }
     Row(
@@ -139,6 +148,15 @@ private fun CalendarHeader(
                     onNextClick()
                 }
             )
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        val context = LocalContext.current
+        IconButton(onClick = {
+            context.startActivity(settingsActivityNavigator.getIntent(context))
+        }) {
+            Icon(Icons.Default.Settings, "Settings icon")
         }
     }
 }
