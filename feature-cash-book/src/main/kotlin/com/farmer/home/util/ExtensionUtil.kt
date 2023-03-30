@@ -1,5 +1,6 @@
 package com.farmer.home.util
 
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
 import java.time.Month.APRIL
 import java.time.Month.AUGUST
@@ -34,4 +35,16 @@ internal fun String.toKotlinDateTimeMonth(): Month =
         11 -> NOVEMBER
         12 -> DECEMBER
         else -> JANUARY
+    }
+
+internal fun String.toKotlinDayOfWeek(): DayOfWeek =
+    when (this) {
+        "MON" -> DayOfWeek.MONDAY
+        "TUE" -> DayOfWeek.TUESDAY
+        "WED" -> DayOfWeek.WEDNESDAY
+        "THU" -> DayOfWeek.THURSDAY
+        "FIR" -> DayOfWeek.FRIDAY
+        "SAT" -> DayOfWeek.SATURDAY
+        "SUN" -> DayOfWeek.SUNDAY
+        else -> DayOfWeek.MONDAY
     }

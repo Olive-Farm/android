@@ -34,29 +34,32 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.BlueAlpha200
-import com.farmer.home.ui.RedAlpha200
+import com.farmer.data.DateInfo
 import com.farmer.home.ui.states.CalendarViewModel
-import com.farmer.home.ui.states.DateUiInfo
-import com.farmer.home.util.toCommaString
 
 @Composable
 fun DetailDialog(
-    dateInfo: DateUiInfo,
+    dateInfo: DateInfo?,
     isDialogEditMode: Boolean,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(text = "${dateInfo.dateOfMonth}", fontWeight = FontWeight.Bold, fontSize = 26.sp)
+            Text(
+                text = "${dateInfo?.date?.dayOfMonth}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp
+            )
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = dateInfo.dayOfWeek.name.lowercase(), fontSize = 16.sp)
+            Text(text = dateInfo?.date?.dayOfWeek.toString(), fontSize = 16.sp)
         }
 
         Divider(modifier = Modifier.padding(vertical = 6.dp), color = Color.DarkGray)
 
         LazyColumn {
-            itemsIndexed(dateInfo.incomeList) { index, incomeData ->
+            itemsIndexed(
+                dateInfo?.history?.spendList?.earnList ?: emptyList()
+            ) { index, incomeData ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -67,7 +70,8 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = incomeData.toCommaString(), color = RedAlpha200)
+                    // todo
+//                    Text(text = incomeData.toCommaString(), color = RedAlpha200)
                     Text(text = "￦")
                     Spacer(modifier = Modifier.weight(1f))
                     if (isDialogEditMode) {
@@ -87,7 +91,9 @@ fun DetailDialog(
 
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            itemsIndexed(dateInfo.spendList) { index, spendData ->
+            itemsIndexed(
+                dateInfo?.history?.spendList?.spendList ?: emptyList()
+            ) { index, spendData ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -98,7 +104,8 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = spendData.toCommaString(), color = BlueAlpha200)
+//                    Text(text = spendData.toCommaString(), color = BlueAlpha200)
+                    // todo
                     Text(text = "￦")
                     Spacer(modifier = Modifier.weight(1f))
                     if (isDialogEditMode) {
@@ -128,14 +135,14 @@ fun DetailDialog(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Sum of Income : ${dateInfo.sumOfIncome.toCommaString()} ￦",
+            text = "Sum of Income : ${(dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }} ￦",
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = "Sum of spend : ${dateInfo.sumOfSpend.toCommaString()} ￦",
+            text = "Sum of spend : ${(dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }} ￦",
             fontWeight = FontWeight.Bold
         )
 
