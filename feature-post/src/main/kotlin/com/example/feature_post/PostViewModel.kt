@@ -19,7 +19,7 @@ class PostViewModel @Inject constructor(
                 val spendTransact = when {
                     userInputSpendAmount > 0 -> {
                         History.Transact(
-                            spendList = listOf(
+                            earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
                                     item = userPostInput.name
@@ -29,7 +29,7 @@ class PostViewModel @Inject constructor(
                     }
                     userInputSpendAmount < 0 -> {
                         History.Transact(
-                            earnList = listOf(
+                            spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
                                     item = userPostInput.name
