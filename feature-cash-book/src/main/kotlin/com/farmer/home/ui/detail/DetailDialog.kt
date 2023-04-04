@@ -1,5 +1,6 @@
 package com.farmer.home.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.data.DateInfo
+import com.farmer.home.ui.BlueAlpha200
+import com.farmer.home.ui.RedAlpha200
 import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
@@ -43,6 +46,8 @@ fun DetailDialog(
     isDialogEditMode: Boolean,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
+    Log.e("@@@dateInfo", ": $dateInfo")
+    Log.e("@@@spendList", "spendList: ${dateInfo?.history?.spendList?.spendList}")
     Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
@@ -70,10 +75,14 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    // todo
-//                    Text(text = incomeData.toCommaString(), color = RedAlpha200)
-                    Text(text = "￦")
+                    // todo tocommastring
+                    Text(text = incomeData.item)
                     Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = String.format("%,d", incomeData.price.toString().toLong()),
+                        color = BlueAlpha200
+                    )
+                    Text(text = "￦")
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
@@ -104,10 +113,13 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-//                    Text(text = spendData.toCommaString(), color = BlueAlpha200)
-                    // todo
-                    Text(text = "￦")
+                    Text(text = spendData.item)
                     Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = String.format("%,d", spendData.price.toString().toLong()),
+                        color = RedAlpha200
+                    )
+                    Text(text = "￦")
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
