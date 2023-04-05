@@ -13,15 +13,19 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,11 +33,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.home.ui.states.CalendarUiState
-import com.farmer.home.ui.states.CalendarViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.feature_post.PostDialog
+import com.farmer.home.ui.detail.DetailDialogByState
+import com.farmer.navigator.SettingsActivityNavigator
 import kotlinx.datetime.Month
 import java.time.format.TextStyle
 import java.util.*
@@ -41,11 +48,13 @@ import java.util.*
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel = hiltViewModel()
+    viewModel: TempCalendarViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    // todo isaac collectAsStateWithLifecycle로 바꾸고 싶은데 안되고 있음.
+    val uiState: CalendarUiState by viewModel.calendarUiState.collectAsState()
+    val dialogUiState: DialogUiState by viewModel.dialogUiState.collectAsState()
     when (val state = uiState) {
-        is CalendarUiState.CalendarState -> {
+        is CalendarUiState.Success -> {
             Column(
                 modifier = modifier
                     .wrapContentHeight()
@@ -55,20 +64,26 @@ fun Calendar(
             ) {
                 CalendarHeader(
                     modifier = Modifier,
+                    month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
+                    year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
                     onPreviousClick = viewModel::moveToPreviousMonth,
-                    month = state.displayMonth,
-                    year = state.displayYear,
-                    onNextClick = viewModel::moveToNextMonth
+                    onNextClick = viewModel::moveToNextMonth,
+                    settingsActivityNavigator = viewModel.settingsActivityNavigator
                 )
 
-                CalendarDates(uiState)
+                CalendarDates(state)
             }
         }
-        else -> {
-            // todo
-        }
-    }
 
+        else -> Unit
+    }
+    when (val state = dialogUiState) {
+        is DialogUiState.DetailDialog -> DetailDialogByState(state)
+        is DialogUiState.PostDialog ->
+            PostDialog(onDismissRequest = { viewModel.setShowPostDialog(false) })
+
+        is DialogUiState.NotShowing -> Unit
+    }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -78,15 +93,15 @@ private fun CalendarHeader(
     month: Month,
     year: Int,
     onPreviousClick: () -> Unit = {},
-    onNextClick: () -> Unit = {}
+    onNextClick: () -> Unit = {},
+    settingsActivityNavigator: SettingsActivityNavigator
 ) {
     val isNext = remember { mutableStateOf(true) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 8.dp),
-        horizontalArrangement = Arrangement.End
+            .padding(start = 8.dp)
     ) {
         // calendar title (Ex. January 2022)
         AnimatedContent(
@@ -133,6 +148,15 @@ private fun CalendarHeader(
                     onNextClick()
                 }
             )
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        val context = LocalContext.current
+        IconButton(onClick = {
+            context.startActivity(settingsActivityNavigator.getIntent(context))
+        }) {
+            Icon(Icons.Default.Settings, "Settings icon")
         }
     }
 }

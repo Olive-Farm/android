@@ -1,8 +1,11 @@
 package com.farmer.home.ui.states
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farmer.data.History
+import com.farmer.data.repository.OliveRepository
 import com.farmer.home.data.CashBookRepository
 import com.farmer.home.model.response.AllUserData
 import com.farmer.home.util.toKotlinDateTimeMonth
@@ -25,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val repository: CashBookRepository
+    private val repository: CashBookRepository,
+    private val repo: OliveRepository
 ) : ViewModel() {
 
     private val viewModelState: MutableStateFlow<CalendarUiState> =
@@ -163,6 +167,7 @@ class CalendarViewModel @Inject constructor(
     private fun fetchData() {
         viewModelScope.launch {
             getUserData()
+            insertTempData()
 
             val currentDay = Clock.System.todayIn(TimeZone.currentSystemDefault())
             val displayMonth = currentDay.month
@@ -254,6 +259,7 @@ class CalendarViewModel @Inject constructor(
                 allUserDateInfoList.clear()
                 allUserDateInfoList.addAll(dateUiInfoList)
             }
+
             is BaseResponse.Error -> {
                 // todo show error snack bar
             }
@@ -298,6 +304,51 @@ class CalendarViewModel @Inject constructor(
             }
         }
         return dateUiInfoList.toList()
+    }
+
+    private suspend fun insertTempData() {
+        repo.insertHistory(
+            History(
+                year = 2023,
+                month = 3,
+                date = 4,
+                dayOfWeek = "MON",
+                tool = "sms",
+                memo = "Ate dinner",
+                category = "식사비",
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
+            )
+        )
+        repo.insertHistory(
+            History(
+                year = 2023,
+                month = 3,
+                date = 4,
+                dayOfWeek = "MON",
+                tool = "sms",
+                memo = "Ate dinner",
+                category = "식사비",
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
+            )
+        )
+        repo.insertHistory(
+            History(
+                year = 2023,
+                month = 3,
+                date = 4,
+                dayOfWeek = "MON",
+                tool = "sms",
+                memo = "Ate dinner",
+                category = "식사비",
+                spendList = History.Transact(
+                    emptyList(),emptyList()
+                )
+            )
+        )
     }
 
     private companion object {

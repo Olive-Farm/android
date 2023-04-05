@@ -31,5 +31,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 
+    implementation("androidx.compose.foundation:foundation:1.5.0-alpha01")
+
     implementation(project(":network"))
+    implementation(project(":navigator"))
+    implementation(project(":data"))
+    implementation(project(":feature-post"))
 }
