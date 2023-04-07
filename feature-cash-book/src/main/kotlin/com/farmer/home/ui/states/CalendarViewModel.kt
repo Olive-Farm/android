@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
+
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.todayIn
@@ -280,6 +281,7 @@ class CalendarViewModel @Inject constructor(
                             DateUiInfo(
                                 year = userSpendingList.year.toIntOrNull() ?: -1,
                                 month = yearSpendingList.month.toKotlinDateTimeMonth(),
+//                                month = yearSpendingList.month.toKotlinDateTimeMonth(),
                                 dateOfMonth = monthSpendingList.day.toIntOrNull() ?: -1,
                                 dayOfWeek = DayOfWeek.MONDAY, // todo 수정해야 함. 그냥 월요일로 넣어둠.
                                 sumOfIncome = monthSpendingList.daySpendingList
