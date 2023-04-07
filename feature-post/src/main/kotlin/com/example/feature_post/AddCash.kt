@@ -1,7 +1,6 @@
 package com.example.feature_post
 
 import android.app.DatePickerDialog
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -18,25 +20,30 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.model.UserPostInput
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
+    val isSpendState = viewModel.isSpendState.collectAsState()
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
@@ -77,7 +84,31 @@ fun AddCash(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Row() {
+        Row {
+            Chip(
+                colors = ChipDefaults.chipColors(
+                    backgroundColor =
+                        if (isSpendState.value) Color(0xFF4CAF50)
+                        else Color(0xFFE8F5E9)
+                ),
+                onClick = { viewModel.setChipState(isSpend = true) }
+            ) {
+                Text("소비")
+            }
+            Spacer(modifier = Modifier.width(4.dp))
+            Chip(
+                colors = ChipDefaults.chipColors(
+                    backgroundColor =
+                    if (!isSpendState.value) Color(0xFF4CAF50)
+                    else Color(0xFFE8F5E9)
+                ),
+                onClick = { viewModel.setChipState(isSpend = false) }
+            ) {
+                Text("수입")
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
             TextButton(onClick = {
                 timePickerDialog.show()
             }) {
@@ -108,4 +139,15 @@ fun AddCash(
             }
         }
     }
+}
+
+@Composable
+fun SelectChip() {
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SelectChipPreview() {
+
 }
