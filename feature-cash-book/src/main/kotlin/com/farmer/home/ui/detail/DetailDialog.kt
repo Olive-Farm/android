@@ -146,15 +146,17 @@ fun DetailDialog(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        val sumOfIncome = (dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of Income : ${(dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }} ￦",
+            text = "Sum of Income : ${String.format("%,d", sumOfIncome.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
+        val sumOfSpend = (dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of spend : ${(dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }} ￦",
+            text = "Sum of spend : ${String.format("%,d", sumOfSpend.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 
