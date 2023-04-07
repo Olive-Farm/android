@@ -1,6 +1,8 @@
 package com.example.feature_post
 
 import android.app.DatePickerDialog
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,8 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.model.UserPostInput
 import java.util.*
@@ -72,8 +74,18 @@ fun AddCash(
             },
             value = nameText,
             onValueChange = { nameText = it },
-
-            )
+        )
+        if (uiState.value.needNameState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "적요를 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(12.dp))
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -84,7 +96,17 @@ fun AddCash(
             onValueChange = { amountText = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-
+        if (uiState.value.needAmountState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "금액을 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(12.dp))
         Row {
             Chip(
@@ -122,6 +144,17 @@ fun AddCash(
                 text = "${yearState.value}/${monthState.value + 1}/${dayOfMonthState.value}"
             )
         }
+        if (uiState.value.needDateState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "날짜를 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Spacer(modifier = Modifier.weight(1f))
@@ -135,21 +168,12 @@ fun AddCash(
                         amount = amountText.text
                     )
                 )
-                onDismissRequest()
             }) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
         }
+        if (uiState.value.dismissDialogState) {
+            onDismissRequest()
+        }
     }
-}
-
-@Composable
-fun SelectChip() {
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SelectChipPreview() {
-
 }

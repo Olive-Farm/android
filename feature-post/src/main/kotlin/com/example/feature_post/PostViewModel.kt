@@ -29,6 +29,14 @@ class PostViewModel @Inject constructor(
     }
 
     fun postCashData(userPostInput: UserPostInput) {
+        _uiState.update {
+            it.copy(
+                needNameState = userPostInput.name.isEmpty(),
+                needAmountState = userPostInput.amount.isEmpty(),
+                needDateState = userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0
+            )
+        }
+        if (userPostInput.name.isEmpty() || userPostInput.amount.isEmpty() || (userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0)) return
         viewModelScope.launch {
             userPostInput.amount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
@@ -63,6 +71,9 @@ class PostViewModel @Inject constructor(
                     memo = "", // todo
                     spendList = spendTransact
                 )
+                _uiState.update {
+                    it.copy(dismissDialogState = true)
+                }
                 repository.insertHistory(userInputHistory)
             }
         }
