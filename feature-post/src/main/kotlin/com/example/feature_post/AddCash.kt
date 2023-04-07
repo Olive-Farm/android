@@ -43,7 +43,7 @@ fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
-    val isSpendState = viewModel.isSpendState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
@@ -71,8 +71,9 @@ fun AddCash(
                 Text("Name")
             },
             value = nameText,
-            onValueChange = { nameText = it }
-        )
+            onValueChange = { nameText = it },
+
+            )
         Spacer(modifier = Modifier.height(12.dp))
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -83,13 +84,14 @@ fun AddCash(
             onValueChange = { amountText = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
+
         Spacer(modifier = Modifier.height(12.dp))
         Row {
             Chip(
                 colors = ChipDefaults.chipColors(
                     backgroundColor =
-                        if (isSpendState.value) Color(0xFF4CAF50)
-                        else Color(0xFFE8F5E9)
+                    if (uiState.value.isSpendState) Color(0xFF4CAF50)
+                    else Color(0xFFE8F5E9)
                 ),
                 onClick = { viewModel.setChipState(isSpend = true) }
             ) {
@@ -99,7 +101,7 @@ fun AddCash(
             Chip(
                 colors = ChipDefaults.chipColors(
                     backgroundColor =
-                    if (!isSpendState.value) Color(0xFF4CAF50)
+                    if (!uiState.value.isSpendState) Color(0xFF4CAF50)
                     else Color(0xFFE8F5E9)
                 ),
                 onClick = { viewModel.setChipState(isSpend = false) }

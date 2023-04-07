@@ -17,18 +17,22 @@ import javax.inject.Inject
 class PostViewModel @Inject constructor(
     private val repository: OliveRepository
 ) : ViewModel() {
-    private val _isSpendState = MutableStateFlow(true)
-    val isSpendState: StateFlow<Boolean> get() = _isSpendState.asStateFlow()
+    private val _uiState = MutableStateFlow(PostViewState())
+    val uiState: StateFlow<PostViewState> get() = _uiState.asStateFlow()
 
     fun setChipState(isSpend: Boolean) {
-        _isSpendState.update { isSpend }
+        _uiState.update {
+            it.copy(
+                isSpendState = isSpend
+            )
+        }
     }
 
     fun postCashData(userPostInput: UserPostInput) {
         viewModelScope.launch {
             userPostInput.amount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
-                    _isSpendState.value.not() -> {
+                    _uiState.value.isSpendState.not() -> {
                         History.Transact(
                             earnList = listOf(
                                 History.Transact.TransactData(
@@ -38,7 +42,7 @@ class PostViewModel @Inject constructor(
                             )
                         )
                     }
-                    _isSpendState.value -> {
+                    _uiState.value.isSpendState -> {
                         History.Transact(
                             spendList = listOf(
                                 History.Transact.TransactData(
