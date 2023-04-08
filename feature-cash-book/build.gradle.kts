@@ -31,7 +31,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 
-    implementation("androidx.compose.foundation:foundation:1.5.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.1")
+    testImplementation("io.mockk:mockk:1.13.2")
+
+    implementation("androidx.compose.foundation:foundation:1.5.0-alpha02")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
     implementation(project(":network"))
