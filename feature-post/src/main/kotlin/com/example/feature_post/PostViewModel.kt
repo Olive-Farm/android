@@ -71,11 +71,13 @@ class PostViewModel @Inject constructor(
                     memo = "", // todo
                     spendList = spendTransact
                 )
-                _uiState.update {
-                    it.copy(dismissDialogState = true)
-                }
+                _uiState.update { it.copy(dismissDialogState = true) }
                 repository.insertHistory(userInputHistory)
             }
         }
+    }
+
+    fun refreshState() {
+        _uiState.update { PostViewState() }
     }
 }

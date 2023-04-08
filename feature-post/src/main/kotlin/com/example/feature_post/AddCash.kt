@@ -167,6 +167,7 @@ fun AddCash(
             }
         }
         if (uiState.value.dismissDialogState) {
+            viewModel.refreshState()
             onDismissRequest()
         }
     }
