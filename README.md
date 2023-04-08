@@ -1,3 +1,1 @@
-## Tech stacks
-- Minimum Sdk level 23
-- 100% Jetpack Compose based + Coroutines + Flow for asynchronous.
+컴포즈 연습 중

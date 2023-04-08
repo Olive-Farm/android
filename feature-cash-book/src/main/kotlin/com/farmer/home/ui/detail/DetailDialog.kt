@@ -1,5 +1,6 @@
 package com.farmer.home.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,29 +35,36 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.data.DateInfo
 import com.farmer.home.ui.BlueAlpha200
 import com.farmer.home.ui.RedAlpha200
 import com.farmer.home.ui.states.CalendarViewModel
-import com.farmer.home.ui.states.DateUiInfo
-import com.farmer.home.util.toCommaString
 
 @Composable
 fun DetailDialog(
-    dateInfo: DateUiInfo,
+    dateInfo: DateInfo?,
     isDialogEditMode: Boolean,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
+    Log.e("@@@dateInfo", ": $dateInfo")
+    Log.e("@@@spendList", "spendList: ${dateInfo?.history?.spendList?.spendList}")
     Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(text = "${dateInfo.dateOfMonth}", fontWeight = FontWeight.Bold, fontSize = 26.sp)
+            Text(
+                text = "${dateInfo?.date?.dayOfMonth}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp
+            )
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = dateInfo.dayOfWeek.name.lowercase(), fontSize = 16.sp)
+            Text(text = dateInfo?.date?.dayOfWeek.toString(), fontSize = 16.sp)
         }
 
         Divider(modifier = Modifier.padding(vertical = 6.dp), color = Color.DarkGray)
 
         LazyColumn {
-            itemsIndexed(dateInfo.incomeList) { index, incomeData ->
+            itemsIndexed(
+                dateInfo?.history?.spendList?.earnList ?: emptyList()
+            ) { index, incomeData ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -67,9 +75,14 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = incomeData.toCommaString(), color = RedAlpha200)
-                    Text(text = "￦")
+                    // todo tocommastring
+                    Text(text = incomeData.item)
                     Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = String.format("%,d", incomeData.price.toString().toLong()),
+                        color = BlueAlpha200
+                    )
+                    Text(text = "￦")
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
@@ -87,7 +100,9 @@ fun DetailDialog(
 
                 Spacer(modifier = Modifier.height(4.dp))
             }
-            itemsIndexed(dateInfo.spendList) { index, spendData ->
+            itemsIndexed(
+                dateInfo?.history?.spendList?.spendList ?: emptyList()
+            ) { index, spendData ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -98,9 +113,13 @@ fun DetailDialog(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = spendData.toCommaString(), color = BlueAlpha200)
-                    Text(text = "￦")
+                    Text(text = spendData.item)
                     Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = String.format("%,d", spendData.price.toString().toLong()),
+                        color = RedAlpha200
+                    )
+                    Text(text = "￦")
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
@@ -127,15 +146,17 @@ fun DetailDialog(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        val sumOfIncome = (dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of Income : ${dateInfo.sumOfIncome.toCommaString()} ￦",
+            text = "Sum of Income : ${String.format("%,d", sumOfIncome.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
+        val sumOfSpend = (dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of spend : ${dateInfo.sumOfSpend.toCommaString()} ￦",
+            text = "Sum of spend : ${String.format("%,d", sumOfSpend.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 

@@ -19,6 +19,11 @@ import java.time.DayOfWeek.WEDNESDAY
 internal object OliveDateList {
     val list = listOf(
         OliveDate(
+            dayOfTheWeek = SUNDAY,
+            shortDayOfTheWeek = SUN,
+            textColor = Color.Red
+        ),
+        OliveDate(
             dayOfTheWeek = MONDAY,
             shortDayOfTheWeek = MON
         ),
@@ -42,11 +47,6 @@ internal object OliveDateList {
             dayOfTheWeek = SATURDAY,
             shortDayOfTheWeek = SAT,
             textColor = Color.Blue
-        ),
-        OliveDate(
-            dayOfTheWeek = SUNDAY,
-            shortDayOfTheWeek = SUN,
-            textColor = Color.Red
         )
     )
 }

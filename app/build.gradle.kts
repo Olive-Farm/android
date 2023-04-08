@@ -38,7 +38,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 
     buildTypes {
@@ -75,4 +75,7 @@ dependencies {
     // other modules
     implementation(project(":feature-cash-book"))
     implementation(project(":feature-statistics"))
+    implementation(project(":feature-post"))
+    implementation(project(":feature-settings"))
+    implementation(project(":navigator"))
 }

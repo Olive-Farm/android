@@ -28,3 +28,8 @@ rootProject.name = "Olive"
 include(":app")
 include(":feature-cash-book")
 include(":feature-statistics")
+include(":network")
+include(":data")
+include(":feature-post")
+include(":feature-settings")
+include(":navigator")

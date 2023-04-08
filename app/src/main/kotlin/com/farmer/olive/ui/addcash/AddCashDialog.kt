@@ -22,11 +22,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.home.ui.TempCalendarViewModel
 import com.farmer.home.ui.states.CalendarViewModel
 
 @Composable
 fun AddCashDialog(
-    viewModel: CalendarViewModel = hiltViewModel()
+    viewModel: CalendarViewModel = hiltViewModel(),
+    tempViewModel: TempCalendarViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
@@ -62,6 +64,7 @@ fun AddCashDialog(
         Row {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
+                // todo tempviewmodel로 옮기기
                 viewModel.sendInputCashDataAndDismiss(
                     timeText.text,
                     nameText.text,
