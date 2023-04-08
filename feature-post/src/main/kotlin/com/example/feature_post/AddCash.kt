@@ -75,15 +75,13 @@ fun AddCash(
             value = nameText,
             onValueChange = { nameText = it },
         )
-        if (uiState.value.needNameState) {
-            AnimatedVisibility(visible = true) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Text(
-                        text = "적요를 입력해주세요.",
-                        color = Color.Red,
-                        fontSize = 12.sp
-                    )
-                }
+        AnimatedVisibility(visible = uiState.value.needNameState) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "적요를 입력해주세요.",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -96,15 +94,13 @@ fun AddCash(
             onValueChange = { amountText = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        if (uiState.value.needAmountState) {
-            AnimatedVisibility(visible = true) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Text(
-                        text = "금액을 입력해주세요.",
-                        color = Color.Red,
-                        fontSize = 12.sp
-                    )
-                }
+        AnimatedVisibility(visible = uiState.value.needAmountState) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "금액을 입력해주세요.",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -144,15 +140,13 @@ fun AddCash(
                 text = "${yearState.value}/${monthState.value + 1}/${dayOfMonthState.value}"
             )
         }
-        if (uiState.value.needDateState) {
-            AnimatedVisibility(visible = true) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Text(
-                        text = "날짜를 입력해주세요.",
-                        color = Color.Red,
-                        fontSize = 12.sp
-                    )
-                }
+        AnimatedVisibility(visible = uiState.value.needDateState) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "날짜를 입력해주세요.",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
             }
         }
         Spacer(modifier = Modifier.weight(1f))
