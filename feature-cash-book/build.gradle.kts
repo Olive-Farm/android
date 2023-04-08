@@ -32,6 +32,7 @@ dependencies {
     androidTestImplementation(libs.android.junit)
 
     implementation("androidx.compose.foundation:foundation:1.5.0-alpha01")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
     implementation(project(":network"))
     implementation(project(":navigator"))

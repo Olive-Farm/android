@@ -1,13 +1,19 @@
 package com.example.feature_post
 
 import android.app.DatePickerDialog
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -16,24 +22,30 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.model.UserPostInput
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
+    val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
@@ -41,7 +53,7 @@ fun AddCash(
         var amountText by remember { mutableStateOf(TextFieldValue("")) }
         val calendar = Calendar.getInstance()
         val yearState = remember { mutableStateOf(0) }
-        val monthState = remember { mutableStateOf(0) }
+        val monthState = remember { mutableStateOf(-1) }
         val dayOfMonthState = remember { mutableStateOf(0) }
         val context = LocalContext.current
         val timePickerDialog = DatePickerDialog(
@@ -56,14 +68,27 @@ fun AddCash(
             calendar[Calendar.DAY_OF_MONTH],
         )
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text("Name")
             },
             value = nameText,
-            onValueChange = { nameText = it }
+            onValueChange = { nameText = it },
         )
+        if (uiState.value.needNameState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "적요를 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(12.dp))
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text("Amount")
             },
@@ -71,13 +96,65 @@ fun AddCash(
             onValueChange = { amountText = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        TextButton(onClick = {
-            timePickerDialog.show()
-        }) {
-            Text("날짜 선택")
+        if (uiState.value.needAmountState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "금액을 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
         }
-        Text(text = "${yearState.value}/${monthState.value}/${dayOfMonthState.value}")
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            Chip(
+                colors = ChipDefaults.chipColors(
+                    backgroundColor =
+                    if (uiState.value.isSpendState) Color(0xFF4CAF50)
+                    else Color(0xFFE8F5E9)
+                ),
+                onClick = { viewModel.setChipState(isSpend = true) }
+            ) {
+                Text("소비")
+            }
+            Spacer(modifier = Modifier.width(4.dp))
+            Chip(
+                colors = ChipDefaults.chipColors(
+                    backgroundColor =
+                    if (!uiState.value.isSpendState) Color(0xFF4CAF50)
+                    else Color(0xFFE8F5E9)
+                ),
+                onClick = { viewModel.setChipState(isSpend = false) }
+            ) {
+                Text("수입")
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            TextButton(onClick = {
+                timePickerDialog.show()
+            }) {
+                Text("날짜 선택")
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = "${yearState.value}/${monthState.value + 1}/${dayOfMonthState.value}"
+            )
+        }
+        if (uiState.value.needDateState) {
+            AnimatedVisibility(visible = true) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "날짜를 입력해주세요.",
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Spacer(modifier = Modifier.weight(1f))
@@ -91,10 +168,12 @@ fun AddCash(
                         amount = amountText.text
                     )
                 )
-                onDismissRequest()
             }) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
+        }
+        if (uiState.value.dismissDialogState) {
+            onDismissRequest()
         }
     }
 }

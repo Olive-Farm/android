@@ -8,6 +8,7 @@ import com.farmer.data.repository.OliveRepository
 import com.farmer.navigator.SettingsActivityNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
@@ -31,6 +34,10 @@ class TempCalendarViewModel @Inject constructor(
     repository: OliveRepository,
     val settingsActivityNavigator: SettingsActivityNavigator
 ) : ViewModel() {
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val _dialogUiState = MutableStateFlow<DialogUiState>(DialogUiState.NotShowing)
     val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()
 
@@ -38,6 +45,7 @@ class TempCalendarViewModel @Inject constructor(
         MutableStateFlow(Clock.System.todayIn(TimeZone.currentSystemDefault()))
     val calendarUiState: StateFlow<CalendarUiState> =
         _currentLocalDate.flatMapLatest { currentDate ->
+            Log.e("@@@currentDate", "in : $currentDate")
             calendarUiState(repository, currentDate)
         }.stateIn(
             scope = viewModelScope,
@@ -53,9 +61,15 @@ class TempCalendarViewModel @Inject constructor(
         _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 1))
     }
 
-    // todo swip refresh 추가해서, 금액 추가했는데 추가 안됐을 경우 대응하기.
     fun refreshMonth() {
-//        _currentLocalDate.value = _currentLocalDate.value.minus(DatePeriod(months = 0))
+        _isRefreshing.update { true }
+        // 강제 emit하기 위해 아래처럼 넣었는데 더 좋은 방법 없을지 고민해봐야 함.
+        _currentLocalDate.update {
+            val newDate = _currentLocalDate.value.minus(DatePeriod(days = 1))
+            if (newDate.month == it.month) newDate
+            else _currentLocalDate.value.plus(DatePeriod(days = 1))
+        }
+        _isRefreshing.update { false }
     }
 
     fun setShowDetailDialog(shouldShow: Boolean, clickedDateInfo: DateInfo?) {
