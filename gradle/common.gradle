@@ -26,6 +26,8 @@ if (hasLibraryPlugin || hasApplicationPlugin) {
 
         buildFeatures {
             compose = true
+            viewBinding = true
+            dataBinding = true
         }
 
         kotlinOptions {
