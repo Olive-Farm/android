@@ -78,4 +78,5 @@ dependencies {
     implementation(project(":feature-post"))
     implementation(project(":feature-settings"))
     implementation(project(":navigator"))
+    implementation(project(":data"))
 }
