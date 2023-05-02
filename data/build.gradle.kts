@@ -38,4 +38,11 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
+
+    // chucker
+    debugImplementation("com.github.chuckerteam.chucker:library:3.5.2")
+    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:3.5.2")
+
+    // okhttp3
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 }

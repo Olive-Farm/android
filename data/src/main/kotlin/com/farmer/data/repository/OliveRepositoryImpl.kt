@@ -3,6 +3,9 @@ package com.farmer.data.repository
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.OliveDao
+import com.farmer.data.network.OliveApi
+import com.farmer.data.network.model.ImageRequest
+import com.farmer.data.network.model.ImageResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDate
@@ -10,7 +13,8 @@ import java.time.YearMonth
 import javax.inject.Inject
 
 class OliveRepositoryImpl @Inject constructor(
-    private val dao: OliveDao
+    private val dao: OliveDao,
+    private val api: OliveApi
 ) : OliveRepository {
 
     /**
@@ -61,6 +65,10 @@ class OliveRepositoryImpl @Inject constructor(
         } else {
             dao.insertHistory(history = history)
         }
+    }
+
+    override suspend fun getReceiptInformation(imageRequest: ImageRequest): ImageResponse {
+        return api.sendMessage(imageRequest)
     }
 
     private suspend fun getHistoryByCurrentDate(currentDate: LocalDate): List<History> {
