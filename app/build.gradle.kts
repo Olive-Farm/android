@@ -78,7 +78,5 @@ dependencies {
     implementation(project(":feature-post"))
     implementation(project(":feature-settings"))
     implementation(project(":navigator"))
-
-    //Setting(Preference)
-    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation(project(":data"))
 }
