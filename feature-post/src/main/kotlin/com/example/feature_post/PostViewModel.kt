@@ -1,9 +1,14 @@
 package com.example.feature_post
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feature_post.model.UserPostInput
 import com.farmer.data.History
+import com.farmer.data.network.model.Image
+import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -79,5 +86,30 @@ class PostViewModel @Inject constructor(
 
     fun refreshState() {
         _uiState.update { PostViewState() }
+    }
+
+    fun requestOcr(imageInputStream: InputStream?) {
+        if (imageInputStream == null) return
+        viewModelScope.launch {
+            val selectedImage = BitmapFactory.decodeStream(imageInputStream)
+            val stream = ByteArrayOutputStream()
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
+            val image = stream.toByteArray()
+            val imageString = android.util.Base64.encodeToString(image, 0)
+            Log.e("@@@encdedImage", "size : ${imageString.length}")
+            val response = repository.getReceiptInformation(
+                ImageRequest(
+                    version = "V2",
+                    requestId = "string",
+                    timestamp = 0,
+                    images = Image(
+                        format = "png",
+                        name = "test 1",
+                        data = imageString
+                    )
+                )
+            )
+            Log.e("@@@response", "response : $response")
+        }
     }
 }

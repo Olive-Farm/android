@@ -1,6 +1,9 @@
 package com.example.feature_post
 
 import android.app.DatePickerDialog
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +24,8 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +50,14 @@ fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                viewModel.requestOcr(inputStream)
+            }
+        }
     val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
@@ -152,6 +165,11 @@ fun AddCash(
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }) {
+                Icon(Icons.Default.Share, contentDescription = null)
+            }
             IconButton(onClick = {
                 viewModel.postCashData(
                     UserPostInput(
