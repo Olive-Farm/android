@@ -17,7 +17,7 @@ import kotlinx.serialization.SerialName
 @kotlinx.serialization.Serializable
 data class ImageRequest(
     @SerialName("images")
-    val images: Image,
+    val images: List<Image>,
     @SerialName("timestamp")
     val timestamp: Long = 0L,
     @SerialName("requestId")

@@ -2,6 +2,7 @@ package com.example.feature_post
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.time.Instant
 import javax.inject.Inject
+import java.util.UUID
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
@@ -95,17 +98,19 @@ class PostViewModel @Inject constructor(
             val stream = ByteArrayOutputStream()
             selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
             val image = stream.toByteArray()
-            val imageString = android.util.Base64.encodeToString(image, 0)
+            val imageString = Base64.encodeToString(image, 0)
             Log.e("@@@encdedImage", "size : ${imageString.length}")
             val response = repository.getReceiptInformation(
                 ImageRequest(
-                    version = "V2",
-                    requestId = "string",
-                    timestamp = 0,
-                    images = Image(
+                     version = "V2",
+                    requestId = UUID.randomUUID().toString(),
+                    timestamp = (Instant.now().toEpochMilli()),
+                    images = listOf(
+                        Image(
                         format = "png",
                         name = "test 1",
                         data = imageString
+                        )
                     )
                 )
             )
