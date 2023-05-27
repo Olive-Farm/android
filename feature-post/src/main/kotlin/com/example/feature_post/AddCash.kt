@@ -27,8 +27,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.feature_post.model.UserPostInput
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -59,16 +56,12 @@ fun AddCash(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
         val calendar = Calendar.getInstance()
-        val yearState = remember { mutableStateOf(0) }
-        val monthState = remember { mutableStateOf(-1) }
-        val dayOfMonthState = remember { mutableStateOf(0) }
-        val context = LocalContext.current
         val timePickerDialog = DatePickerDialog(
             context,
-            { view, year, month, dayOfMonth ->
-                yearState.value = year
-                monthState.value = month
-                dayOfMonthState.value = dayOfMonth
+            { _, year, month, dayOfMonth ->
+                viewModel.yearState.value = year
+                viewModel.monthState.value = month
+                viewModel.dayOfMonthState.value = dayOfMonth
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
@@ -144,7 +137,7 @@ fun AddCash(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                text = "${yearState.value}/${monthState.value + 1}/${dayOfMonthState.value}"
+                text = "${viewModel.yearState.value}/${viewModel.monthState.value + 1}/${viewModel.dayOfMonthState.value}"
             )
         }
         AnimatedVisibility(visible = uiState.value.needDateState) {
@@ -164,15 +157,7 @@ fun AddCash(
             }) {
                 Icon(Icons.Default.Share, contentDescription = null)
             }
-            IconButton(onClick = {
-                viewModel.postCashData(
-                    UserPostInput(
-                        year = yearState.value,
-                        month = monthState.value + 1,
-                        date = dayOfMonthState.value
-                    )
-                )
-            }) {
+            IconButton(onClick = viewModel::postCashData) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
         }

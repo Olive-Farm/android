@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,9 @@ class PostViewModel @Inject constructor(
 
     val name = mutableStateOf(TextFieldValue(""))
     val amount = mutableStateOf(TextFieldValue(""))
+    val yearState = mutableStateOf(0)
+    val monthState = mutableStateOf(-1)
+    val dayOfMonthState = mutableStateOf(0)
 
     fun setChipState(isSpend: Boolean) {
         _uiState.update {
@@ -40,17 +44,17 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun postCashData(userPostInput: UserPostInput) {
+    fun postCashData() {
         val currentName = name.value.text
         val currentAmount = amount.value.text
         _uiState.update {
             it.copy(
                 needNameState = currentName.isEmpty(),
                 needAmountState = currentAmount.isEmpty(),
-                needDateState = userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0
+                needDateState = yearState.value == 0 || monthState.value == 0 || dayOfMonthState.value == 0
             )
         }
-        if (currentName.isEmpty() || currentAmount.isEmpty() || (userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0)) return
+        if (currentName.isEmpty() || currentAmount.isEmpty() || (yearState.value == 0 || monthState.value == 0 || dayOfMonthState.value == 0)) return
         viewModelScope.launch {
             currentAmount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
@@ -77,9 +81,9 @@ class PostViewModel @Inject constructor(
                     else -> History.Transact()
                 }
                 val userInputHistory = History(
-                    year = userPostInput.year,
-                    month = userPostInput.month,
-                    date = userPostInput.date,
+                    year = yearState.value,
+                    month = monthState.value,
+                    date = dayOfMonthState.value,
                     dayOfWeek = "",
                     tool = "", // todo
                     memo = "", // todo
@@ -103,7 +107,6 @@ class PostViewModel @Inject constructor(
             selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
             val image = stream.toByteArray()
             val imageString = android.util.Base64.encodeToString(image, 0)
-            Log.e("@@@encdedImage", "size : ${imageString.length}")
             val response = repository.getReceiptInformation(
                 ImageRequest(
                     version = "V2",
@@ -118,11 +121,15 @@ class PostViewModel @Inject constructor(
                     )
                 )
             )
+            val receipt = response.receiptImageList.firstOrNull()?.receipt?.result
             name.value =
-                TextFieldValue(response.receiptImageList.firstOrNull()?.receipt?.result?.storeInfo?.name?.text.orEmpty())
+                TextFieldValue(receipt?.storeInfo?.name?.text.orEmpty())
             amount.value =
-                TextFieldValue(response.receiptImageList.firstOrNull()?.receipt?.result?.totalPrice?.price?.text.orEmpty())
-            Log.e("@@@response", "response : $response")
+                TextFieldValue(receipt?.totalPrice?.price?.text.orEmpty())
+            val date = receipt?.paymentInfo?.date?.text?.split("-")
+            yearState.value = date?.get(0)?.toIntOrNull() ?: 0
+            monthState.value = date?.get(1)?.toIntOrNull() ?: 0
+            dayOfMonthState.value = date?.get(2)?.toIntOrNull() ?: 0
         }
     }
 }
