@@ -53,7 +53,8 @@ class PostViewModel @Inject constructor(
         }
         if (currentName.isEmpty() || currentAmount.isEmpty() || (yearState.value == 0 || monthState.value == 0 || dayOfMonthState.value == 0)) return
         viewModelScope.launch {
-            currentAmount.toIntOrNull()?.let { userInputSpendAmount ->
+            val removedNotNumberAmount = currentAmount.replace(Regex("\\D+"), "")
+            removedNotNumberAmount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
                     _uiState.value.isSpendState.not() -> {
                         History.Transact(
@@ -79,7 +80,7 @@ class PostViewModel @Inject constructor(
                 }
                 val userInputHistory = History(
                     year = yearState.value,
-                    month = monthState.value,
+                    month = monthState.value + 1, // 달에는 1월을 추가해야 함.
                     date = dayOfMonthState.value,
                     dayOfWeek = "",
                     tool = "", // todo
