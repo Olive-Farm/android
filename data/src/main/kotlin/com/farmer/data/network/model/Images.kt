@@ -3,11 +3,11 @@ package com.farmer.data.network.model
 import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
-data class Receipt(
-    @SerialName("meta")
-    val meta: Meta,
+data class Images(
+//    @SerialName("meta")
+//    val meta: Meta = Meta(""),
     @SerialName("result")
-    val result: ReceiptResult
+    val result: ReceiptResult = ReceiptResult()
 ) {
     @kotlinx.serialization.Serializable
     data class Meta(

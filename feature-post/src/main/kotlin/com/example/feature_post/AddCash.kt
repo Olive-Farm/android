@@ -1,6 +1,9 @@
 package com.example.feature_post
 
 import android.app.DatePickerDialog
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,34 +12,36 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.progressSemantics
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.feature_post.model.UserPostInput
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -45,23 +50,25 @@ fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                viewModel.requestOcr(inputStream)
+            }
+        }
     val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
-        var nameText by remember { mutableStateOf(TextFieldValue("")) }
-        var amountText by remember { mutableStateOf(TextFieldValue("")) }
         val calendar = Calendar.getInstance()
-        val yearState = remember { mutableStateOf(0) }
-        val monthState = remember { mutableStateOf(-1) }
-        val dayOfMonthState = remember { mutableStateOf(0) }
-        val context = LocalContext.current
         val timePickerDialog = DatePickerDialog(
             context,
-            { view, year, month, dayOfMonth ->
-                yearState.value = year
-                monthState.value = month
-                dayOfMonthState.value = dayOfMonth
+            { _, year, month, dayOfMonth ->
+                viewModel.yearState.value = year
+                viewModel.monthState.value = month
+                viewModel.dayOfMonthState.value = dayOfMonth
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
@@ -72,8 +79,8 @@ fun AddCash(
             label = {
                 Text("Name")
             },
-            value = nameText,
-            onValueChange = { nameText = it },
+            value = viewModel.name.value,
+            onValueChange = { viewModel.name.value = it },
         )
         AnimatedVisibility(visible = uiState.value.needNameState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -90,8 +97,8 @@ fun AddCash(
             label = {
                 Text("Amount")
             },
-            value = amountText,
-            onValueChange = { amountText = it },
+            value = viewModel.amount.value,
+            onValueChange = { viewModel.amount.value = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         AnimatedVisibility(visible = uiState.value.needAmountState) {
@@ -137,7 +144,7 @@ fun AddCash(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                text = "${yearState.value}/${monthState.value + 1}/${dayOfMonthState.value}"
+                text = "${viewModel.yearState.value}/${viewModel.monthState.value + 1}/${viewModel.dayOfMonthState.value}"
             )
         }
         AnimatedVisibility(visible = uiState.value.needDateState) {
@@ -153,22 +160,47 @@ fun AddCash(
         Row {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
-                viewModel.postCashData(
-                    UserPostInput(
-                        year = yearState.value,
-                        month = monthState.value + 1,
-                        date = dayOfMonthState.value,
-                        name = nameText.text,
-                        amount = amountText.text
-                    )
-                )
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }) {
+                Icon(Icons.Default.Share, contentDescription = null)
+            }
+            IconButton(onClick = viewModel::postCashData) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
         }
         if (uiState.value.dismissDialogState) {
             viewModel.refreshState()
             onDismissRequest()
+        }
+
+        // loading
+        AnimatedVisibility(visible = uiState.value.isLoading) {
+            Dialog(
+                onDismissRequest = { },
+                properties = DialogProperties(
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false
+                ),
+            ) {
+                Surface(
+                    modifier = Modifier.padding(12.dp),
+                    shape = RoundedCornerShape(4.dp),
+                    color = Color.White
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .progressSemantics()
+                                .size(30.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(text = "로딩 중입니다.")
+                    }
+                }
+            }
         }
     }
 }

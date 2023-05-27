@@ -1,9 +1,14 @@
 package com.example.feature_post
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature_post.model.UserPostInput
 import com.farmer.data.History
+import com.farmer.data.network.model.Image
+import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +27,12 @@ class PostViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PostViewState())
     val uiState: StateFlow<PostViewState> get() = _uiState.asStateFlow()
 
+    val name = mutableStateOf(TextFieldValue(""))
+    val amount = mutableStateOf(TextFieldValue(""))
+    val yearState = mutableStateOf(0)
+    val monthState = mutableStateOf(-1)
+    val dayOfMonthState = mutableStateOf(0)
+
     fun setChipState(isSpend: Boolean) {
         _uiState.update {
             it.copy(
@@ -28,24 +41,27 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun postCashData(userPostInput: UserPostInput) {
+    fun postCashData() {
+        val currentName = name.value.text
+        val currentAmount = amount.value.text
         _uiState.update {
             it.copy(
-                needNameState = userPostInput.name.isEmpty(),
-                needAmountState = userPostInput.amount.isEmpty(),
-                needDateState = userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0
+                needNameState = currentName.isEmpty(),
+                needAmountState = currentAmount.isEmpty(),
+                needDateState = yearState.value == 0 || monthState.value == 0 || dayOfMonthState.value == 0
             )
         }
-        if (userPostInput.name.isEmpty() || userPostInput.amount.isEmpty() || (userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0)) return
+        if (currentName.isEmpty() || currentAmount.isEmpty() || (yearState.value == 0 || monthState.value == 0 || dayOfMonthState.value == 0)) return
         viewModelScope.launch {
-            userPostInput.amount.toIntOrNull()?.let { userInputSpendAmount ->
+            val removedNotNumberAmount = currentAmount.replace(Regex("\\D+"), "")
+            removedNotNumberAmount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
                     _uiState.value.isSpendState.not() -> {
                         History.Transact(
                             earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = userPostInput.name
+                                    item = currentName
                                 )
                             )
                         )
@@ -55,7 +71,7 @@ class PostViewModel @Inject constructor(
                             spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = userPostInput.name
+                                    item = currentName
                                 )
                             )
                         )
@@ -63,9 +79,9 @@ class PostViewModel @Inject constructor(
                     else -> History.Transact()
                 }
                 val userInputHistory = History(
-                    year = userPostInput.year,
-                    month = userPostInput.month,
-                    date = userPostInput.date,
+                    year = yearState.value,
+                    month = monthState.value + 1, // 달에는 1월을 추가해야 함.
+                    date = dayOfMonthState.value,
                     dayOfWeek = "",
                     tool = "", // todo
                     memo = "", // todo
@@ -79,5 +95,45 @@ class PostViewModel @Inject constructor(
 
     fun refreshState() {
         _uiState.update { PostViewState() }
+    }
+
+    fun requestOcr(imageInputStream: InputStream?) {
+        if (imageInputStream == null) return
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch {
+            val selectedImage = BitmapFactory.decodeStream(imageInputStream)
+            val stream = ByteArrayOutputStream()
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
+            val image = stream.toByteArray()
+            val imageString = android.util.Base64.encodeToString(image, 0)
+            val response = repository.getReceiptInformation(
+                ImageRequest(
+                    version = "V2",
+                    requestId = "string",
+                    timestamp = System.currentTimeMillis(),
+                    images = listOf(
+                        Image(
+                            format = "png",
+                            name = "test 1",
+                            data = imageString
+                        )
+                    )
+                )
+            )
+            val receipt = response.receiptImageList.firstOrNull()?.receipt?.result
+            name.value =
+                TextFieldValue(receipt?.storeInfo?.name?.text.orEmpty())
+            amount.value =
+                TextFieldValue(receipt?.totalPrice?.price?.text.orEmpty())
+            val date = receipt?.paymentInfo?.date?.text?.split("-")
+            yearState.value = date?.get(0)?.toIntOrNull() ?: 0
+            monthState.value = date?.get(1)?.toIntOrNull() ?: 0
+            dayOfMonthState.value = date?.get(2)?.toIntOrNull() ?: 0
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
+        }
     }
 }

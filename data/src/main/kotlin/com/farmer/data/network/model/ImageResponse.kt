@@ -9,7 +9,15 @@ data class ImageResponse(
     @SerialName("requestId")
     val requestId: String,
     @SerialName("timestamp")
-    val timestamp: String,
+    val timestamp: Long,
     @SerialName("images")
-    val receiptImageList: List<Receipt>
+    val receiptImageList: List<ImagesV2>
+)
+
+@kotlinx.serialization.Serializable
+data class ImagesV2(
+    @SerialName("name")
+    val name: String? = null,
+    @SerialName("receipt")
+    val receipt: Images? = Images()
 )
