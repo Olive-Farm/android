@@ -3,6 +3,8 @@ package com.example.feature_post
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feature_post.model.UserPostInput
@@ -27,6 +29,9 @@ class PostViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PostViewState())
     val uiState: StateFlow<PostViewState> get() = _uiState.asStateFlow()
 
+    val name = mutableStateOf(TextFieldValue(""))
+    val amount = mutableStateOf(TextFieldValue(""))
+
     fun setChipState(isSpend: Boolean) {
         _uiState.update {
             it.copy(
@@ -36,23 +41,25 @@ class PostViewModel @Inject constructor(
     }
 
     fun postCashData(userPostInput: UserPostInput) {
+        val currentName = name.value.text
+        val currentAmount = amount.value.text
         _uiState.update {
             it.copy(
-                needNameState = userPostInput.name.isEmpty(),
-                needAmountState = userPostInput.amount.isEmpty(),
+                needNameState = currentName.isEmpty(),
+                needAmountState = currentAmount.isEmpty(),
                 needDateState = userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0
             )
         }
-        if (userPostInput.name.isEmpty() || userPostInput.amount.isEmpty() || (userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0)) return
+        if (currentName.isEmpty() || currentAmount.isEmpty() || (userPostInput.year == 0 || userPostInput.month == 0 || userPostInput.date == 0)) return
         viewModelScope.launch {
-            userPostInput.amount.toIntOrNull()?.let { userInputSpendAmount ->
+            currentAmount.toIntOrNull()?.let { userInputSpendAmount ->
                 val spendTransact = when {
                     _uiState.value.isSpendState.not() -> {
                         History.Transact(
                             earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = userPostInput.name
+                                    item = currentName
                                 )
                             )
                         )
@@ -62,7 +69,7 @@ class PostViewModel @Inject constructor(
                             spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = userPostInput.name
+                                    item = currentName
                                 )
                             )
                         )
@@ -101,14 +108,20 @@ class PostViewModel @Inject constructor(
                 ImageRequest(
                     version = "V2",
                     requestId = "string",
-                    timestamp = 0,
-                    images = Image(
-                        format = "png",
-                        name = "test 1",
-                        data = imageString
+                    timestamp = System.currentTimeMillis(),
+                    images = listOf(
+                        Image(
+                            format = "png",
+                            name = "test 1",
+                            data = imageString
+                        )
                     )
                 )
             )
+            name.value =
+                TextFieldValue(response.receiptImageList.firstOrNull()?.receipt?.result?.storeInfo?.name?.text.orEmpty())
+            amount.value =
+                TextFieldValue(response.receiptImageList.firstOrNull()?.receipt?.result?.totalPrice?.price?.text.orEmpty())
             Log.e("@@@response", "response : $response")
         }
     }

@@ -15,6 +15,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -32,12 +33,18 @@ object NetworkModule {
             .build()
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         val httpClient = OkHttpClient.Builder()
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         httpClient.addInterceptor(httpLoggingInterceptor)
         httpClient.addInterceptor(chuckerInterceptor)
+        httpClient.connectTimeout(60, TimeUnit.SECONDS)
+        httpClient.writeTimeout(60, TimeUnit.SECONDS)
+        httpClient.readTimeout(60, TimeUnit.SECONDS)
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaTypeOrNull()!!))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaTypeOrNull()!!))
             .client(httpClient.build())
             .build()
     }

@@ -24,20 +24,16 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,8 +58,6 @@ fun AddCash(
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
-        var nameText by remember { mutableStateOf(TextFieldValue("")) }
-        var amountText by remember { mutableStateOf(TextFieldValue("")) }
         val calendar = Calendar.getInstance()
         val yearState = remember { mutableStateOf(0) }
         val monthState = remember { mutableStateOf(-1) }
@@ -85,8 +79,8 @@ fun AddCash(
             label = {
                 Text("Name")
             },
-            value = nameText,
-            onValueChange = { nameText = it },
+            value = viewModel.name.value,
+            onValueChange = { viewModel.name.value = it },
         )
         AnimatedVisibility(visible = uiState.value.needNameState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -103,8 +97,8 @@ fun AddCash(
             label = {
                 Text("Amount")
             },
-            value = amountText,
-            onValueChange = { amountText = it },
+            value = viewModel.amount.value,
+            onValueChange = { viewModel.amount.value = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         AnimatedVisibility(visible = uiState.value.needAmountState) {
@@ -175,9 +169,7 @@ fun AddCash(
                     UserPostInput(
                         year = yearState.value,
                         month = monthState.value + 1,
-                        date = dayOfMonthState.value,
-                        name = nameText.text,
-                        amount = amountText.text
+                        date = dayOfMonthState.value
                     )
                 )
             }) {
