@@ -2,13 +2,10 @@ package com.example.feature_post
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature_post.model.UserPostInput
 import com.farmer.data.History
 import com.farmer.data.network.model.Image
 import com.farmer.data.network.model.ImageRequest
@@ -101,6 +98,9 @@ class PostViewModel @Inject constructor(
 
     fun requestOcr(imageInputStream: InputStream?) {
         if (imageInputStream == null) return
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
         viewModelScope.launch {
             val selectedImage = BitmapFactory.decodeStream(imageInputStream)
             val stream = ByteArrayOutputStream()
@@ -130,6 +130,9 @@ class PostViewModel @Inject constructor(
             yearState.value = date?.get(0)?.toIntOrNull() ?: 0
             monthState.value = date?.get(1)?.toIntOrNull() ?: 0
             dayOfMonthState.value = date?.get(2)?.toIntOrNull() ?: 0
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
         }
     }
 }
