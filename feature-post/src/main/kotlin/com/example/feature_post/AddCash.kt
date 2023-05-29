@@ -1,6 +1,9 @@
 package com.example.feature_post
 
+import android.Manifest
 import android.app.DatePickerDialog
+import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,25 +35,61 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.feature_post.R
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import java.io.File
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun AddCash(
     onDismissRequest: () -> Unit,
     viewModel: PostViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+    var currentPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
+    var tempPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) {
+                currentPhotoUri = tempPhotoUri
+                if (currentPhotoUri != null) {
+                    val inputStream = context.contentResolver.openInputStream(currentPhotoUri)
+                    viewModel.requestOcr(inputStream)
+                }
+            }
+        }
+    )
+    val cameraPermissionState = rememberPermissionState(
+        permission = Manifest.permission.CAMERA,
+        onPermissionResult = { granted ->
+            if (granted) {
+                tempPhotoUri = context.createTempPictureUri()
+                cameraLauncher.launch(tempPhotoUri)
+            } else print("camera permission is denied")
+        }
+    )
+
     val pickMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -160,6 +199,14 @@ fun AddCash(
         Row {
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = {
+                cameraPermissionState.launchPermissionRequest()
+            }) {
+                Icon(
+                    painterResource(id = R.drawable.baseline_camera_enhance_24),
+                    contentDescription = null
+                )
+            }
+            IconButton(onClick = {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }) {
                 Icon(Icons.Default.Share, contentDescription = null)
@@ -203,4 +250,19 @@ fun AddCash(
             }
         }
     }
+}
+
+private fun Context.createTempPictureUri(
+    provider: String = "com.farmer.olive.provider",
+//    fileName: String = "picture_${System.currentTimeMillis()}",
+    fileName: String = "cache_picture",
+    fileExtension: String = ".png"
+): Uri {
+    val tempFile = File.createTempFile(
+        fileName, fileExtension, cacheDir
+    ).apply {
+        createNewFile()
+    }
+
+    return FileProvider.getUriForFile(applicationContext, provider, tempFile)
 }
