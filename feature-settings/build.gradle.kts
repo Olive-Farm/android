@@ -34,4 +34,9 @@ dependencies {
     implementation(project(":network"))
     implementation(project(":navigator"))
     implementation(project(":data"))
+
+    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("com.android.support.constraint:constraint-layout:1.1.3")
 }
