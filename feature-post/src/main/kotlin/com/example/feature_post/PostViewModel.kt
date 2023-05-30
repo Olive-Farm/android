@@ -127,10 +127,10 @@ class PostViewModel @Inject constructor(
                 TextFieldValue(receipt?.storeInfo?.name?.text.orEmpty())
             amount.value =
                 TextFieldValue(receipt?.totalPrice?.price?.text.orEmpty())
-            val date = receipt?.paymentInfo?.date?.text?.split("-")
-            yearState.value = date?.get(0)?.toIntOrNull() ?: 0
-            monthState.value = date?.get(1)?.toIntOrNull() ?: 0
-            dayOfMonthState.value = date?.get(2)?.toIntOrNull() ?: 0
+            val date = receipt?.paymentInfo?.date?.formattedDate
+            yearState.value = date?.year?.toIntOrNull() ?: 0
+            monthState.value = date?.month?.toIntOrNull() ?: 0
+            dayOfMonthState.value = date?.day?.toIntOrNull() ?: 0
             _uiState.update {
                 it.copy(isLoading = false)
             }

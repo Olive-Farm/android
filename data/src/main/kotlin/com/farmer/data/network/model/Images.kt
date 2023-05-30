@@ -61,10 +61,20 @@ data class Images(
             @kotlinx.serialization.Serializable
             data class Date(
                 @SerialName("text") val text: String? = null,
-//                @SerialName("formatted"     ) val formatted     : Formatted?               = Formatted(),
+                @SerialName("formatted") val formattedDate: FormattedDate? = FormattedDate(),
 //                @SerialName("boundingPolys" ) val boundingPolys : ArrayList<BoundingPolys> = arrayListOf(),
 //                @SerialName("maskingPolys"  ) val maskingPolys  : ArrayList<String>        = arrayListOf()
-            )
+            ) {
+                @kotlinx.serialization.Serializable
+                data class FormattedDate(
+                    @SerialName("year")
+                    val year: String? = null,
+                    @SerialName("month")
+                    val month: String? = null,
+                    @SerialName("day")
+                    val day: String? = null
+                )
+            }
 
             @kotlinx.serialization.Serializable
             data class Time(
