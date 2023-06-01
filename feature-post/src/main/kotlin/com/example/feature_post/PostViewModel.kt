@@ -80,7 +80,7 @@ class PostViewModel @Inject constructor(
                 }
                 val userInputHistory = History(
                     year = yearState.value,
-                    month = monthState.value + 1, // 달에는 1월을 추가해야 함.
+                    month = monthState.value +1, // 달에는 1월을 추가해야 함.
                     date = dayOfMonthState.value,
                     dayOfWeek = "",
                     tool = "", // todo
@@ -129,7 +129,7 @@ class PostViewModel @Inject constructor(
                 TextFieldValue(receipt?.totalPrice?.price?.text.orEmpty())
             val date = receipt?.paymentInfo?.date?.formattedDate
             yearState.value = date?.year?.toIntOrNull() ?: 0
-            monthState.value = date?.month?.toIntOrNull() ?: 0
+            monthState.value = (date?.month?.toIntOrNull() ?: 0) -1 // -1 해줘야 위에서 month 값 제대로 들어감
             dayOfMonthState.value = date?.day?.toIntOrNull() ?: 0
             _uiState.update {
                 it.copy(isLoading = false)

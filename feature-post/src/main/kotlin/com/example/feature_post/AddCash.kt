@@ -124,7 +124,7 @@ fun AddCash(
         AnimatedVisibility(visible = uiState.value.needNameState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(
-                    text = "적요를 입력해주세요.",
+                    text = "가게명을 입력해주세요.",
                     color = Color.Red,
                     fontSize = 12.sp
                 )
@@ -183,7 +183,7 @@ fun AddCash(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
-                text = "${viewModel.yearState.value}/${viewModel.monthState.value + 1}/${viewModel.dayOfMonthState.value}"
+                text = "${viewModel.yearState.value}/${viewModel.monthState.value +1}/${viewModel.dayOfMonthState.value}"
             )
         }
         AnimatedVisibility(visible = uiState.value.needDateState) {
