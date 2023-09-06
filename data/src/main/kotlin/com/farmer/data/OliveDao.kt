@@ -1,6 +1,7 @@
 package com.farmer.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,4 +18,14 @@ interface OliveDao {
 
     @Query("SELECT * FROM HistoryList WHERE year = :year AND month = :month AND date = :date")
     suspend fun getHistoryByDate(year: Int, month: Int, date: Int): History?
+
+//    @Delete
+//    suspend fun deleteHistory(history: History)
+
+    @Query("DELETE FROM HistoryList WHERE id= :id")
+    suspend fun deleteHistory(id: Long)
+
+//    @Query("DELETE FROM HistoryList WHERE id = :id AND year = :year AND month = :month AND date = :date")
+//    suspend fun deleteHistoryById(id: Int, year: Int, month: Int, date: Int): History?
+
 }
