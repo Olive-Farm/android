@@ -1,5 +1,6 @@
 package com.farmer.data.repository
 
+import android.util.Log
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.OliveDao
@@ -79,6 +80,10 @@ class OliveRepositoryImpl @Inject constructor(
         val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber.addZero()}")
         val daysInMonth = yearMonth.month.length(yearMonth.isLeapYear)
         return (1..daysInMonth).map { LocalDate(yearMonth.year, yearMonth.month.value, it) }
+    }
+
+    override suspend fun deleteHistory(history: History) {
+        dao.deleteHistory(history.id)
     }
 
     // todo extension으로 빼기

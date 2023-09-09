@@ -62,6 +62,7 @@ dependencies {
 
     // hilt
     implementation(libs.hilt.android)
+    implementation(project(mapOf("path" to ":data")))
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
