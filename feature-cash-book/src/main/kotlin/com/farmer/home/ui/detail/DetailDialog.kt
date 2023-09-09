@@ -1,6 +1,8 @@
 package com.farmer.home.ui.detail
 
 import android.util.Log
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,16 +33,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.feature_post.PostViewModel
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.HistoryList
+import com.farmer.feature_post.R
 import com.farmer.home.ui.BlueAlpha200
 import com.farmer.home.ui.RedAlpha200
 import com.farmer.home.ui.postdialog.PostDialogViewModel
@@ -63,7 +69,7 @@ fun DetailDialog(
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp
             )
-            Spacer(modifier = Modifier.width(17.dp))
+            Spacer(modifier = Modifier.width(13.dp))
             Text(text = dateInfo?.date?.dayOfWeek.toString(), fontSize = 16.sp)
         }
 
@@ -90,7 +96,7 @@ fun DetailDialog(
                         text = String.format("%,d", incomeData.price.toString().toLong()),
                         color = BlueAlpha200
                     )
-                    Text(text = "￦")
+                    Text(text = " ￦")
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
@@ -129,38 +135,21 @@ fun DetailDialog(
                     )
 
                     Text(text = "￦") // 나중에 이거 삭제하기 지금 테스트
-                        IconButton(
-                            onClick = {
-                                val history = dateInfo?.history
-                                if(history!=null)
-                                {
-                                    Log.e("@@@테스트 알림","삭제 완료!")
-                                    postViewModel.deleteHistory(history)
-                                    Log.e("@@@테스트","id 정보 : ${dateInfo?.history?.id}")
-                                }
 
-                            })
-                        {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = Color.Gray,
-                            )
-                        }
 
-                    if (isDialogEditMode) {
+                    /*if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
                                 .padding(0.dp)
                                 .size(16.dp),
-                            onClick = { /* todo */ }) {
+                            onClick = { *//* todo *//* }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = null,
                                 tint = Color.Gray,
                             )
                         }
-                    }
+                    }*/
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -190,7 +179,11 @@ fun DetailDialog(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Row {
+        Row(modifier = Modifier.padding(all = 7.dp),
+            verticalAlignment = Alignment.CenterVertically){
+
+            Spacer(modifier = Modifier.weight(1f))
+
             var inputText by remember { mutableStateOf(TextFieldValue("")) }
             if (isDialogEditMode) {
                 TextField(
@@ -220,7 +213,26 @@ fun DetailDialog(
                     )
                 }
             }
+            IconButton(
+                onClick = {
+                    val history = dateInfo?.history
+                    if(history!=null)
+                    {
+                        Log.e("@@@테스트 알림","삭제 완료!")
+                        postViewModel.deleteHistory(history)
+                        Log.e("@@@테스트","id 정보 : ${dateInfo?.history?.id}")
+                    }
+
+                })
+            {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                )
+            }
         }
+
     }
 }
 
