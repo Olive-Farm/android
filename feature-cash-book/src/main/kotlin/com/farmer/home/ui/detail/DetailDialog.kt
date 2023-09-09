@@ -48,18 +48,18 @@ fun DetailDialog(
 ) {
     Log.e("@@@dateInfo", ": $dateInfo")
     Log.e("@@@spendList", "spendList: ${dateInfo?.history?.spendList?.spendList}")
-    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
                 text = "${dateInfo?.date?.dayOfMonth}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(17.dp))
             Text(text = dateInfo?.date?.dayOfWeek.toString(), fontSize = 16.sp)
         }
 
-        Divider(modifier = Modifier.padding(vertical = 6.dp), color = Color.DarkGray)
+        Divider(modifier = Modifier.padding(vertical = 10.dp), color = Color(0xFF355A1E))
 
         LazyColumn {
             itemsIndexed(
@@ -70,7 +70,7 @@ fun DetailDialog(
                 ) {
                     val titleVisibility = if (index == 0) 1f else 0f
                     Text(
-                        text = "Income",
+                        text = "수입",
                         modifier = Modifier.alpha(titleVisibility),
                         fontWeight = FontWeight.Bold
                     )
@@ -108,7 +108,7 @@ fun DetailDialog(
                 ) {
                     val titleVisibility = if (index == 0) 1f else 0f
                     Text(
-                        text = "Spend",
+                        text = "지출",
                         modifier = Modifier.alpha(titleVisibility),
                         fontWeight = FontWeight.Bold
                     )
@@ -148,7 +148,7 @@ fun DetailDialog(
 
         val sumOfIncome = (dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of Income : ${String.format("%,d", sumOfIncome.toString().toLong())} ￦",
+            text = "수입 합계 : ${String.format("%,d", sumOfIncome.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 
@@ -156,7 +156,7 @@ fun DetailDialog(
 
         val sumOfSpend = (dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }
         Text(
-            text = "Sum of spend : ${String.format("%,d", sumOfSpend.toString().toLong())} ￦",
+            text = "지출 합계 : ${String.format("%,d", sumOfSpend.toString().toLong())} ￦",
             fontWeight = FontWeight.Bold
         )
 
