@@ -1,11 +1,11 @@
 package com.farmer.home.util
 
 internal object StringKeySet {
-    const val MON = "Mon"
-    const val TUE = "Tue"
-    const val WED = "Wed"
-    const val THU = "Thu"
-    const val FRI = "Fri"
-    const val SAT = "Sat"
-    const val SUN = "Sun"
+    const val MON = "월"
+    const val TUE = "화"
+    const val WED = "수"
+    const val THU = "목"
+    const val FRI = "금"
+    const val SAT = "토"
+    const val SUN = "일"
 }
