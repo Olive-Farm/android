@@ -111,13 +111,14 @@ fun DetailDialog(
                             modifier = Modifier.alpha(titleVisibility),
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(15.dp))
                         // todo tocommastring
                         Text(text = incomeData.item)
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = String.format("%,d", incomeData.price.toString().toLong()),
-                            color = BlueAlpha200
+                            //color = BlueAlpha200
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(text = " ￦")
                         if (isDialogEditMode) {
@@ -137,6 +138,7 @@ fun DetailDialog(
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }
+
                 itemsIndexed(
                     dateInfo?.history?.spendList?.spendList ?: emptyList()
                 ) { index, spendData ->
@@ -149,29 +151,32 @@ fun DetailDialog(
                             modifier = Modifier.alpha(titleVisibility),
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(15.dp))
                         Text(text = spendData.item)
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = String.format("%,d", spendData.price.toString().toLong()),
-                            color = RedAlpha200
+                            //color = RedAlpha200
+                            fontWeight = FontWeight.SemiBold
                         )
 
-                        Text(text = "￦") // 나중에 이거 삭제하기 지금 테스트
+                        Text(text = " ￦") // 나중에 이거 삭제하기 지금 테스트
 
-                        /*if (isDialogEditMode) {
+                        if (isDialogEditMode) {
                             IconButton(
                                 modifier = Modifier
                                     .padding(0.dp)
                                     .size(16.dp),
-                                onClick = { *//* todo *//* }) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = Color.Gray,
-                            )
+                                onClick = { /* todo */ }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null,
+                                    tint = Color.Gray,
+                                )
+
+                            }
                         }
-                    }*/
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -186,18 +191,42 @@ fun DetailDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             val sumOfIncome = (dateInfo?.history?.spendList?.earnList ?: emptyList()).sumOf { it.price }
-            Text(
-                text = "수입 합계 : ${String.format("%,d", sumOfIncome.toString().toLong())} ￦",
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "수입 합계",
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF355A1E)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = String.format("%,d", sumOfIncome.toString().toLong()),
+                    color = BlueAlpha200,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = " ￦")
+            }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             val sumOfSpend = (dateInfo?.history?.spendList?.spendList ?: emptyList()).sumOf { it.price }
-            Text(
-                text = "지출 합계 : ${String.format("%,d", sumOfSpend.toString().toLong())} ￦",
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "지출 합계",
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF355A1E)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = String.format("%,d", sumOfSpend.toString().toLong()),
+                    color = RedAlpha200,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = " ￦")
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 

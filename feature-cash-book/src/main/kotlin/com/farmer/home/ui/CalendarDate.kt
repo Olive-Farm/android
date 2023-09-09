@@ -46,24 +46,7 @@ fun CalendarDate(
             else Color.DarkGray
         )
         Spacer(modifier = Modifier.weight(1f))
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(5.dp),
-            backgroundColor = RedAlpha200,
 
-        ) {
-            if (income != 0) {
-                Text(
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
-                    text = numFormat.format(income).toString(),
-                    fontSize = 10.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.White
-                )
-            }
-        }
-        Spacer(modifier = Modifier.size(2.dp))
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
@@ -80,6 +63,27 @@ fun CalendarDate(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.size(2.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(5.dp),
+            backgroundColor = RedAlpha200,
+
+            ) {
+            if (income != 0) {
+                Text(
+                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                    text = numFormat.format(income).toString(),
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+            }
+        }
+
     }
 }
 
