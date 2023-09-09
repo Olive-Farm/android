@@ -10,15 +10,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -33,9 +27,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feature_post.PostDialog
@@ -101,34 +98,16 @@ private fun CalendarHeader(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 8.dp)
+            .padding(top = 10.dp, bottom = 10.dp, start = 8.dp)
     ) {
-        // calendar title (Ex. January 2022)
-        AnimatedContent(
-            modifier = Modifier
-                .wrapContentHeight()
-                .wrapContentWidth()
-                .align(Alignment.CenterVertically),
-            targetState = getDateTitleText(month, year),
-            transitionSpec = {
-                addSlideAnimation(isNext = isNext.value).using(
-                    SizeTransform(clip = false)
-                )
-            }
-        ) {
-            Text(
-                text = it,
-                modifier = Modifier,
-                fontWeight = FontWeight.Bold
-            )
-        }
 
         // previous, next month icon button
+
         Row(
             modifier = Modifier
                 .wrapContentWidth()
                 .align(Alignment.CenterVertically),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
             NextMonthIconButton(
                 modifier = Modifier.wrapContentSize(),
@@ -139,6 +118,29 @@ private fun CalendarHeader(
                     onPreviousClick()
                 }
             )
+
+            // calendar title (Ex. January 2022)
+            AnimatedContent(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .wrapContentWidth()
+                    .align(Alignment.CenterVertically),
+                targetState = getDateTitleText(month, year),
+                transitionSpec = {
+                    addSlideAnimation(isNext = isNext.value).using(
+                        SizeTransform(clip = false)
+                    )
+                }
+            ) {
+                Text(
+                    text = it,
+                    modifier = Modifier.width(170.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 5.em,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             NextMonthIconButton(
                 modifier = Modifier.wrapContentSize(),
                 imageVector = Icons.Default.KeyboardArrowRight,
@@ -158,7 +160,11 @@ private fun CalendarHeader(
         }) {
             Icon(Icons.Default.Settings, "Settings icon")
         }
+
     }
+    Divider(modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp), color = Color(0xFF355A1E)
+    , thickness = 2.dp)
+
 }
 
 private fun getDateTitleText(month: Month, year: Int): String {

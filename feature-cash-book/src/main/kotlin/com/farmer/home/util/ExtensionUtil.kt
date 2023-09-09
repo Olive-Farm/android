@@ -39,12 +39,12 @@ internal fun String.toKotlinDateTimeMonth(): Month =
 
 internal fun String.toKotlinDayOfWeek(): DayOfWeek =
     when (this) {
-        "MON" -> DayOfWeek.MONDAY
-        "TUE" -> DayOfWeek.TUESDAY
-        "WED" -> DayOfWeek.WEDNESDAY
-        "THU" -> DayOfWeek.THURSDAY
-        "FIR" -> DayOfWeek.FRIDAY
-        "SAT" -> DayOfWeek.SATURDAY
-        "SUN" -> DayOfWeek.SUNDAY
+        "월" -> DayOfWeek.MONDAY
+        "화" -> DayOfWeek.TUESDAY
+        "수" -> DayOfWeek.WEDNESDAY
+        "목" -> DayOfWeek.THURSDAY
+        "금" -> DayOfWeek.FRIDAY
+        "토" -> DayOfWeek.SATURDAY
+        "일" -> DayOfWeek.SUNDAY
         else -> DayOfWeek.MONDAY
     }
