@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,17 +36,24 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feature_post.PostViewModel
 import com.farmer.data.DateInfo
+import com.farmer.data.History
+import com.farmer.data.HistoryList
 import com.farmer.home.ui.BlueAlpha200
 import com.farmer.home.ui.RedAlpha200
+import com.farmer.home.ui.postdialog.PostDialogViewModel
 import com.farmer.home.ui.states.CalendarViewModel
+// 여기서 ui 수정?
 
 @Composable
 fun DetailDialog(
     dateInfo: DateInfo?,
     isDialogEditMode: Boolean,
-    viewModel: CalendarViewModel = hiltViewModel()
+    viewModel: CalendarViewModel = hiltViewModel(),
+    postViewModel : PostDialogViewModel = hiltViewModel()
 ) {
+
     Log.e("@@@dateInfo", ": $dateInfo")
     Log.e("@@@spendList", "spendList: ${dateInfo?.history?.spendList?.spendList}")
     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
@@ -119,7 +127,27 @@ fun DetailDialog(
                         text = String.format("%,d", spendData.price.toString().toLong()),
                         color = RedAlpha200
                     )
-                    Text(text = "￦")
+
+                    Text(text = "￦") // 나중에 이거 삭제하기 지금 테스트
+                        IconButton(
+                            onClick = {
+                                val history = dateInfo?.history
+                                if(history!=null)
+                                {
+                                    Log.e("@@@테스트 알림","삭제 완료!")
+                                    postViewModel.deleteHistory(history)
+                                    Log.e("@@@테스트","id 정보 : ${dateInfo?.history?.id}")
+                                }
+
+                            })
+                        {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                            )
+                        }
+
                     if (isDialogEditMode) {
                         IconButton(
                             modifier = Modifier
@@ -195,3 +223,5 @@ fun DetailDialog(
         }
     }
 }
+
+

@@ -6,11 +6,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Base64
+import android.util.Log
+import androidx.lifecycle.viewModelScope
+import com.example.feature_post.model.UserPostInput
+import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.network.model.Image
 import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +24,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.time.Instant
 import javax.inject.Inject
+import java.util.UUID
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
@@ -107,17 +115,19 @@ class PostViewModel @Inject constructor(
             val stream = ByteArrayOutputStream()
             selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
             val image = stream.toByteArray()
-            val imageString = android.util.Base64.encodeToString(image, 0)
+
+            val imageString = Base64.encodeToString(image, 0)
+            Log.e("@@@encdedImage", "size : ${imageString.length}")
             val response = repository.getReceiptInformation(
                 ImageRequest(
-                    version = "V2",
-                    requestId = "string",
-                    timestamp = System.currentTimeMillis(),
+                     version = "V2",
+                    requestId = UUID.randomUUID().toString(),
+                    timestamp = (Instant.now().toEpochMilli()),
                     images = listOf(
                         Image(
-                            format = "png",
-                            name = "test 1",
-                            data = imageString
+                        format = "png",
+                        name = "test 1",
+                        data = imageString
                         )
                     )
                 )
