@@ -3,11 +3,11 @@ package com.farmer.data.network.model
 import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
-data class Receipt(
-    @SerialName("meta")
-    val meta: Meta,
+data class Images(
+//    @SerialName("meta")
+//    val meta: Meta = Meta(""),
     @SerialName("result")
-    val result: ReceiptResult
+    val result: ReceiptResult = ReceiptResult()
 ) {
     @kotlinx.serialization.Serializable
     data class Meta(
@@ -61,10 +61,20 @@ data class Receipt(
             @kotlinx.serialization.Serializable
             data class Date(
                 @SerialName("text") val text: String? = null,
-//                @SerialName("formatted"     ) val formatted     : Formatted?               = Formatted(),
+                @SerialName("formatted") val formattedDate: FormattedDate? = FormattedDate(),
 //                @SerialName("boundingPolys" ) val boundingPolys : ArrayList<BoundingPolys> = arrayListOf(),
 //                @SerialName("maskingPolys"  ) val maskingPolys  : ArrayList<String>        = arrayListOf()
-            )
+            ) {
+                @kotlinx.serialization.Serializable
+                data class FormattedDate(
+                    @SerialName("year")
+                    val year: String? = null,
+                    @SerialName("month")
+                    val month: String? = null,
+                    @SerialName("day")
+                    val day: String? = null
+                )
+            }
 
             @kotlinx.serialization.Serializable
             data class Time(

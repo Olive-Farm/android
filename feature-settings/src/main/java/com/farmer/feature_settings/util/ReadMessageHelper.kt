@@ -1,24 +1,16 @@
-
-
-
-//사용하지 않고 있음
-
-
-
-package com.farmer.olive
+package com.farmer.feature_settings.util
 
 import android.content.ContentResolver
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.Cursor.FIELD_TYPE_STRING
 import android.net.Uri
 import android.util.Log
-import com.farmer.home.model.response.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun readSMSMessage(context: Context) {
+object ReadMessageHelper {
+    fun readSMSMessage(context: Context): List<Message> {
         val messageList: MutableList<Message> = mutableListOf()
 
         val allMessage: Uri = Uri.parse("content://sms/inbox")
@@ -32,7 +24,7 @@ fun readSMSMessage(context: Context) {
             var msg: Message = Message()
 
             var address: String = ""               //번호 추출
-            if (c.getType(0) == FIELD_TYPE_STRING) {
+            if (c.getType(0) == Cursor.FIELD_TYPE_STRING) {
                 address = c.getString(0)
             }
             msg.address = address
@@ -43,7 +35,7 @@ fun readSMSMessage(context: Context) {
             msg.year = getDateTime(msg.timeStamp)
 
             var body: String = ""                                  //문자 내용 추출
-            if (c.getType(2) == FIELD_TYPE_STRING) {
+            if (c.getType(2) == Cursor.FIELD_TYPE_STRING) {
                 body = c.getString(2)
             }
             msg.body = body
@@ -55,36 +47,12 @@ fun readSMSMessage(context: Context) {
 
         c.close();
 
+        return messageList
     }
 
-//fun test()
-//{
-//    val sms_year = 2023
-//    val sms_month = 8
-//    val sms_day = 3
-//    val sms_amount = 5600
-//    val memo ="신라식당"
-//
-//    //년,월,일,내역,가격 DB에 넘기기
-//    val history = History(year = sms_year, month = sms_month, date = sms_day,
-//        spendList = History.Transact(
-//            spendList = listOf(
-//                History.Transact.TransactData(price = sms_amount, item = memo)
-//            )
-//        ))
-//
-//    lateinit var viewModel: SelectSMSViewModel
-//    if(history!=null)
-//    {
-//        viewModel.insertSms(history)
-//    }
-//}
-fun parseSMS(message: Message) {
-
-        val regex_total =
-            """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)\s(?:.+원)""".toRegex()
-        val regex_not_total =
-            """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)""".toRegex()
+    fun parseSMS(message: Message) {
+        val regex_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)\s(?:.+원)""".toRegex()
+        val regex_not_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)""".toRegex()
 
         var (amount, inst, date, time, memo) = arrayOf<String>("-", "-", "-", "-", "-")
 
@@ -110,53 +78,20 @@ fun parseSMS(message: Message) {
             }
 
             date = date!!.replace("/", "-")
-
-            // date 분리 (월,일 따로)
-            val str = date
-            val arr = str.split("-")
-//            val sms_year = message.year.toInt()
-//            val sms_month = arr[0].toInt()
-//            val sms_day = arr[1].toInt()
-//            val sms_amount = amount.toInt()
-
-            val sms_year = message.year.toInt()
-            val sms_month = arr[0].toInt()
-            val sms_day = arr[1].toInt()
-            val sms_amount = amount.toInt()
-
-            //년,월,일,내역,가격 DB에 넘기기
-            val history = History(year = sms_year, month = sms_month, date = sms_day,
-                spendList = History.Transact(
-                    spendList = listOf(
-                        History.Transact.TransactData(price = sms_amount, item = memo)
-                    )
-                ))
-
-//            lateinit var viewModel: SelectSMSViewModel
-//            if(history!=null)
-//            {
-//              viewModel.insertSms(history)
-//            }
-
-
             var arrangetime = message.year + "-" + date + " " + time + ":" + "00"
             amount = amount!!.replace(",", "")
-            Log.d("@@년도", sms_year.toString())
-            Log.d("@@월", sms_month.toString())
-            Log.d("@@날짜", sms_day.toString())
             Log.d("timestamp", message.timeStamp.toString())
-            Log.d("시간 추출 ", arrangetime) // 시간
+            Log.d("시간 추출 ", arrangetime)
             Log.d("할부 추출 ", inst)
             Log.d("금액 추출 ", amount)
-            Log.d("내역 추출 ", memo) // 상호명
-            Log.d(TAG, "--------------------------------------------")
-
+            Log.d("내역 추출 ", memo)
+            Log.d(ContentValues.TAG, "--------------------------------------------")
         } catch (e: Exception) {
         }
 
     }
 
-    private fun getDateTime(s: Long): String {
+    private fun getDateTime(s: Long): String {              //카드 사용의 년도 추출
         try {
             val sdf = SimpleDateFormat("yyyy")
             val netDate = Date(s)
@@ -165,3 +100,4 @@ fun parseSMS(message: Message) {
             return e.toString()
         }
     }
+}

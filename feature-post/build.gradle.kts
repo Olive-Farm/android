@@ -31,6 +31,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 
+    implementation("com.google.accompanist:accompanist-permissions:0.27.0")
+
     implementation(project(":network"))
     implementation(project(":data"))
 }

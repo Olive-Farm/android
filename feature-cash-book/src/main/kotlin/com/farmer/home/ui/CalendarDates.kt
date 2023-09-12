@@ -1,18 +1,25 @@
 package com.farmer.home.ui
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.home.model.OliveDateList
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import java.time.DayOfWeek
 
 @Composable
 fun CalendarDates(
@@ -27,14 +34,17 @@ fun CalendarDates(
             viewModel.refreshMonth()
         }
     ) {
+        Column (modifier = Modifier.padding(all = 7.dp)){
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(5.dp),
             columns = GridCells.Fixed(7),
             content = {
                 items(OliveDateList.list) {
                     Text(
+                        modifier = Modifier.padding(bottom = 10.dp),
                         text = it.shortDayOfTheWeek,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.Bold,
                         color = it.textColor
                     )
                 }
@@ -51,6 +61,7 @@ fun CalendarDates(
                             spend = it.dateInfo?.history?.spendList?.earnList?.sumOf { data ->
                                 data.price
                             } ?: 0,
+                            dayOfWeek = it.dateInfo?.date?.dayOfWeek,
                             onClick = {
                                 viewModel.setShowDetailDialog(
                                     shouldShow = true,
@@ -60,7 +71,10 @@ fun CalendarDates(
                         )
                     }
                 }
+
             }
         )
+
+        }
     }
 }

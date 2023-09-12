@@ -5,5 +5,6 @@ data class PostViewState(
     val needNameState: Boolean = false,
     val needAmountState: Boolean = false,
     val needDateState: Boolean = false,
-    val dismissDialogState: Boolean = false
+    val dismissDialogState: Boolean = false,
+    val isLoading: Boolean = false
 )

@@ -25,7 +25,7 @@ fun NextMonthIconButton(
     ) {
         Icon(
             modifier = Modifier,
-            tint = Color(0xFF413D4B),
+            tint = Color.DarkGray,
             imageVector = imageVector,
             contentDescription = contentDescription
         )
