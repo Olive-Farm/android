@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "HistoryList")
 data class History(
     @SerialName("year")
-    val year: Int = -1, // 2023
+    var year: Int = -1, // 2023
     @SerialName("month")
     val month: Int = -1, // 3
     @SerialName("date")

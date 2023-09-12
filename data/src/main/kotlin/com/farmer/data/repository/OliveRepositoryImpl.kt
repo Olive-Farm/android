@@ -39,6 +39,35 @@ class OliveRepositoryImpl @Inject constructor(
         emit(dateInfoList)
     }
 
+    override suspend fun insertSms(history: History) {
+        val originHistory = dao.getHistoryByDate(
+            year = history.year,
+            month = history.month,
+            date = history.date
+        )
+        if (originHistory != null) {
+            val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
+            val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList
+            val newHistory = History(
+                year = originHistory.year,
+                month = originHistory.month,
+                date = originHistory.date,
+                dayOfWeek = originHistory.dayOfWeek,
+                tool = originHistory.tool,
+                memo = originHistory.memo,
+                category = originHistory.category,
+                spendList = History.Transact(
+                    spendList = newSpendList,
+                    earnList = newEarnedList
+                ),
+                id = originHistory.id
+            )
+            dao.insertHistory(history = newHistory)
+        } else {
+            dao.insertHistory(history = history)
+        }
+    }
+
     override suspend fun insertHistory(history: History) {
         val originHistory = dao.getHistoryByDate(
             year = history.year,

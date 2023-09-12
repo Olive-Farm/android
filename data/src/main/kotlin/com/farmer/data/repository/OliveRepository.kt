@@ -15,5 +15,7 @@ interface OliveRepository {
 
     suspend fun deleteHistory(history: History)
 
+    suspend fun insertSms(history: History)
+
 
 }

@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val repository: CashBookRepository,
-    private val repo: OliveRepository
+    private val repo: OliveRepository,
 ) : ViewModel() {
 
     private val viewModelState: MutableStateFlow<CalendarUiState> =

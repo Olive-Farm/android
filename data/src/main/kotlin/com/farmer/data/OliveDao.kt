@@ -12,6 +12,9 @@ interface OliveDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistory(history: History)
 
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertSms(year: Int, month: Int, date: Int, price:Int, item:String ):History?
+
     // todo year도 추가해야 함.
     @Query("SELECT * FROM HistoryList WHERE month = :month")
     suspend fun getHistoryByMonth(month: Int): List<History>?
@@ -25,7 +28,5 @@ interface OliveDao {
     @Query("DELETE FROM HistoryList WHERE id= :id")
     suspend fun deleteHistory(id: Long)
 
-//    @Query("DELETE FROM HistoryList WHERE id = :id AND year = :year AND month = :month AND date = :date")
-//    suspend fun deleteHistoryById(id: Int, year: Int, month: Int, date: Int): History?
 
 }

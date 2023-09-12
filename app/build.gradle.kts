@@ -54,6 +54,15 @@ android {
 
 dependencies {
 
+    // Charts
+    //implementation ("com.diogobernardino:williamchart:3.10.1")
+
+    // Tooltips
+    // implementation ("com.diogobernardino.williamchart:tooltip-slider:3.10.1")
+//    implementation ("com.diogobernardino.williamchart:tooltip-points:3.10.1")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0") // 그래프 라이브러리 추가
+    implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
+
     // base
     implementation(libs.bundles.compose)
     implementation(libs.core.ktx)
