@@ -1,5 +1,5 @@
 [versions]
-agp = "7.2.2"
+agp = "7.4.1"
 kotlin = "1.8.10"
 kotlinDatetime = "0.4.0"
 ksp = "1.7.10-1.0.6"

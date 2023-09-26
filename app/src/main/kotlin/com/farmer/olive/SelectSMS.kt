@@ -125,12 +125,12 @@ fun parseSMS(message: Message) {
             val sms_amount = amount.toInt()
 
             //년,월,일,내역,가격 DB에 넘기기
-            val history = History(year = sms_year, month = sms_month, date = sms_day,
+            /*val history = History(year = sms_year, month = sms_month, date = sms_day,
                 spendList = History.Transact(
                     spendList = listOf(
                         History.Transact.TransactData(price = sms_amount, item = memo)
                     )
-                ))
+                ))*/
 
 //            lateinit var viewModel: SelectSMSViewModel
 //            if(history!=null)
