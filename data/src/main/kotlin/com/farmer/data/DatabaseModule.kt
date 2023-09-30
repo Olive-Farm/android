@@ -31,7 +31,8 @@ val BASIC_CATEGORY = arrayListOf(
     Category("생활비"),
     Category("교통비"),
     Category("병원/의료비"),
-    Category("문화/관광비")
+    Category("문화/관광비"),
+    Category("기타")
 )
 
 
@@ -55,25 +56,25 @@ abstract class DatabaseModule {
                 "olive.db"
             ).addCallback(
                 object : RoomDatabase.Callback(){
-                    override fun onCreate(db: SupportSQLiteDatabase) {
-                        super.onCreate(db)
+                    override fun onCreate(db: SupportSQLiteDatabase) {                //처음 생성시에는 onCreate로 바꾸기
+                        super.onCreate(db)                                            //이미 생성 후에는 onOpen 해야 값이 채워지는 듯
                         CoroutineScope(Dispatchers.IO).launch {
                             provideOliveDatabase(context).oliveDao().insertBasicList(BASIC_CATEGORY)
                         }
                     }
                 }
-            )//.addMigrations(MIGRATION_1_2)
+            ).addMigrations(MIGRATION_1_2)
             .build()
             }.also {
                 instance = it
             }
         }
 
-       /* private val MIGRATION_1_2 = object : Migration(1, 2){
+        private val MIGRATION_1_2 = object : Migration(1, 2){
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE CATEGORY ('categoryname' TEXT NOT NULL, 'id' INTEGER NOT NULL, PRIMARY KEY('id'))")
             }
-        }*/
+        }
 
 
         @Provides

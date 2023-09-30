@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [History::class, Category::class], version = 1) //어플 재설치를 안 한다면 version 2로 변경해야 함
+@Database(entities = [History::class, Category::class], version = 2)
 @TypeConverters(HistoryTypeConverter::class)
 abstract class OliveDatabase : RoomDatabase() {
     abstract fun oliveDao(): OliveDao

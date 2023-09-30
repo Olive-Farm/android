@@ -37,7 +37,7 @@ fun CalendarDates(
         Column (modifier = Modifier.padding(all = 7.dp)){
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth()
-                .padding(5.dp),
+                .padding(3.dp),
             columns = GridCells.Fixed(7),
             content = {
                 items(OliveDateList.list) {

@@ -1,5 +1,6 @@
 package com.farmer.data.repository
 
+import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.OliveDao
@@ -16,6 +17,16 @@ interface OliveRepository {
     suspend fun deleteHistory(history: History)
 
     suspend fun insertSms(history: History)
+
+
+    //카테고리
+    fun getCategoryList(): List<String>?
+
+    suspend fun insertCategory(category: Category)
+
+    suspend fun deleteCategory(category: Category)
+
+    suspend fun updateCategory(category: Category): Category
 
 
 }

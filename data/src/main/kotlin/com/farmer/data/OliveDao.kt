@@ -30,11 +30,11 @@ interface OliveDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategory(category: Category)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBasicList(categories: List<Category>)
 
     @Query("SELECT * FROM Category")
-    suspend fun getCategoryList(): List<Category>?
+    fun getCategoryList(): List<Category>?
 
     @Query("DELETE FROM Category WHERE id = :id")
     suspend fun deleteCategory(id: Int)
