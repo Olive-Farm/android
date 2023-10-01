@@ -158,7 +158,7 @@ fun AddCash(
         AnimatedVisibility(visible = uiState.value.needNameState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(
-                    text = "가게명을 입력해주세요.",
+                    text = "내역명을 입력해주세요.",
                     color = Color.Red,
                     fontSize = 12.sp
                 )
@@ -200,7 +200,7 @@ fun AddCash(
                     modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
                     value = selectedOptionText,
-                    onValueChange = { },
+                    onValueChange = { viewModel.category.value = selectedOptionText },
                     label = { Text("카테고리를 선택해주세요") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -219,6 +219,7 @@ fun AddCash(
                         DropdownMenuItem(
                             onClick = {
                                 selectedOptionText = selectionOption
+                                viewModel.category.value = selectionOption
                                 menuExpanded = false
                             }
                         ) {

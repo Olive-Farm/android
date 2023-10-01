@@ -76,6 +76,7 @@ class OliveRepositoryImpl @Inject constructor(
             month = history.month,
             date = history.date
         )
+        Log.d("@@@", history.category)
         if (originHistory != null) {
             val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
             val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList

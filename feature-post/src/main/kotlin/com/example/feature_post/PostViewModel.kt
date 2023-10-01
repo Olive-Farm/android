@@ -34,6 +34,7 @@ class PostViewModel @Inject constructor(
 
     val name = mutableStateOf(TextFieldValue(""))
     val amount = mutableStateOf(TextFieldValue(""))
+    val category = mutableStateOf(String())
     val yearState = mutableStateOf(0)
     val monthState = mutableStateOf(-1)
     val dayOfMonthState = mutableStateOf(0)
@@ -49,6 +50,7 @@ class PostViewModel @Inject constructor(
     fun postCashData() {
         val currentName = name.value.text
         val currentAmount = amount.value.text
+        val currentCategory = category.value
         _uiState.update {
             it.copy(
                 needNameState = currentName.isEmpty(),
@@ -66,7 +68,8 @@ class PostViewModel @Inject constructor(
                             earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )
@@ -76,7 +79,8 @@ class PostViewModel @Inject constructor(
                             spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )

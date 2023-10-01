@@ -41,7 +41,9 @@ data class History(
             @SerialName("price")
             val price: Int = -1,
             @SerialName("item")
-            val item: String = ""
+            val item: String = "",
+            @SerialName("category")
+            val category: String = ""
         )
     }
 }
