@@ -1,10 +1,6 @@
 package com.farmer.data
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface OliveDao {
@@ -28,5 +24,22 @@ interface OliveDao {
     @Query("DELETE FROM HistoryList WHERE id= :id")
     suspend fun deleteHistory(id: Long)
 
+
+    //카테고리
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategory(category: Category)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBasicList(categories: List<Category>)
+
+    @Query("SELECT * FROM Category")
+    fun getCategoryList(): List<Category>?
+
+    @Query("DELETE FROM Category WHERE id = :id")
+    suspend fun deleteCategory(id: Int)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateCategory(category: Category)
 
 }

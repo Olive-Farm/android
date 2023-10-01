@@ -1,6 +1,8 @@
 package com.farmer.data.repository
 
 import android.util.Log
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.data.OliveDao
@@ -74,6 +76,7 @@ class OliveRepositoryImpl @Inject constructor(
             month = history.month,
             date = history.date
         )
+        Log.d("@@@", history.category)
         if (originHistory != null) {
             val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
             val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList
@@ -122,5 +125,31 @@ class OliveRepositoryImpl @Inject constructor(
         } else {
             this.toString()
         }
+    }
+
+
+    //카테고리
+    override fun getCategoryList(): List<String> {
+        val categoryList = dao.getCategoryList()
+        val categoryTextList = mutableListOf<String>()
+        return if (categoryList != null) {
+            for (category in categoryList) {
+                categoryTextList.add(category.categoryname)
+            }
+            categoryTextList
+        } else emptyList()
+    }
+
+    override suspend fun insertCategory(category: Category) {
+
+    }
+
+    override suspend fun deleteCategory(category: Category) {
+
+    }
+
+    override suspend fun updateCategory(category: Category): Category {
+
+        return TODO("반환 값을 제공하세요")
     }
 }

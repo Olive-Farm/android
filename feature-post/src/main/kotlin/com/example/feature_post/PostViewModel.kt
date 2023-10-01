@@ -8,15 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.util.Base64
 import android.util.Log
-import androidx.lifecycle.viewModelScope
-import com.example.feature_post.model.UserPostInput
-import com.farmer.data.DateInfo
+import com.farmer.data.Category
 import com.farmer.data.History
 import com.farmer.data.network.model.Image
 import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +34,7 @@ class PostViewModel @Inject constructor(
 
     val name = mutableStateOf(TextFieldValue(""))
     val amount = mutableStateOf(TextFieldValue(""))
+    val category = mutableStateOf(String())
     val yearState = mutableStateOf(0)
     val monthState = mutableStateOf(-1)
     val dayOfMonthState = mutableStateOf(0)
@@ -52,6 +50,7 @@ class PostViewModel @Inject constructor(
     fun postCashData() {
         val currentName = name.value.text
         val currentAmount = amount.value.text
+        val currentCategory = category.value
         _uiState.update {
             it.copy(
                 needNameState = currentName.isEmpty(),
@@ -69,7 +68,8 @@ class PostViewModel @Inject constructor(
                             earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )
@@ -79,7 +79,8 @@ class PostViewModel @Inject constructor(
                             spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )
@@ -145,5 +146,10 @@ class PostViewModel @Inject constructor(
                 it.copy(isLoading = false)
             }
         }
+    }
+
+    //카테고리 불러오기
+    fun selectCategoryList(): List<String>? {
+        return repository.getCategoryList()
     }
 }

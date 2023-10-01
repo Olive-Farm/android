@@ -38,7 +38,7 @@ fun CalendarDate(
                 onClick()
             }
             .size(90.dp)
-            .padding(5.dp)
+            .padding(3.dp)
     ) {
         Text(text = date, color =
             if (dayOfWeek == java.time.DayOfWeek.SATURDAY) BlueAlpha200
