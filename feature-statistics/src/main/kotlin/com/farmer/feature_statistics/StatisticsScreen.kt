@@ -14,9 +14,16 @@ import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(
+    viewModel: StatisticsViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -28,21 +35,7 @@ fun StatisticsScreen() {
                 .height(120.dp)
                 .padding(top = 16.dp),
             pieChartData = PieChartData(
-                // todo 아래에 추가하면 됨.
-                listOf(
-                    PieChartData.Slice(
-                        15f,
-                        Green400
-                    ),
-                    PieChartData.Slice(
-                        35f,
-                        Green200
-                    ),
-                    PieChartData.Slice(
-                        50f,
-                        Green700
-                    ),
-                )
+                uiState.chartDataList.map { it.toPieChartData() }
             ),
             animation = simpleChartAnimation(),
             sliceDrawer = SimpleSliceDrawer(25f) // thickness 조정 가능
