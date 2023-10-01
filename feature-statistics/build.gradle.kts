@@ -20,6 +20,7 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     implementation(project(":data"))
+    implementation(libs.foundation.layout.android)
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
