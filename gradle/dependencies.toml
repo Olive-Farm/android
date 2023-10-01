@@ -37,6 +37,7 @@ mockitoInline = "3.5.13"
 kotlinCompilerExtensionVersion = "1.3.2"
 kotlinSerialization = "1.4.1"
 kotlinSerializationConverter = "0.8.0"
+tehrasChart = "0.2.4-alpha"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -102,6 +103,9 @@ macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 compose-test-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+
+# third party
+tehras-charts = { module = "com.github.tehras:charts", version.ref = "tehrasChart" }
 
 [bundles]
 compose = [

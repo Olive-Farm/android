@@ -22,6 +22,8 @@ dependencies {
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.tehras.charts)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)
 }
