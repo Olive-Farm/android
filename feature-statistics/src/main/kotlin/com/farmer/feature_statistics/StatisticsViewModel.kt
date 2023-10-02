@@ -47,9 +47,17 @@ class StatisticsViewModel @Inject constructor(
     val uiState = MutableStateFlow(StatisticsUiState.EMPTY)
 
     init {
-
         getCurrentYearMonth()
         getTempChartDataList()
+    }
+
+    fun onNewDateSelect(year: Int, month: Int) {
+        uiState.update {
+            it.copy(
+                year = year,
+                month = month + 1 // 달을 0부터 카운트하는 것 같아서 1 추가
+            )
+        }
     }
 
     private fun getCurrentYearMonth() {
