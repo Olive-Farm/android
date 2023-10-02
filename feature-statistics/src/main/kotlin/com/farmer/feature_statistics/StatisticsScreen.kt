@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.farmer.feature_statistics.StatisticsUiState.ChartData
@@ -41,6 +42,11 @@ fun StatisticsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "${uiState.year}/${uiState.month}",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         PieChart(
             modifier = Modifier

@@ -7,9 +7,14 @@ import com.github.tehras.charts.piechart.PieChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 data class StatisticsUiState(
+    val year: Int,
+    val month: Int,
     val chartDataList: List<ChartData>
 ) {
     data class ChartData(
@@ -26,7 +31,11 @@ data class StatisticsUiState(
     }
 
     internal companion object {
-        val EMPTY = StatisticsUiState(emptyList())
+        val EMPTY = StatisticsUiState(
+            year = 0,
+            month = 0,
+            chartDataList = emptyList()
+        )
     }
 }
 
@@ -38,6 +47,23 @@ class StatisticsViewModel @Inject constructor(
     val uiState = MutableStateFlow(StatisticsUiState.EMPTY)
 
     init {
+
+        getCurrentYearMonth()
+        getTempChartDataList()
+    }
+
+    private fun getCurrentYearMonth() {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        uiState.update {
+            it.copy(
+                year = now.year,
+                month = now.monthNumber
+            )
+        }
+    }
+
+    // 실제 데이터를 가져오면 이 함수는 지워야 함. 임시로 데이터 가져오는 함수.
+    private fun getTempChartDataList() {
         uiState.update {
             it.copy(
                 chartDataList = listOf(
