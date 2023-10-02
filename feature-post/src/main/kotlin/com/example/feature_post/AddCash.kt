@@ -219,7 +219,7 @@ fun AddCash(
                         DropdownMenuItem(
                             onClick = {
                                 selectedOptionText = selectionOption
-                                viewModel.category.value = selectionOption
+                                viewModel.category.value = selectedOptionText
                                 menuExpanded = false
                             }
                         ) {
