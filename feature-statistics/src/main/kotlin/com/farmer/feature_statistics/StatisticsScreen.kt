@@ -57,13 +57,13 @@ fun StatisticsScreen(
 
         PieChart(
             modifier = Modifier
-                .height(120.dp)
-                .padding(top = 16.dp),
+                .height(280.dp)
+                .padding(top = 24.dp),
             pieChartData = PieChartData(
                 uiState.chartDataList.map { it.toPieChartData() }
             ),
             animation = simpleChartAnimation(),
-            sliceDrawer = SimpleSliceDrawer(25f) // thickness 조정 가능
+            sliceDrawer = SimpleSliceDrawer(14f) // thickness 조정 가능
         )
 
         LazyColumn(
@@ -115,9 +115,7 @@ fun SelectDate(
 }
 
 @Composable
-fun ChartDataCategoryItem(
-    chartData: ChartData
-) {
+fun ChartDataCategoryItem(chartData: ChartData) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
