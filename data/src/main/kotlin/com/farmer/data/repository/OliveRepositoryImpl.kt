@@ -151,7 +151,7 @@ class OliveRepositoryImpl @Inject constructor(
             } else {
                 history
             }
-            Log.e("@@@", "111 : $idUpdatedHistory" )
+            Log.e("@@@", "111 : $idUpdatedHistory")
             dao.insertHistory(history = idUpdatedHistory)
         }
     }
@@ -172,6 +172,22 @@ class OliveRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHistory(history: History) {
         dao.deleteHistory(history.id)
+    }
+
+    override suspend fun deleteTransactionData(
+        historyId: Long,
+        transactionId: Long
+    ) {
+        val originHistory = dao.getHistoryById(historyId) ?: return
+        val newSpendList = originHistory.spendList.spendList.filterNot { it.id == transactionId }
+        val newEarnList = originHistory.spendList.earnList.filterNot { it.id == transactionId }
+        val newHistory = originHistory.copy(
+            spendList = History.Transact(
+                spendList = newSpendList,
+                earnList = newEarnList
+            )
+        )
+        dao.insertHistory(newHistory)
     }
 
     // todo extension으로 빼기

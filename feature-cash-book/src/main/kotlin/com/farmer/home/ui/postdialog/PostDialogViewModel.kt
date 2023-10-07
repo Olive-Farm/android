@@ -1,11 +1,10 @@
 package com.farmer.home.ui.postdialog
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farmer.data.History
-import com.farmer.data.OliveDao
 import com.farmer.data.repository.OliveRepository
-import com.farmer.home.data.CashBookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,10 +26,17 @@ class PostDialogViewModel @Inject constructor(
         }
     }
 
-    fun deleteHistory(
-        history: History,
-        index: Int
+    fun deleteTransactionData(
+        historyId: Long?,
+        transactionId: Long
     ) {
-
+        if (historyId == null) return
+        viewModelScope.launch {
+            kotlin.runCatching {
+                repo.deleteTransactionData(historyId, transactionId)
+            }.onFailure {
+                Log.e("@@@PostDialogViewModel", "로그가 아닌 진짜 실패 : $it")
+            }
+        }
     }
 }

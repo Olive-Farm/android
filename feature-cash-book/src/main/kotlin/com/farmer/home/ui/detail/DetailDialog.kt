@@ -107,7 +107,18 @@ fun DetailDialog(
                 itemsIndexed(
                     dateInfo?.history?.spendList?.earnList ?: emptyList()
                 ) { index, incomeData ->
-                    TransactItem(index, isSpend = false, incomeData, isDialogEditMode, {})
+                    TransactItem(
+                        index = index,
+                        isSpend = false,
+                        spendData = incomeData,
+                        isDialogEditMode = isDialogEditMode,
+                        onDeleteItem = {
+                            postViewModel.deleteTransactionData(
+                                historyId = dateInfo?.history?.id,
+                                transactionId = incomeData.id
+                            )
+                        }
+                    )
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }
@@ -115,7 +126,18 @@ fun DetailDialog(
                 itemsIndexed(
                     dateInfo?.history?.spendList?.spendList ?: emptyList()
                 ) { index, spendData ->
-                    TransactItem(index, isSpend = true, spendData, isDialogEditMode, {})
+                    TransactItem(
+                        index = index,
+                        isSpend = true,
+                        spendData = spendData,
+                        isDialogEditMode = isDialogEditMode,
+                        onDeleteItem = {
+                            postViewModel.deleteTransactionData(
+                                historyId = dateInfo?.history?.id,
+                                transactionId = spendData.id
+                            )
+                        }
+                    )
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }

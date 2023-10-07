@@ -3,7 +3,6 @@ package com.farmer.data.repository
 import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
-import com.farmer.data.OliveDao
 import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.network.model.ImageResponse
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +14,8 @@ interface OliveRepository {
     suspend fun getReceiptInformation(imageRequest: ImageRequest): ImageResponse
 
     suspend fun deleteHistory(history: History)
+
+    suspend fun deleteTransactionData(historyId: Long, transactionId: Long)
 
     suspend fun insertSms(history: History)
 
