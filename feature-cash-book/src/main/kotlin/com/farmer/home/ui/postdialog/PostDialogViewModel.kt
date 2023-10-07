@@ -18,14 +18,19 @@ class PostDialogViewModel @Inject constructor(
 ) : ViewModel() {
 
     // id로 내역 삭제
-    fun deleteHistory(history: History){
-        viewModelScope.launch(Dispatchers.IO){
-        val historyId = history.id
-        if (historyId != null) {
-            repo.deleteHistory(history)
+    fun deleteHistory(history: History) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val historyId = history.id
+            if (historyId != null) {
+                repo.deleteHistory(history)
+            }
         }
     }
 
-    }
+    fun deleteHistory(
+        history: History,
+        index: Int
+    ) {
 
+    }
 }

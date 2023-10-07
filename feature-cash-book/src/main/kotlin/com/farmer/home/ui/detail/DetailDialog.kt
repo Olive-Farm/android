@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -52,8 +51,6 @@ import com.farmer.home.ui.RedAlpha200
 import com.farmer.home.ui.postdialog.PostDialogViewModel
 import com.farmer.home.ui.states.CalendarViewModel
 
-// 여기서 ui 수정?
-
 @Composable
 fun DetailDialog(
     dateInfo: DateInfo?,
@@ -61,9 +58,6 @@ fun DetailDialog(
     viewModel: CalendarViewModel = hiltViewModel(),
     postViewModel: PostDialogViewModel = hiltViewModel()
 ) {
-
-    Log.e("@@@dateInfo", ": $dateInfo")
-    Log.e("@@@spendList", "spendList: ${dateInfo?.history?.spendList?.spendList}")
     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
@@ -113,39 +107,7 @@ fun DetailDialog(
                 itemsIndexed(
                     dateInfo?.history?.spendList?.earnList ?: emptyList()
                 ) { index, incomeData ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val titleVisibility = if (index == 0) 1f else 0f
-                        Text(
-                            text = "수입",
-                            modifier = Modifier.alpha(titleVisibility),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        // todo tocommastring
-                        Text(text = incomeData.item)
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = String.format("%,d", incomeData.price.toString().toLong()),
-                            //color = BlueAlpha200
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(text = " ￦")
-                        if (isDialogEditMode) {
-                            IconButton(
-                                modifier = Modifier
-                                    .padding(0.dp)
-                                    .size(16.dp),
-                                onClick = { /* todo */ }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = null,
-                                    tint = Color.Gray,
-                                )
-                            }
-                        }
-                    }
+                    TransactItem(index, isSpend = false, incomeData, isDialogEditMode, {})
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }
@@ -153,7 +115,7 @@ fun DetailDialog(
                 itemsIndexed(
                     dateInfo?.history?.spendList?.spendList ?: emptyList()
                 ) { index, spendData ->
-                    TransactItem(index, spendData, isDialogEditMode)
+                    TransactItem(index, isSpend = true, spendData, isDialogEditMode, {})
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }
@@ -273,8 +235,10 @@ fun DetailDialog(
 @Composable
 fun TransactItem(
     index: Int,
+    isSpend: Boolean,
     spendData: History.Transact.TransactData,
-    isDialogEditMode: Boolean
+    isDialogEditMode: Boolean,
+    onDeleteItem: () -> Unit
 ) {
     val roundedCornerShape = RoundedCornerShape(10.dp)
     val dismissState = rememberDismissState(confirmStateChange = { dismissValue ->
@@ -284,12 +248,12 @@ fun TransactItem(
             }
 
             DismissValue.DismissedToEnd -> { // -> 방향 스와이프 (수정)
-                // 지원 x
-                false
+                onDeleteItem.invoke()
+                true
             }
 
             DismissValue.DismissedToStart -> { // <- 방향 스와이프 (삭제)
-
+                onDeleteItem.invoke()
                 true
             }
         }
@@ -331,7 +295,7 @@ fun TransactItem(
 
         },
         dismissContent = { // 지워지면 보일 항목
-            TransactContent(index, spendData, isDialogEditMode, dismissState)
+            TransactContent(index, spendData, isDialogEditMode, isSpend)
         })
 }
 
@@ -341,7 +305,7 @@ fun TransactContent(
     index: Int,
     spendData: History.Transact.TransactData,
     isDialogEditMode: Boolean,
-    dismissState: DismissState
+    isSpend: Boolean
 ) {
 
     Row(
@@ -351,7 +315,11 @@ fun TransactContent(
         val titleVisibility = if (index == 0) 1f else 0f
 
         Text(
-            text = "지출",
+            text = if (isSpend) {
+                "지출"
+            } else {
+                "수입"
+            },
             modifier = Modifier.alpha(titleVisibility),
             fontWeight = FontWeight.Bold
         )
