@@ -35,7 +35,6 @@ fun DetailDialogByState(
         ) {
             DetailDialog(
                 dateInfo = dialogUiState.clickedDateInfo,
-                // todo
                 isDialogEditMode = false,
             )
         }
