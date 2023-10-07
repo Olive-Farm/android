@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ fun DetailDialog(
     viewModel: CalendarViewModel = hiltViewModel(),
     postViewModel: PostDialogViewModel = hiltViewModel()
 ) {
+    val deletedTransactionId by postViewModel.deletedId.collectAsState()
     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
@@ -105,7 +107,9 @@ fun DetailDialog(
         } else {
             LazyColumn {
                 itemsIndexed(
-                    dateInfo?.history?.spendList?.earnList ?: emptyList()
+                    dateInfo?.history?.spendList?.earnList?.filter { transactData ->
+                        deletedTransactionId.find { it == transactData.id } == null
+                    } ?: emptyList()
                 ) { index, incomeData ->
                     TransactItem(
                         index = index,
@@ -124,7 +128,9 @@ fun DetailDialog(
                 }
 
                 itemsIndexed(
-                    dateInfo?.history?.spendList?.spendList ?: emptyList()
+                    dateInfo?.history?.spendList?.spendList?.filter { transactData ->
+                        deletedTransactionId.find { it == transactData.id } == null
+                    } ?: emptyList()
                 ) { index, spendData ->
                     TransactItem(
                         index = index,
@@ -251,7 +257,6 @@ fun DetailDialog(
 
     }
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

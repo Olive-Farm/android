@@ -7,6 +7,9 @@ import com.farmer.data.History
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +18,9 @@ import javax.inject.Inject
 class PostDialogViewModel @Inject constructor(
     private val repo: OliveRepository
 ) : ViewModel() {
+
+    private val _deletedId: MutableStateFlow<List<Long>> = MutableStateFlow(emptyList())
+    val deletedId = _deletedId.asStateFlow()
 
     // id로 내역 삭제
     fun deleteHistory(history: History) {
@@ -34,6 +40,10 @@ class PostDialogViewModel @Inject constructor(
         viewModelScope.launch {
             kotlin.runCatching {
                 repo.deleteTransactionData(historyId, transactionId)
+            }.onSuccess {
+                _deletedId.update {
+                    it + transactionId
+                }
             }.onFailure {
                 Log.e("@@@PostDialogViewModel", "로그가 아닌 진짜 실패 : $it")
             }

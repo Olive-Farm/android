@@ -1,6 +1,5 @@
 package com.farmer.data.repository
 
-import android.util.Log
 import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
@@ -76,11 +75,10 @@ class OliveRepositoryImpl @Inject constructor(
             month = history.month,
             date = history.date
         )
-        Log.d("@@@", history.category)
         if (originHistory != null) {
             // 기존에 있던 내역
-            val originSpendList = originHistory?.spendList?.spendList ?: emptyList()
-            val originEarnList = originHistory?.spendList?.earnList ?: emptyList()
+            val originSpendList = originHistory.spendList.spendList
+            val originEarnList = originHistory.spendList.earnList
 
             // 새로 추가하려는 내역
             val newSpendList =
@@ -93,7 +91,6 @@ class OliveRepositoryImpl @Inject constructor(
                         transactData
                     }
                 }
-            Log.e("@@@", "newSpendList : $newSpendList")
             val newEarnedList =
                 originEarnList + history.spendList.earnList.mapIndexed { index, transactData ->
                     if (index == history.spendList.earnList.size - 1) {
@@ -104,7 +101,6 @@ class OliveRepositoryImpl @Inject constructor(
                         transactData
                     }
                 }
-            Log.e("@@@", "newEarnList : $newEarnedList")
 
             // 새로운 내역
             val newHistory = History(
@@ -151,7 +147,6 @@ class OliveRepositoryImpl @Inject constructor(
             } else {
                 history
             }
-            Log.e("@@@", "111 : $idUpdatedHistory")
             dao.insertHistory(history = idUpdatedHistory)
         }
     }
