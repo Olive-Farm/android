@@ -38,6 +38,8 @@ data class History(
     ) {
         @Serializable
         data class TransactData(
+            @SerialName("id")
+            val id: Long = -1,
             @SerialName("price")
             val price: Int = -1,
             @SerialName("item")

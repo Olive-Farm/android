@@ -11,6 +11,9 @@ interface OliveDao {
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    suspend fun insertSms(year: Int, month: Int, date: Int, price:Int, item:String ):History?
 
+    @Query("SELECT * FROM HistoryList WHERE id = :id")
+    suspend fun getHistoryById(id: Long): History?
+
     // todo year도 추가해야 함.
     @Query("SELECT * FROM HistoryList WHERE month = :month")
     suspend fun getHistoryByMonth(month: Int): List<History>?

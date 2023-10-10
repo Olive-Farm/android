@@ -19,8 +19,15 @@ dependencies {
 
     // hilt
     implementation(libs.hilt.android)
+    implementation(project(":data"))
+    implementation(libs.foundation.layout.android)
     kapt(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    implementation(libs.tehras.charts)
+    implementation(libs.kotlin.datetime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.android.junit)

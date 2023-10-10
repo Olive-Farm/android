@@ -1,7 +1,5 @@
 package com.farmer.data.repository
 
-import android.util.Log
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
@@ -14,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
+import kotlin.random.Random
 
 class OliveRepositoryImpl @Inject constructor(
     private val dao: OliveDao,
@@ -76,10 +75,34 @@ class OliveRepositoryImpl @Inject constructor(
             month = history.month,
             date = history.date
         )
-        Log.d("@@@", history.category)
         if (originHistory != null) {
-            val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
-            val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList
+            // 기존에 있던 내역
+            val originSpendList = originHistory.spendList.spendList
+            val originEarnList = originHistory.spendList.earnList
+
+            // 새로 추가하려는 내역
+            val newSpendList =
+                originSpendList + history.spendList.spendList.mapIndexed { index, transactData ->
+                    if (index == history.spendList.spendList.size - 1) {
+                        transactData.copy(
+                            id = Random.nextLong(1, 100000)
+                        )
+                    } else {
+                        transactData
+                    }
+                }
+            val newEarnedList =
+                originEarnList + history.spendList.earnList.mapIndexed { index, transactData ->
+                    if (index == history.spendList.earnList.size - 1) {
+                        transactData.copy(
+                            id = getRandomId()
+                        )
+                    } else {
+                        transactData
+                    }
+                }
+
+            // 새로운 내역
             val newHistory = History(
                 year = originHistory.year,
                 month = originHistory.month,
@@ -95,8 +118,36 @@ class OliveRepositoryImpl @Inject constructor(
                 id = originHistory.id
             )
             dao.insertHistory(history = newHistory)
-        } else {
-            dao.insertHistory(history = history)
+        } else { // 새로 넣는 값인 경우
+            // 새로 넣는 값이 수입인 경우
+            val idUpdatedHistory = if (history.spendList.earnList.isNotEmpty()) {
+                history.copy(
+                    spendList = history.spendList.copy(
+                        earnList = history.spendList.earnList.mapIndexed { index, transactData ->
+                            if (index == history.spendList.earnList.size - 1) {
+                                transactData.copy(id = getRandomId())
+                            } else {
+                                transactData
+                            }
+                        }
+                    )
+                )
+            } else if (history.spendList.spendList.isNotEmpty()) { // 새로 넣는 값이 지출인 경우
+                history.copy(
+                    spendList = history.spendList.copy(
+                        spendList = history.spendList.spendList.mapIndexed { index, transactData ->
+                            if (index == history.spendList.spendList.size - 1) {
+                                transactData.copy(id = getRandomId())
+                            } else {
+                                transactData
+                            }
+                        }
+                    )
+                )
+            } else {
+                history
+            }
+            dao.insertHistory(history = idUpdatedHistory)
         }
     }
 
@@ -116,6 +167,22 @@ class OliveRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHistory(history: History) {
         dao.deleteHistory(history.id)
+    }
+
+    override suspend fun deleteTransactionData(
+        historyId: Long,
+        transactionId: Long
+    ) {
+        val originHistory = dao.getHistoryById(historyId) ?: return
+        val newSpendList = originHistory.spendList.spendList.filterNot { it.id == transactionId }
+        val newEarnList = originHistory.spendList.earnList.filterNot { it.id == transactionId }
+        val newHistory = originHistory.copy(
+            spendList = History.Transact(
+                spendList = newSpendList,
+                earnList = newEarnList
+            )
+        )
+        dao.insertHistory(newHistory)
     }
 
     // todo extension으로 빼기
@@ -152,4 +219,6 @@ class OliveRepositoryImpl @Inject constructor(
 
         return TODO("반환 값을 제공하세요")
     }
+
+    private fun getRandomId(): Long = Random.nextLong(1, 300000)
 }
