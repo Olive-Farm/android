@@ -41,7 +41,8 @@ import java.util.Calendar
 @Composable
 fun StatisticsScreen(
     viewModel: StatisticsViewModel = hiltViewModel()
-) {
+)
+{
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(

@@ -185,6 +185,12 @@ class OliveRepositoryImpl @Inject constructor(
         dao.insertHistory(newHistory)
     }
 
+
+    //override fun getStatic(): List<String> {
+        //val staticList = dao.getStatic()
+
+    //}
+
     // todo extension으로 빼기
     private fun Int.addZero(): String {
         return if (this in 0..9) {

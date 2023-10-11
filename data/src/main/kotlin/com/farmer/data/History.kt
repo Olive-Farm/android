@@ -44,7 +44,7 @@ data class History(
             val price: Int = -1,
             @SerialName("item")
             val item: String = "",
-            @SerialName("category")
+            @SerialName("category") // 이게 찐 카테고리
             val category: String = ""
         )
     }

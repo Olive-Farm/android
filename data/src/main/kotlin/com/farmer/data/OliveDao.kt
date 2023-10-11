@@ -21,15 +21,13 @@ interface OliveDao {
     @Query("SELECT * FROM HistoryList WHERE year = :year AND month = :month AND date = :date")
     suspend fun getHistoryByDate(year: Int, month: Int, date: Int): History?
 
-//    @Delete
-//    suspend fun deleteHistory(history: History)
-
     @Query("DELETE FROM HistoryList WHERE id= :id")
     suspend fun deleteHistory(id: Long)
 
+    @Query("SELECT year, month, spendList  FROM HistoryList")
+    fun getStatic(): List<History>?
 
     //카테고리
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategory(category: Category)
 

@@ -2,11 +2,15 @@ package com.farmer.feature_statistics
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.farmer.data.History
 import com.farmer.data.repository.OliveRepository
 import com.github.tehras.charts.piechart.PieChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -51,6 +55,8 @@ class StatisticsViewModel @Inject constructor(
         getTempChartDataList()
     }
 
+
+
     fun onNewDateSelect(year: Int, month: Int) {
         uiState.update {
             it.copy(
@@ -79,21 +85,6 @@ class StatisticsViewModel @Inject constructor(
                         categoryName = "쇼핑",
                         percentage = 15f,
                         color = Green100
-                    ),
-                    StatisticsUiState.ChartData(
-                        categoryName = "공부",
-                        percentage = 25f,
-                        color = Green300
-                    ),
-                    StatisticsUiState.ChartData(
-                        categoryName = "쇼핑",
-                        percentage = 40f,
-                        color = Green500
-                    ),
-                    StatisticsUiState.ChartData(
-                        categoryName = "음식",
-                        percentage = 30f,
-                        color = Green700
                     ),
                 )
             )

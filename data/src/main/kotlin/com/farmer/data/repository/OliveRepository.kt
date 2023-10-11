@@ -19,6 +19,8 @@ interface OliveRepository {
 
     suspend fun insertSms(history: History)
 
+    //fun getStatic():List<String>?
+
 
     //카테고리
     fun getCategoryList(): List<String>?
