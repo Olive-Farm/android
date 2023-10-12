@@ -1,5 +1,6 @@
 package com.farmer.data.repository
 
+import android.util.Log
 import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
@@ -159,6 +160,11 @@ class OliveRepositoryImpl @Inject constructor(
         return dao.getHistoryByMonth(month = currentDate.month.value) ?: emptyList()
     }
 
+    override suspend fun getStaticByMonth(month:Int) : List<History>{
+        return dao.getHistoryByMonth(month) ?: emptyList()
+
+    }
+
     private fun getDatesInMonth(currentDate: LocalDate): List<LocalDate> {
         val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber.addZero()}")
         val daysInMonth = yearMonth.month.length(yearMonth.isLeapYear)
@@ -185,11 +191,6 @@ class OliveRepositoryImpl @Inject constructor(
         dao.insertHistory(newHistory)
     }
 
-
-    //override fun getStatic(): List<String> {
-        //val staticList = dao.getStatic()
-
-    //}
 
     // todo extension으로 빼기
     private fun Int.addZero(): String {

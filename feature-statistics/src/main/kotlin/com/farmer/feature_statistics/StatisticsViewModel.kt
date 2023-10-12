@@ -1,8 +1,10 @@
 package com.farmer.feature_statistics
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farmer.data.Category
 import com.farmer.data.History
 import com.farmer.data.repository.OliveRepository
 import com.github.tehras.charts.piechart.PieChartData
@@ -52,7 +54,9 @@ class StatisticsViewModel @Inject constructor(
 
     init {
         getCurrentYearMonth()
-        getTempChartDataList()
+        viewModelScope.launch {
+            getTempChartDataList()
+        }
     }
 
 
@@ -76,18 +80,77 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    // 실제 데이터를 가져오면 이 함수는 지워야 함. 임시로 데이터 가져오는 함수.
-    private fun getTempChartDataList() {
-        uiState.update {
-            it.copy(
-                chartDataList = listOf(
-                    StatisticsUiState.ChartData(
-                        categoryName = "쇼핑",
-                        percentage = 15f,
-                        color = Green100
-                    ),
-                )
-            )
+    private suspend fun calculateTotalSpendByCategoryForMonth(): Map<String, Int> {
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val result = mutableMapOf<String, Int>()
+
+        val staticList = repository.getStaticByMonth(now.monthNumber)
+
+        for (history in staticList) {
+            if (history.month == now.monthNumber) {
+                for (transactData in history.spendList.spendList) {
+                    val currentTotal = result.getOrDefault(transactData.category, 0)
+                    result[transactData.category] = currentTotal + transactData.price
+                }
+            }
         }
+
+        return result
+    }
+
+    private suspend fun calculateTotalMonthlySpend(): Int {
+        var totalSpend = 0
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+            val staticlist = repository.getStaticByMonth(now.monthNumber)
+
+            for (history in staticlist) {
+                if (history.month == now.monthNumber) {
+                    for (transactData in history.spendList.spendList) {
+                        totalSpend += transactData.price
+                    }
+                }
+            }
+        return totalSpend
+    }
+
+    private fun getColorForCategory(category: String): Color {
+        return when (category) {
+            "식비" -> Green50
+            "교통비" -> Green100
+            "쇼핑" -> Green200
+            "급여"-> Green300
+            "용돈"-> Green400
+            "이체"-> Green500
+            "카드대금"-> Green700
+            "고정지출"-> Green800
+            "저축"-> Green200
+            "여가비"-> Green200
+            "생활비"-> Green200
+            "병원/의료비"-> Green200
+            "문화/관광비"-> Green200
+            "기타"-> Green200
+            else -> GreenTheme
+        }
+    }
+
+
+    private suspend fun getTempChartDataList() {
+
+        val totalSpendByCategory = calculateTotalSpendByCategoryForMonth()
+        val totalMonthlySpend = calculateTotalMonthlySpend()
+
+        val chartDataList = totalSpendByCategory.map { (category, totalSpend) ->
+            val percentage = (totalSpend.toFloat() / totalMonthlySpend) * 100
+            val color = getColorForCategory(category)
+            StatisticsUiState.ChartData(categoryName = category, percentage = percentage, color = color)
+        }
+        uiState.update {
+            it.copy(chartDataList = chartDataList)
+        }
+
+
+
+
     }
 }
