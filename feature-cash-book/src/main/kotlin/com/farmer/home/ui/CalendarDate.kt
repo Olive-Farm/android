@@ -48,10 +48,10 @@ fun CalendarDate(
                 shape = RoundedCornerShape(size = 10.dp)
             )
 
-            .border(width = 0.5.dp, color = Color(0xFFC2C2C2), shape = RoundedCornerShape(size = 10.dp))
+            .border(width = 0.5.dp, color = Color(0x80C2C2C2), shape = RoundedCornerShape(size = 10.dp))
 
             .size(90.dp)
-            .padding(3.dp)
+            .padding(5.dp)
     ) {
         Text(text = date, color =
             if (dayOfWeek == java.time.DayOfWeek.SATURDAY) BlueAlpha200
@@ -96,26 +96,6 @@ fun CalendarDate(
                     overflow = TextOverflow.Ellipsis,
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.size(2.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(5.dp),
-            backgroundColor = RedAlpha200,
-
-            ) {
-            if (income != 0) {
-                Text(
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
-                    text = numFormat.format(income).toString(),
-                    fontSize = 10.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.White
                 )
             }
         }

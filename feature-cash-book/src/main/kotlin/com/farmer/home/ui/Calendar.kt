@@ -125,7 +125,7 @@ private fun CalendarHeader(
                 }
             ) {
                 val dateArray = it.split(' ')
-                Row (modifier = Modifier.width(140.dp)) {
+                Row (modifier = Modifier.width(130.dp)) {
                 Text(
                     text = dateArray[1],
                     modifier = Modifier.padding(horizontal = 10.dp),
