@@ -17,4 +17,27 @@ interface OliveDao {
 
     @Query("SELECT * FROM HistoryList WHERE year = :year AND month = :month AND date = :date")
     suspend fun getHistoryByDate(year: Int, month: Int, date: Int): History?
+
+    @Query("DELETE FROM HistoryList WHERE id= :id")
+    suspend fun deleteHistory(id: Long)
+
+    //@Query("SELECT year, month, spendList  FROM HistoryList")
+    //fun getStatic(): List<History>?
+
+    //카테고리
+    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategory(category: Category)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBasicList(categories: List<Category>)
+
+    @Query("SELECT * FROM Category")
+    fun getCategoryList(): List<Category>?
+
+    @Query("DELETE FROM Category WHERE id = :id")
+    suspend fun deleteCategory(id: Int)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateCategory(category: Category)*/
+
 }
