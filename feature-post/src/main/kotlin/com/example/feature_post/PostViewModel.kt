@@ -6,6 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Base64
+import android.util.Log
+import com.farmer.data.Category
 import com.farmer.data.History
 import com.farmer.data.network.model.Image
 import com.farmer.data.network.model.ImageRequest
@@ -18,7 +21,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.time.Instant
 import javax.inject.Inject
+import java.util.UUID
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
@@ -29,6 +34,7 @@ class PostViewModel @Inject constructor(
 
     val name = mutableStateOf(TextFieldValue(""))
     val amount = mutableStateOf(TextFieldValue(""))
+    val category = mutableStateOf(String())
     val yearState = mutableStateOf(0)
     val monthState = mutableStateOf(-1)
     val dayOfMonthState = mutableStateOf(0)
@@ -44,6 +50,7 @@ class PostViewModel @Inject constructor(
     fun postCashData() {
         val currentName = name.value.text
         val currentAmount = amount.value.text
+        val currentCategory = category.value
         _uiState.update {
             it.copy(
                 needNameState = currentName.isEmpty(),
@@ -61,7 +68,8 @@ class PostViewModel @Inject constructor(
                             earnList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )
@@ -71,7 +79,8 @@ class PostViewModel @Inject constructor(
                             spendList = listOf(
                                 History.Transact.TransactData(
                                     price = userInputSpendAmount,
-                                    item = currentName
+                                    item = currentName,
+                                    category = currentCategory
                                 )
                             )
                         )
@@ -89,6 +98,7 @@ class PostViewModel @Inject constructor(
                 )
                 _uiState.update { it.copy(dismissDialogState = true) }
                 repository.insertHistory(userInputHistory)
+                category.value = ""
             }
         }
     }
@@ -107,17 +117,19 @@ class PostViewModel @Inject constructor(
             val stream = ByteArrayOutputStream()
             selectedImage.compress(Bitmap.CompressFormat.PNG, 10, stream)
             val image = stream.toByteArray()
-            val imageString = android.util.Base64.encodeToString(image, 0)
+
+            val imageString = Base64.encodeToString(image, 0)
+            Log.e("@@@encdedImage", "size : ${imageString.length}")
             val response = repository.getReceiptInformation(
                 ImageRequest(
-                    version = "V2",
-                    requestId = "string",
-                    timestamp = System.currentTimeMillis(),
+                     version = "V2",
+                    requestId = UUID.randomUUID().toString(),
+                    timestamp = (Instant.now().toEpochMilli()),
                     images = listOf(
                         Image(
-                            format = "png",
-                            name = "test 1",
-                            data = imageString
+                        format = "png",
+                        name = "test 1",
+                        data = imageString
                         )
                     )
                 )
@@ -135,5 +147,10 @@ class PostViewModel @Inject constructor(
                 it.copy(isLoading = false)
             }
         }
+    }
+
+    //카테고리 불러오기
+    fun selectCategoryList(): List<String>? {
+        return repository.getCategoryList()
     }
 }

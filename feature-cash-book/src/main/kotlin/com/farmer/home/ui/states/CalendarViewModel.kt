@@ -1,6 +1,5 @@
 package com.farmer.home.ui.states
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Month
-
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.todayIn
@@ -29,7 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val repository: CashBookRepository,
-    private val repo: OliveRepository
+    private val repo: OliveRepository,
 ) : ViewModel() {
 
     private val viewModelState: MutableStateFlow<CalendarUiState> =
@@ -317,7 +315,7 @@ class CalendarViewModel @Inject constructor(
                 memo = "Ate dinner",
                 category = "식사비",
                 spendList = History.Transact(
-                    emptyList(),emptyList()
+                    emptyList(), emptyList()
                 )
             )
         )
@@ -331,7 +329,7 @@ class CalendarViewModel @Inject constructor(
                 memo = "Ate dinner",
                 category = "식사비",
                 spendList = History.Transact(
-                    emptyList(),emptyList()
+                    emptyList(), emptyList()
                 )
             )
         )
@@ -345,7 +343,7 @@ class CalendarViewModel @Inject constructor(
                 memo = "Ate dinner",
                 category = "식사비",
                 spendList = History.Transact(
-                    emptyList(),emptyList()
+                    emptyList(), emptyList()
                 )
             )
         )

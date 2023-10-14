@@ -40,6 +40,7 @@ fun CalendarDates(
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth()
                 .padding(2.dp),
+
             columns = GridCells.Fixed(7),
             content = {
                 items(OliveDateList.list) {     //요일

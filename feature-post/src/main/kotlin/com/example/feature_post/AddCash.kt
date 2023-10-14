@@ -4,11 +4,13 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,11 +38,22 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.farmer.data.BASIC_CATEGORY
+import com.farmer.data.DatabaseModule
 import com.farmer.feature_post.R
+import com.farmer.data.repository.OliveRepository
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
+
+
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -49,6 +62,10 @@ fun AddCash(
     viewModel: PostViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+
+    val categoryList by selectCategoryList(viewModel).collectAsState(initial = emptyList())
+
 
     var currentPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
     var tempPhotoUri by remember { mutableStateOf(value = Uri.EMPTY) }
@@ -83,6 +100,12 @@ fun AddCash(
             }
         }
     val uiState = viewModel.uiState.collectAsState()
+
+    //드롭다운 메뉴 제어 변수
+    var menuExpanded by remember {mutableStateOf(false)}
+
+    var selectedOptionText by remember { mutableStateOf("")}
+
     Column(
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 18.dp)
     ) {
@@ -99,7 +122,7 @@ fun AddCash(
             calendar[Calendar.DAY_OF_MONTH],
         )
 
-        Row(modifier = Modifier.padding(all = 7.dp),
+        Row(modifier = Modifier.padding(top = 3.dp, bottom = 7.dp, start = 7.dp, end = 7.dp),
             verticalAlignment = Alignment.CenterVertically){
             Text(text = "새로운 내역 입력", fontWeight = FontWeight.Bold, fontSize = 4.5.em)
 
@@ -135,7 +158,7 @@ fun AddCash(
         AnimatedVisibility(visible = uiState.value.needNameState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(
-                    text = "가게명을 입력해주세요.",
+                    text = "내역명을 입력해주세요.",
                     color = Color.Red,
                     fontSize = 12.sp
                 )
@@ -164,13 +187,58 @@ fun AddCash(
                 )
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            ExposedDropdownMenuBox(
+                modifier = Modifier.fillMaxWidth(),
+                expanded = menuExpanded,
+                onExpandedChange = {
+                    menuExpanded = !menuExpanded
+                }
+            ) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true,
+                    value = selectedOptionText,
+                    onValueChange = { viewModel.category.value = selectedOptionText },
+                    label = { Text("카테고리를 선택해주세요") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = menuExpanded
+                        )
+                    },
+                )
+                ExposedDropdownMenu(
+                    modifier = Modifier.height(200.dp),
+                    expanded = menuExpanded,
+                    onDismissRequest = {
+                        menuExpanded = false
+                    }
+                ) {
+                    categoryList?.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOptionText = selectionOption
+                                viewModel.category.value = selectedOptionText
+                                menuExpanded = false
+                            }
+                        ) {
+                            Text(text = selectionOption)
+                        }
+                    }
+
+                }
+            }
+
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
         Row {
             TextButton(onClick = {
                 timePickerDialog.show()
             }) {
-                Text(text = "날짜 선택", color = Color(0xFF355A1E))
+                Text(text = "날짜 선택", color = Color(0xFF355A1E), fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
@@ -179,6 +247,16 @@ fun AddCash(
                 if (viewModel.yearState.value ==0) ""
                 else "${viewModel.yearState.value}년 ${viewModel.monthState.value +1}월 ${viewModel.dayOfMonthState.value}일 "
             )
+        }
+
+        AnimatedVisibility(visible = uiState.value.needDateState) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "날짜를 입력해주세요.",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(4.dp))
@@ -212,15 +290,6 @@ fun AddCash(
 
         }
 
-        AnimatedVisibility(visible = uiState.value.needDateState) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Text(
-                    text = "날짜를 입력해주세요.",
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
-        }
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Button(onClick = viewModel::postCashData,
@@ -270,6 +339,7 @@ fun AddCash(
     }
 }
 
+
 private fun Context.createTempPictureUri(
     provider: String = "com.farmer.olive.provider",
 //    fileName: String = "picture_${System.currentTimeMillis()}",
@@ -283,4 +353,12 @@ private fun Context.createTempPictureUri(
     }
 
     return FileProvider.getUriForFile(applicationContext, provider, tempFile)
+}
+
+fun selectCategoryList(viewModel: PostViewModel) : Flow<List<String>?> = flow {
+
+    val categoryTextList = withContext(Dispatchers.IO) {
+        viewModel.selectCategoryList()
+    }
+    emit(categoryTextList)
 }

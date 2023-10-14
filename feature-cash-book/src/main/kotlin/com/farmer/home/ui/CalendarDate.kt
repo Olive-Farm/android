@@ -51,9 +51,8 @@ fun CalendarDate(
             .border(width = 0.5.dp, color = Color(0xFFC2C2C2), shape = RoundedCornerShape(size = 10.dp))
 
             .size(90.dp)
-            .padding(5.dp)
-
-    ) {         //일자의 색
+            .padding(3.dp)
+    ) {
         Text(text = date, color =
             if (dayOfWeek == java.time.DayOfWeek.SATURDAY) BlueAlpha200
             else if (dayOfWeek == java.time.DayOfWeek.SUNDAY) RedAlpha200
@@ -61,24 +60,7 @@ fun CalendarDate(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.weight(1f))
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(5.dp),
-            backgroundColor = RedAlpha200,
 
-        ) {
-            if (income != 0) {
-                Text(
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
-                    text = numFormat.format(income).toString(),
-                    fontSize = 10.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.White
-                )
-            }
-        }
-        Spacer(modifier = Modifier.size(2.dp))
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(3.dp),
@@ -117,6 +99,27 @@ fun CalendarDate(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.size(2.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(5.dp),
+            backgroundColor = RedAlpha200,
+
+            ) {
+            if (income != 0) {
+                Text(
+                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp),
+                    text = numFormat.format(income).toString(),
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+            }
+        }
+
     }
 }
 

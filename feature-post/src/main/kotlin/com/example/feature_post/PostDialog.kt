@@ -20,7 +20,7 @@ fun PostDialog(onDismissRequest: () -> Unit) {
         )
     ) {
         Surface(
-            modifier = Modifier.height(460.dp),
+            modifier = Modifier.height(530.dp),
             shape = RoundedCornerShape(8.dp),
             color = Color.White
         ) {
