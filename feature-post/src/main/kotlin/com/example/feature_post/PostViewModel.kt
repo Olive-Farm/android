@@ -39,6 +39,9 @@ class PostViewModel @Inject constructor(
     val monthState = mutableStateOf(-1)
     val dayOfMonthState = mutableStateOf(0)
 
+    private val _deletedId: MutableStateFlow<List<Long>> = MutableStateFlow(emptyList())
+    val deletedId = _deletedId.asStateFlow()
+
     fun setChipState(isSpend: Boolean) {
         _uiState.update {
             it.copy(
@@ -101,6 +104,24 @@ class PostViewModel @Inject constructor(
                 category.value = ""
             }
         }
+    }
+
+    suspend fun deleteDataToEdit(
+        historyId: Long?,
+        transactionId: Long) {
+        if (historyId == null) return
+        /*viewModelScope.launch {
+            kotlin.runCatching {
+                repository.deleteTransactionData(historyId, transactionId)
+            }.onSuccess {
+                _deletedId.update {
+                    it + transactionId
+                }
+            }.onFailure {
+                Log.e("@@@PostDialogViewModel", "로그가 아닌 진짜 실패 : $it")
+            }
+        }*/
+        repository.deleteTransactionData(historyId, transactionId)
     }
 
     fun refreshState() {
