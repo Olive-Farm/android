@@ -82,6 +82,7 @@ fun EditCash(
     var yearText by remember { mutableStateOf(dateInfo?.date!!.year)}
     var monthText by remember { mutableStateOf(dateInfo?.date!!.monthNumber - 1)}
     var dayText by remember { mutableStateOf(dateInfo?.date!!.dayOfMonth) }
+    var isSpendChip by remember { mutableStateOf(isSpend) }
     viewModel.yearState.value = yearText
     viewModel.monthState.value = monthText
     viewModel.dayOfMonthState.value = dayText
@@ -89,7 +90,7 @@ fun EditCash(
     viewModel.name.value = nameText
     viewModel.amount.value = priceText
 
-    uiState.value.isSpendState = isSpend
+    viewModel.setChipState(isSpend = isSpendChip)
 
 
     Column(
@@ -240,7 +241,8 @@ fun EditCash(
                     if (uiState.value.isSpendState ) Color(0xFF355A1E)
                     else Color(0xFFE8F5E9)
                 ),
-                onClick = { viewModel.setChipState(isSpend = true) }
+                onClick = { viewModel.setChipState(isSpend = true)
+                    isSpendChip = true}
             ) {
                 Text(text = "소비", color =
                 if (uiState.value.isSpendState) Color.White
@@ -253,7 +255,8 @@ fun EditCash(
                     if (!uiState.value.isSpendState) Color(0xFF355A1E)
                     else Color(0xFFE8F5E9)
                 ),
-                onClick = { viewModel.setChipState(isSpend = false) }
+                onClick = { viewModel.setChipState(isSpend = false)
+                    isSpendChip = false}
             ) {
                 Text(text = "수입", color =
                 if (!uiState.value.isSpendState) Color.White
