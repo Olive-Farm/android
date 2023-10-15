@@ -45,10 +45,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feature_post.AddCash
+import com.example.feature_post.EditCash
+import com.example.feature_post.PostDialog
 import com.farmer.data.DateInfo
 import com.farmer.data.History
 import com.farmer.home.ui.BlueAlpha200
 import com.farmer.home.ui.RedAlpha200
+import com.farmer.home.ui.TempCalendarViewModel
 import com.farmer.home.ui.postdialog.PostDialogViewModel
 import com.farmer.home.ui.states.CalendarViewModel
 
@@ -70,7 +74,7 @@ fun DetailDialog(
             Spacer(modifier = Modifier.width(13.dp))
             Text(text = dateInfo?.date?.dayOfWeek.toString(), fontSize = 16.sp)
         }
-        Divider(modifier = Modifier.padding(vertical = 10.dp), color = Color(0xFF355A1E))
+        Divider(modifier = Modifier.padding(vertical = 10.dp), color = Color(0xFF537150))
 
         if (dateInfo?.history?.spendList?.earnList.isNullOrEmpty() && dateInfo?.history?.spendList?.spendList.isNullOrEmpty()) {
             Column(
@@ -91,8 +95,8 @@ fun DetailDialog(
                     buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF355A1E)
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF537150)
                             )
                         ) {
                             append("OliveBook")
@@ -121,7 +125,8 @@ fun DetailDialog(
                                 historyId = dateInfo?.history?.id,
                                 transactionId = incomeData.id
                             )
-                        }
+                        },
+                        dateInfo = dateInfo
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -142,7 +147,12 @@ fun DetailDialog(
                                 historyId = dateInfo?.history?.id,
                                 transactionId = spendData.id
                             )
-                        }
+                        },
+                        dateInfo = dateInfo
+                        //테스팅중
+                        /*onEditItem = {
+                            postViewModel.
+                        }*/
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -264,10 +274,13 @@ fun TransactItem(
     index: Int,
     isSpend: Boolean,
     spendData: History.Transact.TransactData,
+    onDeleteItem: () -> Unit,
     isDialogEditMode: Boolean,
-    onDeleteItem: () -> Unit
+    viewModel: TempCalendarViewModel = hiltViewModel(),
+    dateInfo: DateInfo?
 ) {
     val roundedCornerShape = RoundedCornerShape(10.dp)
+    var showDialog by remember { mutableStateOf(false) }
     val dismissState = rememberDismissState(confirmStateChange = { dismissValue ->
         when (dismissValue) {
             DismissValue.Default -> { // dismissThresholds 만족 안한 상태
@@ -275,7 +288,7 @@ fun TransactItem(
             }
 
             DismissValue.DismissedToEnd -> { // -> 방향 스와이프 (수정)
-                onDeleteItem.invoke()
+                showDialog = true
                 true
             }
 
@@ -286,6 +299,11 @@ fun TransactItem(
         }
     })
 
+    if (showDialog) {
+        //onDeleteItem.invoke()
+        EditCash(dateInfo, isSpend, spendData, onDismissRequest = { viewModel.setShowPostDialog(false) })
+    }
+
     SwipeToDismiss(
         modifier = Modifier.clip(roundedCornerShape),
         state = dismissState,
@@ -295,7 +313,7 @@ fun TransactItem(
             val color by animateColorAsState(
                 when (dismissState.targetValue) {
                     DismissValue.Default -> backgroundColor.copy(alpha = 0.5f) // dismissThresholds 만족 안한 상태
-                    DismissValue.DismissedToEnd -> Color.Red.copy(alpha = 0.5f) // -> 방향 스와이프 (수정)
+                    DismissValue.DismissedToEnd -> Color.Blue.copy(alpha = 0.5f) // -> 방향 스와이프 (수정) //파란색으로 변경
                     DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.5f) // <- 방향 스와이프 (삭제)
                 }, label = ""
             )
@@ -305,7 +323,7 @@ fun TransactItem(
             }
             val icon = when (dismissState.targetValue) {
                 DismissValue.Default -> null
-                DismissValue.DismissedToEnd -> Icons.Default.Delete
+                DismissValue.DismissedToEnd -> Icons.Default.Edit
                 DismissValue.DismissedToStart -> Icons.Default.Delete
             }
             Box(
