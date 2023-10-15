@@ -24,6 +24,8 @@ interface OliveDao {
     @Query("DELETE FROM HistoryList WHERE id= :id")
     suspend fun deleteHistory(id: Long)
 
+    /*@Query("SELECT year, month, spendList  FROM HistoryList")
+    fun getStatic(): List<History>?*/
 
     //카테고리
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -39,6 +41,7 @@ interface OliveDao {
     suspend fun deleteCategory(id: Int)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
+
     suspend fun updateCategory(category: Category)
 
 
