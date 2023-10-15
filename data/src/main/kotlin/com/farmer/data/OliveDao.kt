@@ -8,8 +8,8 @@ interface OliveDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistory(history: History)
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insertSms(year: Int, month: Int, date: Int, price:Int, item:String ):History?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSms(history: History )
 
     @Query("SELECT * FROM HistoryList WHERE id = :id")
     suspend fun getHistoryById(id: Long): History?
@@ -40,5 +40,6 @@ interface OliveDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateCategory(category: Category)
+
 
 }

@@ -61,7 +61,7 @@ class StatisticsViewModel @Inject constructor(
 
 
 
-    fun onNewDateSelect(year: Int, month: Int) {
+    fun onNewDateSelect(year: Int, month: Int){
         uiState.update {
             it.copy(
                 year = year,
@@ -80,32 +80,36 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
+    // 카테고리별로 지출금액을 구하는 함수
     private suspend fun calculateTotalSpendByCategoryForMonth(): Map<String, Int> {
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         val result = mutableMapOf<String, Int>()
 
-        val staticList = repository.getStaticByMonth(now.monthNumber)
+
+        val staticList = repository.getStaticByMonth(uiState.value.month)
+        Log.e("@@@StaticViewModel", "현재 선택된 달은? : ${uiState.value.month}")
 
         for (history in staticList) {
-            if (history.month == now.monthNumber) {
+            if (history.month == uiState.value.month) {
                 for (transactData in history.spendList.spendList) {
+
+                    // 카테고리 등록이 안 되어있을 경우,  Map '기타'로 매핑해주기
+                    val category = if (transactData.category.isEmpty()) "기타" else transactData.category
                     val currentTotal = result.getOrDefault(transactData.category, 0)
-                    result[transactData.category] = currentTotal + transactData.price
+                    result[category] = currentTotal + transactData.price
                 }
             }
         }
-
         return result
     }
 
+    // 월별 총 지출금액을 구하는 함수
     private suspend fun calculateTotalMonthlySpend(): Int {
         var totalSpend = 0
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
-            val staticlist = repository.getStaticByMonth(now.monthNumber)
+            val staticlist = repository.getStaticByMonth(uiState.value.month)
 
             for (history in staticlist) {
-                if (history.month == now.monthNumber) {
+                if (history.month == uiState.value.month) {
                     for (transactData in history.spendList.spendList) {
                         totalSpend += transactData.price
                     }
@@ -113,6 +117,7 @@ class StatisticsViewModel @Inject constructor(
             }
         return totalSpend
     }
+
 
     private fun getColorForCategory(category: String): Color {
         return when (category) {
@@ -135,7 +140,7 @@ class StatisticsViewModel @Inject constructor(
     }
 
 
-    private suspend fun getTempChartDataList() {
+     private suspend fun getTempChartDataList() {
 
         val totalSpendByCategory = calculateTotalSpendByCategoryForMonth()
         val totalMonthlySpend = calculateTotalMonthlySpend()
@@ -148,8 +153,6 @@ class StatisticsViewModel @Inject constructor(
         uiState.update {
             it.copy(chartDataList = chartDataList)
         }
-
-
 
 
     }
