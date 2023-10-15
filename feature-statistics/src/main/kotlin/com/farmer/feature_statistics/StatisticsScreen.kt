@@ -39,6 +39,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.farmer.data.DateInfo
 import com.farmer.feature_statistics.StatisticsUiState.ChartData
 import java.util.Calendar
@@ -59,7 +60,9 @@ fun StatisticsScreen(
             year = uiState.year,
             month = uiState.month,
             onNewDateSelect = viewModel::onNewDateSelect
+
         )
+        viewModel.refreshStatic()
 
         if (uiState.chartDataList.isNullOrEmpty()) {
             Column(
@@ -94,8 +97,8 @@ fun StatisticsScreen(
                 )
             }
         }
-
         else {
+
             PieChart(
                 modifier = Modifier
                     .height(280.dp)
@@ -119,7 +122,10 @@ fun StatisticsScreen(
 
         Spacer(modifier = Modifier.weight(1f))
     }
+
 }
+
+
 
 @Composable
 fun SelectDate(
@@ -151,9 +157,9 @@ fun SelectDate(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-
         Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
     }
+
 }
 
 @Composable
