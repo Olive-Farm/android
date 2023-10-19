@@ -11,10 +11,14 @@ import com.github.tehras.charts.piechart.PieChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
@@ -50,6 +54,8 @@ class StatisticsViewModel @Inject constructor(
     private val repository: OliveRepository
 ) : ViewModel() {
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
     val uiState = MutableStateFlow(StatisticsUiState.EMPTY)
 
     init {
@@ -59,9 +65,19 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
+    fun refreshStatic() {
+        //_isRefreshing.update { true }
+        viewModelScope.launch {
+            // 예: 사용자가 달력에서 월을 선택했을 때 호출되는 함수
+            getTempChartDataList()
+        }
+        //_isRefreshing.update { false }
+    }
 
 
-    fun onNewDateSelect(year: Int, month: Int) {
+
+
+    fun onNewDateSelect(year: Int, month: Int){
         uiState.update {
             it.copy(
                 year = year,
@@ -80,32 +96,34 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
+    // 카테고리별로 지출금액을 구하는 함수
     private suspend fun calculateTotalSpendByCategoryForMonth(): Map<String, Int> {
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         val result = mutableMapOf<String, Int>()
+        val staticList = repository.getStaticByMonth(uiState.value.month)
 
-        val staticList = repository.getStaticByMonth(now.monthNumber)
 
         for (history in staticList) {
-            if (history.month == now.monthNumber) {
+            if (history.month == uiState.value.month) {
                 for (transactData in history.spendList.spendList) {
+
+                    // 카테고리 등록이 안 되어있을 경우,  Map '기타'로 매핑해주기
+                    val category = if (transactData.category.isEmpty()) "기타" else transactData.category
                     val currentTotal = result.getOrDefault(transactData.category, 0)
-                    result[transactData.category] = currentTotal + transactData.price
+                    result[category] = currentTotal + transactData.price
                 }
             }
         }
-
         return result
     }
 
+    // 월별 총 지출금액을 구하는 함수
     private suspend fun calculateTotalMonthlySpend(): Int {
         var totalSpend = 0
-        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
-            val staticlist = repository.getStaticByMonth(now.monthNumber)
+            val staticlist = repository.getStaticByMonth(uiState.value.month)
 
             for (history in staticlist) {
-                if (history.month == now.monthNumber) {
+                if (history.month == uiState.value.month) {
                     for (transactData in history.spendList.spendList) {
                         totalSpend += transactData.price
                     }
@@ -113,6 +131,7 @@ class StatisticsViewModel @Inject constructor(
             }
         return totalSpend
     }
+
 
     private fun getColorForCategory(category: String): Color {
         return when (category) {
@@ -135,20 +154,21 @@ class StatisticsViewModel @Inject constructor(
     }
 
 
-    private suspend fun getTempChartDataList() {
+     private suspend fun getTempChartDataList() {
 
-        val totalSpendByCategory = calculateTotalSpendByCategoryForMonth()
-        val totalMonthlySpend = calculateTotalMonthlySpend()
+         val totalSpendByCategory = calculateTotalSpendByCategoryForMonth()
+         val totalMonthlySpend = calculateTotalMonthlySpend()
 
-        val chartDataList = totalSpendByCategory.map { (category, totalSpend) ->
-            val percentage = (totalSpend.toFloat() / totalMonthlySpend) * 100
-            val color = getColorForCategory(category)
-            StatisticsUiState.ChartData(categoryName = category, percentage = percentage, color = color)
-        }
-        uiState.update {
-            it.copy(chartDataList = chartDataList)
-        }
 
+         val chartDataList = totalSpendByCategory.map { (category, totalSpend) ->
+             val percentage = (totalSpend.toFloat() / totalMonthlySpend) * 100
+             val color = getColorForCategory(category)
+             StatisticsUiState.ChartData(categoryName = category, percentage = percentage, color = color)
+         }
+
+             uiState.update {
+                 it.copy(chartDataList = chartDataList)
+             }
 
 
 

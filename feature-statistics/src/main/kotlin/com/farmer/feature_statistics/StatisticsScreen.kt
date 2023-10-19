@@ -31,10 +31,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.farmer.data.DateInfo
 import com.farmer.feature_statistics.StatisticsUiState.ChartData
 import java.util.Calendar
 
@@ -54,31 +60,72 @@ fun StatisticsScreen(
             year = uiState.year,
             month = uiState.month,
             onNewDateSelect = viewModel::onNewDateSelect
-        )
 
-        PieChart(
-            modifier = Modifier
-                .height(280.dp)
-                .padding(top = 24.dp),
-            pieChartData = PieChartData(
-                uiState.chartDataList.map { it.toPieChartData() }
-            ),
-            animation = simpleChartAnimation(),
-            sliceDrawer = SimpleSliceDrawer(14f) // thickness 조정 가능
         )
+        viewModel.refreshStatic()
 
-        LazyColumn(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(uiState.chartDataList) { chartData ->
-                ChartDataCategoryItem(chartData)
+        if (uiState.chartDataList.isNullOrEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "입력한 내역이 없습니다!",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF355A1E)
+                            )
+                        ) {
+                            append("OliveBook")
+                        }
+                        withStyle(style = SpanStyle(color = Color.DarkGray)) {
+                            append("을 이용하여\n 편리하게 가계부를 관리해보세요")
+                        }
+                    }, fontSize = 14.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        else {
+
+            PieChart(
+                modifier = Modifier
+                    .height(280.dp)
+                    .padding(top = 24.dp),
+                pieChartData = PieChartData(
+                    uiState.chartDataList.map { it.toPieChartData() }
+                ),
+                animation = simpleChartAnimation(),
+                sliceDrawer = SimpleSliceDrawer(90f) // thickness 조정 가능
+            )
+
+            LazyColumn(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(uiState.chartDataList) { chartData ->
+                    ChartDataCategoryItem(chartData)
+                }
             }
         }
 
         Spacer(modifier = Modifier.weight(1f))
     }
+
 }
+
+
 
 @Composable
 fun SelectDate(
@@ -110,9 +157,9 @@ fun SelectDate(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-
         Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
     }
+
 }
 
 @Composable

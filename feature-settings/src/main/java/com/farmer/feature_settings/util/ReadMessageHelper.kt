@@ -6,12 +6,24 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import com.farmer.data.History
+import com.farmer.data.OliveDao
+import com.farmer.data.network.OliveApi
+import com.farmer.data.repository.OliveRepository
+import com.farmer.data.repository.OliveRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
+
 
 object ReadMessageHelper {
-    fun readSMSMessage(context: Context): List<Message> {
+     fun readSMSMessage(context: Context): List<Message> {
         val messageList: MutableList<Message> = mutableListOf()
+
 
         val allMessage: Uri = Uri.parse("content://sms/inbox")
         val cr: ContentResolver = context.contentResolver
@@ -50,7 +62,7 @@ object ReadMessageHelper {
         return messageList
     }
 
-    fun parseSMS(message: Message) {
+fun parseSMS(message: Message): History? {
         val regex_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)\s(?:.+원)""".toRegex()
         val regex_not_total = """([0-9]*,[0-9]*,*[0-9]*)원 (.+) ([0-9]*\/[0-9]*) ([0-9]*:[0-9]*) (.+)""".toRegex()
 
@@ -77,6 +89,17 @@ object ReadMessageHelper {
                 memo = matchResult_non_total!!.destructured.component5()
             }
 
+            // date 분리 (월,일 따로)
+            val str = date
+            val arr = str.split("-")
+
+
+            val sms_year = message.year.toInt()
+            val sms_month = arr[0].toInt()
+            val sms_day = arr[1].toInt()
+            val sms_amount = amount.toInt()
+
+
             date = date!!.replace("/", "-")
             var arrangetime = message.year + "-" + date + " " + time + ":" + "00"
             amount = amount!!.replace(",", "")
@@ -86,10 +109,27 @@ object ReadMessageHelper {
             Log.d("금액 추출 ", amount)
             Log.d("내역 추출 ", memo)
             Log.d(ContentValues.TAG, "--------------------------------------------")
-        } catch (e: Exception) {
+
+
+           return History(
+                year = sms_year, month = sms_month, date = sms_day,
+                spendList = History.Transact(
+                    spendList = listOf(
+                        History.Transact.TransactData(price = sms_amount, item = memo)
+                    )
+                )
+            )
+
+
+
+
+        }
+        catch (e: Exception) {
+            return null
         }
 
     }
+
 
     private fun getDateTime(s: Long): String {              //카드 사용의 년도 추출
         try {
@@ -100,4 +140,6 @@ object ReadMessageHelper {
             return e.toString()
         }
     }
+
 }
+
