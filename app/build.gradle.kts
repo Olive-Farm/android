@@ -62,7 +62,6 @@ dependencies {
 //    implementation ("com.diogobernardino.williamchart:tooltip-points:3.10.1")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0") // 그래프 라이브러리 추가
     implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
-    implementation("androidx.compose.material3:material3-android:1.2.0-alpha10")
     implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
 
     // base
