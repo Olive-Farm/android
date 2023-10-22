@@ -69,6 +69,8 @@ fun CalendarDates(
                                 data.price
                             } ?: 0,
                             dayOfWeek = it.dateInfo?.date?.dayOfWeek,
+                            year = it.dateInfo?.date?.year.toString(),
+                            month = it.dateInfo?.date?.monthNumber.toString(),
                             onClick = {
                                 viewModel.setShowDetailDialog(
                                     shouldShow = true,

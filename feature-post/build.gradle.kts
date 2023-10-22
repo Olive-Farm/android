@@ -32,6 +32,7 @@ dependencies {
     androidTestImplementation(libs.android.junit)
 
     implementation("com.google.accompanist:accompanist-permissions:0.27.0")
+    implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
 
     implementation(project(":network"))
     implementation(project(":data"))

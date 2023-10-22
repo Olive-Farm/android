@@ -37,6 +37,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.5.0-alpha02")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0") // corutine 추가
+    implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
 
     implementation(project(":network"))
     implementation(project(":navigator"))
