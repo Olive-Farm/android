@@ -447,11 +447,12 @@ fun AddCash(
         Spacer(modifier = Modifier.weight(1f))
         Row {
             Button(
-                onClick =  {
+                onClick = viewModel::postCashData
+                /*{
                     viewModel.postCashData()
                     viewModel.amount.value = TextFieldValue("")
                     viewModel.name.value = TextFieldValue("")
-                },
+                },*/,
                 contentPadding = PaddingValues(10.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
