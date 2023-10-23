@@ -17,7 +17,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -112,22 +116,106 @@ fun EditCash(
             calendar[Calendar.DAY_OF_MONTH],
         )
 
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text("내역")
-            },
-            value = nameText,
-            onValueChange = { nameText = it
-                viewModel.name.value = it },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = Color.LightGray
-            ),
-            readOnly = false,
-            enabled = true
-        )
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Button(
+                modifier = Modifier.width(125.dp)
+                    .clip(RoundedCornerShape(percent = 50)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (uiState.value.isSpendState ) Color(0x8092C88D)
+                    else Color(0x80C2C2C2)
+                ),
+                onClick = { viewModel.setChipState(isSpend = true)
+                    isSpendChip = true},
+                elevation = null
+            ) {
+                Icon(
+                    Icons.Outlined.Payments,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                    tint =
+                    if (uiState.value.isSpendState) Color.DarkGray
+                    else Color.Gray
+                )
+                Text(
+                    modifier = Modifier.wrapContentSize(Alignment.Center),
+                    text = "지출",
+                    fontSize = 15.sp,
+                    fontWeight =
+                    if (uiState.value.isSpendState) FontWeight.Bold
+                    else FontWeight.Normal,
+                    color =
+                    if (uiState.value.isSpendState) Color.DarkGray
+                    else Color.Gray,
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Button(
+                modifier = Modifier
+                    .width(125.dp)
+                    .clip(RoundedCornerShape(percent = 50)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (!uiState.value.isSpendState) Color(0x8092C88D)
+                    else Color(0x80C2C2C2)
+                ),
+                onClick = { viewModel.setChipState(isSpend = false)
+                    isSpendChip = false},
+                elevation = null
+            ) {
+                Icon(
+                    Icons.Outlined.Savings,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                    tint =
+                    if (!uiState.value.isSpendState) Color.DarkGray
+                    else Color.Gray
+
+                )
+                Text(
+                    modifier = Modifier.wrapContentSize(Alignment.Center),
+                    text = "수입",
+                    fontSize = 15.sp,
+                    fontWeight =
+                    if (!uiState.value.isSpendState) FontWeight.Bold
+                    else FontWeight.Normal,
+                    color =
+                    if (!uiState.value.isSpendState) Color.DarkGray
+                    else Color.Gray
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier.padding(end = 50.dp)
+                    .align(Alignment.CenterVertically),
+                text = "내역",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                modifier = Modifier.align(Alignment.Bottom),
+                value = nameText,
+                onValueChange = { nameText = it
+                    viewModel.name.value = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedLabelColor = Color(0x8092C88D)
+                ),
+                readOnly = false,
+                enabled = true
+            )
+        }
         AnimatedVisibility(visible = uiState.value.needNameState) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(all = 5.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
                 Text(
                     text = "내역명을 입력해주세요.",
                     color = Color.Red,
@@ -135,24 +223,35 @@ fun EditCash(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text("금액")
-            },
-            trailingIcon = {Text (text="원")},
-            value = priceText,
-            onValueChange = { priceText = it
-                viewModel.amount.value = it },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = Color.LightGray
-            ),
-            enabled = true
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier.padding(end = 50.dp)
+                    .align(Alignment.CenterVertically),
+                text = "금액",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                trailingIcon = { Text(text = "원") },
+                value = priceText,
+                onValueChange = { priceText = it
+                    viewModel.amount.value = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedLabelColor = Color(0x8092C88D)
+                )
+            )
+        }
         AnimatedVisibility(visible = uiState.value.needAmountState) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(all = 5.dp), horizontalArrangement = Arrangement.End
+            ) {
                 Text(
                     text = "금액을 입력해주세요.",
                     color = Color.Red,
@@ -160,8 +259,67 @@ fun EditCash(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        Row {
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier.padding(end = 50.dp)
+                    .align(Alignment.CenterVertically),
+                text = "날짜",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            TextField(
+                modifier = Modifier.fillMaxSize()
+                    .align(Alignment.Bottom),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        timePickerDialog.show()
+                    }) {
+                        Icon(
+                            Icons.Filled.EditCalendar,
+                            contentDescription = null,
+                            tint = Color(0xFF537150)
+                        )
+                    }
+                },
+                value = "${yearText} / ${monthText + 1} / ${dayText}",
+                onValueChange = { },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    disabledTextColor = Color.DarkGray
+                ),
+                enabled = false,
+            )
+        }
+        AnimatedVisibility(visible = uiState.value.needDateState) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "날짜를 입력해주세요.",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            Text(
+                modifier = Modifier.padding(end = 16.dp)
+                    .align(Alignment.CenterVertically),
+                text = "카테고리",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
             ExposedDropdownMenuBox(
                 modifier = Modifier.fillMaxWidth(),
                 expanded = menuExpanded,
@@ -175,12 +333,15 @@ fun EditCash(
                     value = categoryText,
                     onValueChange = { categoryText = selectedOptionText
                         viewModel.category.value = selectedOptionText },
-                    label = { Text("카테고리를 선택해주세요") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = menuExpanded
                         )
                     },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        disabledTextColor = Color.DarkGray
+                    )
                 )
                 ExposedDropdownMenu(
                     modifier = Modifier.height(200.dp),
@@ -206,66 +367,8 @@ fun EditCash(
             }
 
         }
+        Spacer(modifier = Modifier.height(10.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
-        Row {
-            TextButton(onClick = {
-                timePickerDialog.show()
-            }) {
-                Text(text = "날짜 선택", color = Color(0xFF355A1E), fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                text = "${yearText}년 ${monthText + 1}월 ${dayText}일 "
-            )
-        }
-
-        AnimatedVisibility(visible = uiState.value.needDateState) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Text(
-                    text = "날짜를 입력해주세요.",
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(4.dp))
-
-        Row (modifier = Modifier.align(Alignment.CenterHorizontally)){
-            Chip(
-                colors = ChipDefaults.chipColors(
-                    backgroundColor =
-                    if (uiState.value.isSpendState ) Color(0xFF355A1E)
-                    else Color(0xFFE8F5E9)
-                ),
-                onClick = { viewModel.setChipState(isSpend = true)
-                    isSpendChip = true}
-            ) {
-                Text(text = "소비", color =
-                if (uiState.value.isSpendState) Color.White
-                else Color.DarkGray)
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Chip(
-                colors = ChipDefaults.chipColors(
-                    backgroundColor =
-                    if (!uiState.value.isSpendState) Color(0xFF355A1E)
-                    else Color(0xFFE8F5E9)
-                ),
-                onClick = { viewModel.setChipState(isSpend = false)
-                    isSpendChip = false}
-            ) {
-                Text(text = "수입", color =
-                if (!uiState.value.isSpendState) Color.White
-                else Color.DarkGray)
-            }
-
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
         Row {
             Button(onClick = {
                 viewModel.viewModelScope.launch {
@@ -279,20 +382,6 @@ fun EditCash(
                 contentPadding = PaddingValues(10.dp),
                 modifier = Modifier.fillMaxWidth()) {
                 Text(text = "수정하기")
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    viewModel.viewModelScope.launch {
-                        viewModel.deleteDataToEdit(
-                            historyId = dateInfo?.history?.id,
-                            transactionId = spendData.id
-                        )
-                        viewModel.postCashData()
-                    }
-                }
-            ) {
-                Icon(Icons.Filled.Check, contentDescription = null)
             }
         }
         if (uiState.value.dismissDialogState) {

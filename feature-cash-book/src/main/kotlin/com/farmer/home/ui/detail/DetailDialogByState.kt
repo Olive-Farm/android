@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -29,7 +30,8 @@ fun DetailDialogByState(
         )
     ) {
         Surface(
-            modifier = Modifier.height(DIALOG_HEIGHT.dp),
+            modifier = Modifier.height(DIALOG_HEIGHT.dp)
+                .shadow(12.dp, shape = RoundedCornerShape(8.dp)),
             shape = RoundedCornerShape(8.dp),
             color = Color.White
         ) {

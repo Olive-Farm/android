@@ -300,10 +300,9 @@ fun TransactItem(
     })
 
     if (showDialog) {
-        //onDeleteItem.invoke()
         EditCash(dateInfo, isSpend, spendData, onDismissRequest = { viewModel.setShowPostDialog(false) })
     }
-
+    else {
     SwipeToDismiss(
         modifier = Modifier.clip(roundedCornerShape),
         state = dismissState,
@@ -313,8 +312,8 @@ fun TransactItem(
             val color by animateColorAsState(
                 when (dismissState.targetValue) {
                     DismissValue.Default -> backgroundColor.copy(alpha = 0.5f) // dismissThresholds 만족 안한 상태
-                    DismissValue.DismissedToEnd -> Color.Blue.copy(alpha = 0.5f) // -> 방향 스와이프 (수정) //파란색으로 변경
-                    DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.5f) // <- 방향 스와이프 (삭제)
+                    DismissValue.DismissedToEnd -> Color(0xFF52ACFF).copy(alpha = 0.5f) // -> 방향 스와이프 (수정) //파란색으로 변경
+                    DismissValue.DismissedToStart -> Color(0xFFFF95CE).copy(alpha = 0.5f) // <- 방향 스와이프 (삭제)
                 }, label = ""
             )
             val alignment = when (direction) {
@@ -342,6 +341,7 @@ fun TransactItem(
         dismissContent = { // 지워지면 보일 항목
             TransactContent(index, spendData, isDialogEditMode, isSpend)
         })
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
