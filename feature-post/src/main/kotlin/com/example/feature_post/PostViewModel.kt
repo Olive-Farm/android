@@ -125,7 +125,7 @@ class PostViewModel @Inject constructor(
             )
             val userInputHistory = History(
                 year = yearSMS,
-                month = monthSMS + 1, // 달에는 1월을 추가해야 함.
+                month = monthSMS,
                 date = daySMS,
                 dayOfWeek = "",
                 tool = "", // todo

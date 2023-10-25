@@ -121,7 +121,7 @@ fun parseSMS(message: Message, viewModel: PostViewModel) {
     viewModel.nameSMS = memo
     viewModel.amountSMS = sms_amount
     viewModel.yearSMS = sms_year
-    viewModel.monthSMS = sms_month - 1
+    viewModel.monthSMS = sms_month
     viewModel.daySMS = sms_day
 
     viewModel.postSMSData()
