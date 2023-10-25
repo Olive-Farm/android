@@ -68,20 +68,16 @@ fun readSMSMessage(cr: ContentResolver, viewModel: PostViewModel) {
 
 fun parseSMS(message: Message, viewModel: PostViewModel) {
 
-
-
-    val regex_total = """([0-9]*,[0-9]*,*[0-9]*)원\s(.+)\s([0-9]*\/[0-9]*)\s([0-9]*:[0-9]*)\s(.+)\s(?:.+원)""".toRegex()
-    val regex_not_total = """([0-9]*,[0-9]*,*[0-9]*)원\s(.+)\s([0-9]*\/[0-9]*)\s([0-9]*:[0-9]*)\s(.+)""".toRegex()
+    val regex_total = """([0-9,]*)원\s(.+)\s([0-9]*\/[0-9]*)\s([0-9]*:[0-9]*)\s(.+)\s(?:.+원)""".toRegex()
+    val regex_not_total = """([0-9,]*)원\s(.+)\s([0-9]*\/[0-9]*)\s([0-9]*:[0-9]*)\s(.+)""".toRegex()
 
     var (amount, inst, date, time, memo) = arrayOf<String>("-", "-", "-", "-", "-")
 
-    message.body = message.body.replace("\n", " ").replace("(", " ").replace(")", " ")
-
-
     var matchResult_total = regex_total.find(message.body)
     var matchResult_non_total = regex_not_total.find(message.body)
-    if (matchResult_total == null && matchResult_non_total == null)
+    if (matchResult_total == null && matchResult_non_total == null){
         return
+    }
 
     try {
 
@@ -110,23 +106,20 @@ fun parseSMS(message: Message, viewModel: PostViewModel) {
     val sms_amount = amount.toInt()
 
 
-    Log.d("timestamp", message.timeStamp.toString())
-    Log.d("@@@년도 추출 ", sms_year.toString())
-    Log.d("@@@월 추출 ", sms_month.toString())
-    Log.d("@@@일 추출 ", sms_day.toString())
-    Log.d("@@@금액 추출 ", sms_amount.toString())
-    Log.d("@@@내역 추출 ", memo)
-
-
     viewModel.nameSMS = memo
     viewModel.amountSMS = sms_amount
     viewModel.yearSMS = sms_year
     viewModel.monthSMS = sms_month
     viewModel.daySMS = sms_day
 
-    viewModel.postSMSData()
+ /*   Log.d("@@@추출 성공한 문자", message.body)
+    Log.d("@@@추출내용", viewModel.nameSMS)
+    Log.d("@@@추출금액", viewModel.amountSMS.toString())
+    Log.d("@@@추출년도", viewModel.yearSMS.toString())
+    Log.d("@@@추출월자", viewModel.monthSMS.toString())
+    Log.d("@@@추출일자", viewModel.daySMS.toString())*/
 
-    Log.d("@@@넣기 성공", memo)
+    viewModel.postSMSData()
     viewModel.refreshState()
 
 }

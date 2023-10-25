@@ -133,7 +133,7 @@ class PostViewModel @Inject constructor(
                 spendList = spendTransact
             )
             //_uiState.update { it.copy(dismissDialogState = true) }
-            repository.insertHistory(userInputHistory)
+            repository.insertSms(userInputHistory)
             category.value = ""
         }
     }
