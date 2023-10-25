@@ -122,7 +122,7 @@ private fun CalendarHeader(
                     addSlideAnimation(isNext = isNext.value).using(
                         SizeTransform(clip = false)
                     )
-                }
+                }, label = ""
             ) {
                 val dateArray = it.split(' ')
                 Row (modifier = Modifier.width(130.dp)) {

@@ -38,6 +38,11 @@ class PostViewModel @Inject constructor(
     val yearState = mutableStateOf(0)
     val monthState = mutableStateOf(-1)
     val dayOfMonthState = mutableStateOf(0)
+    var nameSMS = ""
+    var amountSMS = 0
+    var yearSMS = 0
+    var monthSMS = 0
+    var daySMS = 0
 
     private val _deletedId: MutableStateFlow<List<Long>> = MutableStateFlow(emptyList())
     val deletedId = _deletedId.asStateFlow()
@@ -103,6 +108,33 @@ class PostViewModel @Inject constructor(
                 repository.insertHistory(userInputHistory)
                 category.value = ""
             }
+        }
+    }
+
+    fun postSMSData(){
+        if (nameSMS == "" || amountSMS == 0 || (yearSMS == 0 || monthSMS == 0 || daySMS == 0)) return
+        viewModelScope.launch {
+            val spendTransact = History.Transact(
+                spendList = listOf(
+                    History.Transact.TransactData(
+                        price = amountSMS,
+                        item = nameSMS,
+                        category = ""
+                    )
+                )
+            )
+            val userInputHistory = History(
+                year = yearSMS,
+                month = monthSMS + 1, // 달에는 1월을 추가해야 함.
+                date = daySMS,
+                dayOfWeek = "",
+                tool = "", // todo
+                memo = "", // todo
+                spendList = spendTransact
+            )
+            //_uiState.update { it.copy(dismissDialogState = true) }
+            repository.insertHistory(userInputHistory)
+            category.value = ""
         }
     }
 
