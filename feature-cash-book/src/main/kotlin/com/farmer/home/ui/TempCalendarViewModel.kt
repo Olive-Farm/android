@@ -41,6 +41,12 @@ class TempCalendarViewModel @Inject constructor(
     private val _dialogUiState = MutableStateFlow<DialogUiState>(DialogUiState.NotShowing)
     val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()
 
+    private val _editCategoryDialogState =
+        MutableStateFlow<EditCategoryDialogState>(EditCategoryDialogState.NotShowingEditDialog)
+
+    val editCategoryDialogState: StateFlow<EditCategoryDialogState> get() = _editCategoryDialogState.asStateFlow()
+
+
     private val _currentLocalDate =
         MutableStateFlow(Clock.System.todayIn(TimeZone.currentSystemDefault()))
     val calendarUiState: StateFlow<CalendarUiState> =
@@ -83,6 +89,12 @@ class TempCalendarViewModel @Inject constructor(
             if (shouldShow) DialogUiState.PostDialog
             else DialogUiState.NotShowing
     }
+
+    fun setShowEditCategoryDialog(shouldShow: Boolean) {
+        _dialogUiState.value =
+            if (shouldShow) DialogUiState.EditCategoryDialog
+            else DialogUiState.NotShowing
+    }
 }
 
 private fun calendarUiState(
@@ -118,4 +130,13 @@ sealed interface DialogUiState {
     object PostDialog : DialogUiState
 
     object NotShowing : DialogUiState
+
+    object EditCategoryDialog : DialogUiState
+
+}
+
+sealed interface EditCategoryDialogState {
+    object ShowEditDialog : EditCategoryDialogState
+
+    object NotShowingEditDialog : EditCategoryDialogState
 }

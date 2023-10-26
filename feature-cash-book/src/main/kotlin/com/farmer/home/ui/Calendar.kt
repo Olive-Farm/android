@@ -12,19 +12,10 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +27,7 @@ import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feature_post.PostDialog
+import com.farmer.feature_settings.EditCategoryDialog
 import com.farmer.home.ui.detail.DetailDialogByState
 import com.farmer.navigator.SettingsActivityNavigator
 import kotlinx.datetime.Month
@@ -64,8 +56,8 @@ fun Calendar(
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     year = state.dateViewInfo.last().dateInfo?.date?.year ?: -1,
                     onPreviousClick = viewModel::moveToPreviousMonth,
-                    onNextClick = viewModel::moveToNextMonth,
-                    settingsActivityNavigator = viewModel.settingsActivityNavigator
+                    onNextClick = viewModel::moveToNextMonth
+                    //settingsActivityNavigator = viewModel.settingsActivityNavigator
                 )
 
                 CalendarDates(state)
@@ -78,7 +70,8 @@ fun Calendar(
         is DialogUiState.DetailDialog -> DetailDialogByState(state)
         is DialogUiState.PostDialog ->
             PostDialog(onDismissRequest = { viewModel.setShowPostDialog(false) })
-
+        is DialogUiState.EditCategoryDialog ->
+            EditCategoryDialog(onDismissRequest = { viewModel.setShowEditCategoryDialog(false) })
         is DialogUiState.NotShowing -> Unit
     }
 }
@@ -91,9 +84,19 @@ private fun CalendarHeader(
     year: Int,
     onPreviousClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
-    settingsActivityNavigator: SettingsActivityNavigator
+    viewModel: TempCalendarViewModel = hiltViewModel()
+    //settingsActivityNavigator: SettingsActivityNavigator
 ) {
     val isNext = remember { mutableStateOf(true) }
+    val dialogState = viewModel.editCategoryDialogState.collectAsState()
+
+    ShowEditCategoryDialogByState(
+        dialogState = dialogState,
+        onDismissRequest = {
+            viewModel.setShowEditCategoryDialog(false)
+        }
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -169,10 +172,36 @@ private fun CalendarHeader(
         Spacer(Modifier.weight(1f))
 
         val context = LocalContext.current
-        IconButton(onClick = {
-            context.startActivity(settingsActivityNavigator.getIntent(context))
-        }) {
-            Icon(Icons.Default.Settings, "Settings icon")
+        var menuExpanded by remember { mutableStateOf(false) }
+
+        Box {
+            IconButton(onClick = {
+                menuExpanded = true
+                //context.startActivity(settingsActivityNavigator.getIntent(context))
+            }) {
+                Icon(Icons.Default.Settings, "Settings icon")
+            }
+            DropdownMenu(
+                modifier = Modifier.wrapContentSize(),
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false }
+            ){
+                DropdownMenuItem(onClick = {
+                    viewModel.setShowEditCategoryDialog(true)
+                    //viewModel.setEditCategoryDialog(true)
+                    menuExpanded = false
+                }) {
+                    Row {
+                        Icon(
+                            Icons.Filled.BorderColor,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 10.dp),
+                            tint = Color.DarkGray
+                        )
+                        Text(text = "카테고리 수정하기",)
+                    }
+                }
+            }
         }
 
     }
@@ -194,4 +223,18 @@ private fun addSlideAnimation(duration: Int = 500, isNext: Boolean): ContentTran
     ) with slideOutVertically(animationSpec = tween(durationMillis = duration)) { height -> if (isNext) -height else height } + fadeOut(
         animationSpec = tween(durationMillis = duration)
     )
+}
+
+@Composable
+private fun ShowEditCategoryDialogByState(
+    dialogState: State<EditCategoryDialogState>,
+    onDismissRequest: () -> Unit
+) {
+    when (dialogState.value) {
+        EditCategoryDialogState.ShowEditDialog -> {
+            EditCategoryDialog(onDismissRequest = { onDismissRequest() })
+        }
+
+        EditCategoryDialogState.NotShowingEditDialog -> Unit
+    }
 }
