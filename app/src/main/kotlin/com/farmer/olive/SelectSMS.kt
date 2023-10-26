@@ -18,7 +18,7 @@ import com.farmer.home.model.response.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun readSMSMessage(context: Context) {
+suspend fun readSMSMessage(context: Context) {
         val messageList: MutableList<Message> = mutableListOf()
 
         val allMessage: Uri = Uri.parse("content://sms/inbox")

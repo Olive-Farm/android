@@ -109,15 +109,7 @@ private fun CalendarHeader(
                 .align(Alignment.CenterVertically),
             horizontalArrangement = Arrangement.Start
         ) {
-            NextMonthIconButton(
-                modifier = Modifier.wrapContentSize(),
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Previous Week",
-                onClick = {
-                    isNext.value = false
-                    onPreviousClick()
-                }
-            )
+
 
             // calendar title (Ex. January 2022)
             AnimatedContent(
@@ -125,21 +117,43 @@ private fun CalendarHeader(
                     .wrapContentHeight()
                     .wrapContentWidth()
                     .align(Alignment.CenterVertically),
-                targetState = getDateTitleText(month, year),
+                targetState = getDateTitleText(year, month),
                 transitionSpec = {
                     addSlideAnimation(isNext = isNext.value).using(
                         SizeTransform(clip = false)
                     )
-                }
+                }, label = ""
             ) {
+                val dateArray = it.split(' ')
+                Row (modifier = Modifier.width(130.dp)) {
                 Text(
-                    text = it,
-                    modifier = Modifier.width(170.dp),
+                    text = dateArray[1],
+                    modifier = Modifier.padding(horizontal = 10.dp),
                     fontWeight = FontWeight.Bold,
                     fontSize = 5.em,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color(0xFFDDDDDD),
                 )
+                Text(
+                    text = dateArray[0],
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 5.em,
+                    textAlign = TextAlign.Center,
+
+
+                )
+                }
             }
+
+            NextMonthIconButton(
+                modifier = Modifier.wrapContentSize(),
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Previous Month",
+                onClick = {
+                    isNext.value = false
+                    onPreviousClick()
+                }
+            )
 
             NextMonthIconButton(
                 modifier = Modifier.wrapContentSize(),
@@ -162,14 +176,12 @@ private fun CalendarHeader(
         }
 
     }
-    Divider(modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp), color = Color(0xFF355A1E)
-    , thickness = 2.dp)
 
 }
 
-private fun getDateTitleText(month: Month, year: Int): String {
-    return month.getDisplayName(TextStyle.FULL, Locale.getDefault()).lowercase().replaceFirstChar {
-        if (it.isLowerCase()) it.titlecase(
+private fun getDateTitleText(year: Int, month: Month,): String {
+    return month.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase().replaceFirstChar {
+        if (it.isUpperCase()) it.titlecase(
             Locale.getDefault()
         ) else it.toString()
     } + " " + year

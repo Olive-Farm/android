@@ -32,6 +32,7 @@ class PostDialogViewModel @Inject constructor(
         }
     }
 
+
     fun deleteTransactionData(
         historyId: Long?,
         transactionId: Long
@@ -49,4 +50,5 @@ class PostDialogViewModel @Inject constructor(
             }
         }
     }
+
 }

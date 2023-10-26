@@ -14,7 +14,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.home.model.OliveDateList
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -34,18 +36,23 @@ fun CalendarDates(
             viewModel.refreshMonth()
         }
     ) {
-        Column (modifier = Modifier.padding(all = 7.dp)){
+        Column (modifier = Modifier.padding(all = 3.dp)){
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth()
-                .padding(3.dp),
+                .padding(2.dp),
+
             columns = GridCells.Fixed(7),
             content = {
-                items(OliveDateList.list) {
+                items(OliveDateList.list) {     //요일
                     Text(
                         modifier = Modifier.padding(bottom = 10.dp),
                         text = it.shortDayOfTheWeek,
-                        fontWeight = FontWeight.Bold,
-                        color = it.textColor
+                        textAlign = TextAlign.Center,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight(400),
+                        color =
+                            if (it.shortDayOfTheWeek == "일" || it.shortDayOfTheWeek == "토") Color(0xFF646464)
+                            else Color(0xFFC2C2C2),
                     )
                 }
 
@@ -62,6 +69,8 @@ fun CalendarDates(
                                 data.price
                             } ?: 0,
                             dayOfWeek = it.dateInfo?.date?.dayOfWeek,
+                            year = it.dateInfo?.date?.year.toString(),
+                            month = it.dateInfo?.date?.monthNumber.toString(),
                             onClick = {
                                 viewModel.setShowDetailDialog(
                                     shouldShow = true,

@@ -1,5 +1,6 @@
 package com.farmer.data.repository
 
+import android.util.Log
 import com.farmer.data.Category
 import com.farmer.data.DateInfo
 import com.farmer.data.History
@@ -46,9 +47,34 @@ class OliveRepositoryImpl @Inject constructor(
             month = history.month,
             date = history.date
         )
+
+        Log.d("@@뭐지 이건", history.spendList.spendList.toString())
+
+
         if (originHistory != null) {
-            val newSpendList = originHistory.spendList.spendList + history.spendList.spendList
-            val newEarnedList = originHistory.spendList.earnList + history.spendList.earnList
+            val originSpendList = originHistory.spendList.spendList
+            val originEarnList = originHistory.spendList.earnList
+
+            for (i in originSpendList){
+                if (i.item == history.spendList.spendList[0].item && i.price == history.spendList.spendList[0].price){
+                   return
+                }
+            }
+
+            val newSpendList =
+                originSpendList + history.spendList.spendList.mapIndexed { index, transactData ->
+                    if (index == history.spendList.spendList.size - 1) {
+                        transactData.copy(
+                            id = Random.nextLong(1, 100000)
+                        )
+                    } else {
+                        transactData
+                    }
+                }
+
+
+            val newEarnedList = originHistory.spendList.earnList
+
             val newHistory = History(
                 year = originHistory.year,
                 month = originHistory.month,
@@ -63,9 +89,25 @@ class OliveRepositoryImpl @Inject constructor(
                 ),
                 id = originHistory.id
             )
+
             dao.insertHistory(history = newHistory)
         } else {
-            dao.insertHistory(history = history)
+            val idUpdatedHistory = if (history.spendList.spendList.isNotEmpty()) { // 새로 넣는 값이 지출인 경우
+                history.copy(
+                    spendList = history.spendList.copy(
+                        spendList = history.spendList.spendList.mapIndexed { index, transactData ->
+                            if (index == history.spendList.spendList.size - 1) {
+                                transactData.copy(id = getRandomId())
+                            } else {
+                                transactData
+                            }
+                        }
+                    )
+                )
+            } else {
+                history
+            }
+            dao.insertHistory(history = idUpdatedHistory)
         }
     }
 
@@ -159,6 +201,11 @@ class OliveRepositoryImpl @Inject constructor(
         return dao.getHistoryByMonth(month = currentDate.month.value) ?: emptyList()
     }
 
+    override suspend fun getStaticByMonth(month:Int) : List<History>{
+        return dao.getHistoryByMonth(month) ?: emptyList()
+
+    }
+
     private fun getDatesInMonth(currentDate: LocalDate): List<LocalDate> {
         val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber.addZero()}")
         val daysInMonth = yearMonth.month.length(yearMonth.isLeapYear)
@@ -184,6 +231,7 @@ class OliveRepositoryImpl @Inject constructor(
         )
         dao.insertHistory(newHistory)
     }
+
 
     // todo extension으로 빼기
     private fun Int.addZero(): String {

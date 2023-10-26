@@ -3,15 +3,17 @@ package com.farmer.feature_settings
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
+import com.farmer.data.repository.OliveRepository
 import com.farmer.feature_settings.databinding.ActivitySettingsBinding
 import com.farmer.feature_settings.util.ReadMessageHelper
+import kotlinx.coroutines.launch
 
 class SettingsActivity: ComponentActivity() {
 
     private lateinit var binding : ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
@@ -26,10 +28,13 @@ class SettingsActivity: ComponentActivity() {
         binding.setCategoryDescription.text = "가계부 내역에 추가될 카테고리 목록을 관리합니다."
 
 
+
+
         binding.SMS.setOnClickListener {
             val messageHelper = ReadMessageHelper
             val currentMessage = messageHelper.readSMSMessage(this)
             Log.e("@@@settings", "currentMessage : $currentMessage")
+
         }
         binding.OCR.setOnClickListener {
 
