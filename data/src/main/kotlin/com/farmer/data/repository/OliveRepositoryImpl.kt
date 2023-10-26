@@ -48,9 +48,6 @@ class OliveRepositoryImpl @Inject constructor(
             date = history.date
         )
 
-        Log.d("@@뭐지 이건", history.spendList.spendList.toString())
-
-
         if (originHistory != null) {
             val originSpendList = originHistory.spendList.spendList
             val originEarnList = originHistory.spendList.earnList
@@ -71,9 +68,17 @@ class OliveRepositoryImpl @Inject constructor(
                         transactData
                     }
                 }
+            val newEarnedList =
+                originEarnList + history.spendList.earnList.mapIndexed { index, transactData ->
+                    if (index == history.spendList.earnList.size - 1) {
+                        transactData.copy(
+                            id = getRandomId()
+                        )
+                    } else {
+                        transactData
+                    }
+                }
 
-
-            val newEarnedList = originHistory.spendList.earnList
 
             val newHistory = History(
                 year = originHistory.year,
@@ -89,7 +94,8 @@ class OliveRepositoryImpl @Inject constructor(
                 ),
                 id = originHistory.id
             )
-
+            Log.d("@@@", "기존값이 있을 경우 입력 준비")
+            Log.d("@@@", newHistory.spendList.spendList[0].price.toString())
             dao.insertHistory(history = newHistory)
         } else {
             val idUpdatedHistory = if (history.spendList.spendList.isNotEmpty()) { // 새로 넣는 값이 지출인 경우
@@ -107,6 +113,7 @@ class OliveRepositoryImpl @Inject constructor(
             } else {
                 history
             }
+            Log.d("@@@", "기존값이 없을 경우 입력 준비")
             dao.insertHistory(history = idUpdatedHistory)
         }
     }

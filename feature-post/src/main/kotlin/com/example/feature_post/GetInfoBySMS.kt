@@ -26,7 +26,6 @@ import javax.inject.Inject
 fun readSMSMessage(cr: ContentResolver, viewModel: PostViewModel) {
 
     val messageList: MutableList<Message?> = mutableListOf()
-    Log.d("@@@시작성공", viewModel.toString())
     val allMessage: Uri = Uri.parse("content://sms/inbox")
 
 
@@ -57,6 +56,7 @@ fun readSMSMessage(cr: ContentResolver, viewModel: PostViewModel) {
         messageList.add(msg)
 
         parseSMS(msg, viewModel)
+        viewModel.refreshState()
 
 
     }
@@ -120,8 +120,6 @@ fun parseSMS(message: Message, viewModel: PostViewModel) {
     Log.d("@@@추출일자", viewModel.daySMS.toString())*/
 
     viewModel.postSMSData()
-    viewModel.refreshState()
-
 }
 
 
