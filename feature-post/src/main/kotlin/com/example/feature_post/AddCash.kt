@@ -1,8 +1,12 @@
 package com.example.feature_post
 
 import android.Manifest
+import android.app.Application
 import android.app.DatePickerDialog
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.text.BoringLayout
 import android.util.Log
@@ -20,12 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Savings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +45,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.farmer.data.BASIC_CATEGORY
 import com.farmer.data.DatabaseModule
+import com.farmer.data.History
 import com.farmer.feature_post.R
 import com.farmer.data.repository.OliveRepository
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -54,9 +54,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
@@ -68,7 +70,7 @@ fun AddCash(
     viewModel: PostViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
+    val cr = context.contentResolver
 
     val categoryList by selectCategoryList(viewModel).collectAsState(initial = emptyList())
 
@@ -166,7 +168,8 @@ fun AddCash(
                             Icon(
                                 Icons.Filled.PhotoCamera,
                                 contentDescription = null,
-                                modifier = Modifier.padding(end = 5.dp)
+                                modifier = Modifier.padding(end = 10.dp),
+                                tint = Color.DarkGray
                             )
                             Text("영수증 촬영하기")
                         }
@@ -178,9 +181,23 @@ fun AddCash(
                             Icon(
                                 Icons.Filled.PhotoLibrary,
                                 contentDescription = null,
-                                modifier = Modifier.padding(end = 5.dp)
+                                modifier = Modifier.padding(end = 10.dp),
+                                tint = Color.DarkGray
                             )
                             Text("영수증 불러오기")
+                        }
+                    }
+                    DropdownMenuItem(onClick = {
+                         readSMSMessage(cr, viewModel)
+                    }) {
+                        Row {
+                            Icon(
+                                Icons.Filled.Mail,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 10.dp),
+                                tint = Color.DarkGray
+                            )
+                            Text("문자내역 가져오기")
                         }
                     }
                 }
@@ -519,3 +536,5 @@ fun selectCategoryList(viewModel: PostViewModel): Flow<List<String>?> = flow {
     }
     emit(categoryTextList)
 }
+
+
