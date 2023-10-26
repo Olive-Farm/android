@@ -22,4 +22,16 @@ class CategoryViewModel @Inject constructor(
         _uiState.update { EditCategoryViewState() }
     }
 
+    fun setAddState() {
+        _uiState.update {
+            it.copy(
+                addState = !uiState.value.addState
+            )
+        }
+    }
+
+    fun selectCategoryList(): List<String>? {
+        return repository.getCategoryList()
+    }
+
 }
