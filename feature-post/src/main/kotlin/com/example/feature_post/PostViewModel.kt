@@ -107,6 +107,8 @@ class PostViewModel @Inject constructor(
                 _uiState.update { it.copy(dismissDialogState = true) }
                 repository.insertHistory(userInputHistory)
                 category.value = ""
+                name.value = TextFieldValue("")
+                amount.value = TextFieldValue("")
             }
         }
     }
