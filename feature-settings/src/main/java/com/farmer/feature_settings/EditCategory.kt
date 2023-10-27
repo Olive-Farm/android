@@ -70,30 +70,46 @@ fun EditCategory(
         )
         {
             AnimatedVisibility(visible = uiState.value.addState) {//
-                Row(
-                    modifier = Modifier.padding(all = 5.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier.height(50.dp)
-                            .weight(1f)
-                            .padding(horizontal = 8.dp),
-                        value = viewModel.newCategoryName.value,
-                        onValueChange = { viewModel.newCategoryName.value = it },
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = Color.Transparent,
-                            focusedLabelColor = Color(0x8092C88D)
-                        )
-                    )
-                    IconButton( modifier = Modifier.padding(all=5.dp)
-                        .size(30.dp)
-                        .align(Alignment.CenterVertically),
-                        onClick = viewModel::addCategory,
+                Column(modifier = Modifier.fillMaxSize()){
+                    Row(
+                        modifier = Modifier.padding(all = 5.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = Color.DarkGray)
+                        OutlinedTextField(
+                            modifier = Modifier.height(50.dp)
+                                .weight(1f)
+                                .padding(horizontal = 8.dp),
+                            value = viewModel.newCategoryName.value,
+                            onValueChange = { viewModel.newCategoryName.value = it },
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = Color.Transparent,
+                                focusedLabelColor = Color(0x8092C88D)
+                            )
+                        )
+                        IconButton( modifier = Modifier.padding(all=5.dp)
+                            .size(30.dp)
+                            .align(Alignment.CenterVertically),
+                            onClick = viewModel::addCategory,
+                        ) {
+                            Icon(Icons.Filled.Check, contentDescription = null, tint = Color.DarkGray)
+                        }
+                    }
+                    AnimatedVisibility(visible = uiState.value.needNameState) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(all = 5.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = "카테고리명을 입력해주세요.",
+                                color = Color.Red,
+                                fontSize = 12.sp
+                            )
+                        }
                     }
                 }
+
             }
             Column(
                 modifier = Modifier.fillMaxSize()

@@ -56,7 +56,7 @@ class CategoryViewModel @Inject constructor(
 
             _uiState.update { it.copy(dismissDialogState = true) }
             repository.insertCategory(newCategory)
-
+            newCategoryName.value = TextFieldValue("")
         }
     }
 
