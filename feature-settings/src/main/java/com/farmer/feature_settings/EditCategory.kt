@@ -41,7 +41,6 @@ fun EditCategory(
 ){
     val uiState = viewModel.uiState.collectAsState()
 
-    val context = LocalContext.current
 
     val categoryList by selectCategoryList(viewModel).collectAsState(initial = emptyList())
 
@@ -80,8 +79,8 @@ fun EditCategory(
                         modifier = Modifier.height(50.dp)
                             .weight(1f)
                             .padding(horizontal = 8.dp),
-                        value = "",
-                        onValueChange = { },
+                        value = viewModel.newCategoryName.value,
+                        onValueChange = { viewModel.newCategoryName.value = it },
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = Color.Transparent,
                             focusedLabelColor = Color(0x8092C88D)
@@ -90,7 +89,7 @@ fun EditCategory(
                     IconButton( modifier = Modifier.padding(all=5.dp)
                         .size(30.dp)
                         .align(Alignment.CenterVertically),
-                        onClick = {  },
+                        onClick = viewModel::addCategory,
                     ) {
                         Icon(Icons.Filled.Check, contentDescription = null, tint = Color.DarkGray)
                     }
@@ -103,8 +102,6 @@ fun EditCategory(
                    CategoryList(category)
                }
             }
-
-
         }
 
         if (uiState.value.dismissDialogState) {

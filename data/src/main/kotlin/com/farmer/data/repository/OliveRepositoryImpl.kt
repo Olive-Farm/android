@@ -256,7 +256,7 @@ class OliveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertCategory(category: Category) {
-
+        dao.insertCategory(category)
     }
 
     override suspend fun deleteCategory(category: Category) {
