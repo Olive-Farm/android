@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.farmer.data.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -131,7 +135,8 @@ fun EditCategory(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CategoryList(
-    categoryName: String
+    category: Category,
+    viewModel: CategoryViewModel = hiltViewModel()
     ){
 
     val swipeableState = rememberSwipeableState(initialValue = 0)
@@ -159,15 +164,15 @@ private fun CategoryList(
             .align(Alignment.CenterStart),
             onClick = {  },
         ) {
-            Icon(Icons.Filled.Edit, contentDescription = null, tint = Color.Gray)
+            Icon(Icons.Outlined.Edit, contentDescription = null, tint = Color(0x802737C3))
         }
         IconButton( modifier = Modifier.padding(all=5.dp)
             .padding(start = 35.dp)
             .size(20.dp)
             .align(Alignment.CenterStart),
-            onClick = {  },
+            onClick = { viewModel.deleteCategory(category.id) },
         ) {
-            Icon(Icons.Filled.Delete, contentDescription = null, tint = Color.Gray)
+            Icon(Icons.Outlined.Delete, contentDescription = null, tint = Color(0x80A80909))
         }
 
         Box(
@@ -180,7 +185,7 @@ private fun CategoryList(
         ){
 
                 Text(modifier = Modifier,
-                    text = categoryName,
+                    text = category.categoryname,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.DarkGray)
@@ -189,7 +194,7 @@ private fun CategoryList(
     }
 }
 
-fun selectCategoryList(viewModel: CategoryViewModel): Flow<List<String>?> = flow {
+fun selectCategoryList(viewModel: CategoryViewModel): Flow<List<Category>?> = flow {
 
     val categoryTextList = withContext(Dispatchers.IO) {
         viewModel.selectCategoryList()

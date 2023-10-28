@@ -255,12 +255,18 @@ class OliveRepositoryImpl @Inject constructor(
         } else emptyList()
     }
 
+    override fun getAllCategory(): List<Category>? {
+
+        val categoryList = dao.getCategoryList()
+        return categoryList
+    }
+
     override suspend fun insertCategory(category: Category) {
         dao.insertCategory(category)
     }
 
-    override suspend fun deleteCategory(category: Category) {
-
+    override suspend fun deleteCategory(id: Int) {
+        dao.deleteCategory(id)
     }
 
     override suspend fun updateCategory(category: Category): Category {
