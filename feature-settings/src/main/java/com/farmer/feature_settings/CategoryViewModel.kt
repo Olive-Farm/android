@@ -24,11 +24,20 @@ class CategoryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(EditCategoryViewState())
 
     val newCategoryName = mutableStateOf(TextFieldValue(""))
+    val editCategoryName = mutableStateOf(TextFieldValue(""))
+    var editCategoryValue = ""
 
     val uiState: StateFlow<EditCategoryViewState> get() = _uiState.asStateFlow()
 
     fun refreshState() {
         _uiState.update { EditCategoryViewState() }
+        _uiState.update {
+            it.copy(
+                editState = false,
+                addState = false,
+                needNameState = false
+            )
+        }
     }
 
     fun setAddState() {
@@ -36,6 +45,17 @@ class CategoryViewModel @Inject constructor(
             it.copy(
                 addState = !uiState.value.addState
             )
+        }
+    }
+
+    fun setEditState(category: Category) {
+        _uiState.update {
+            it.copy(
+                editState = !uiState.value.editState
+            )
+        }
+        viewModelScope.launch{
+            if (uiState.value.editState) editCategoryName.value = TextFieldValue(category.categoryname)
         }
     }
 
@@ -65,6 +85,27 @@ class CategoryViewModel @Inject constructor(
     fun deleteCategory(categoryId: Int) {
         viewModelScope.launch{
             repository.deleteCategory(categoryId)
+        }
+        _uiState.update { it.copy(dismissDialogState = true) }
+    }
+
+    fun editCategory(category: Category) {
+        val editName = editCategoryName.value.text
+
+        viewModelScope.launch{
+            val editCategory = Category(editName, category.id)
+
+            repository.deleteCategory(category.id)
+            repository.insertCategory(editCategory)
+
+            editCategoryName.value = TextFieldValue("")
+
+            _uiState.update {
+                it.copy(
+                    dismissDialogState = true,
+                    editState = !uiState.value.editState
+                )
+            }
         }
     }
 
