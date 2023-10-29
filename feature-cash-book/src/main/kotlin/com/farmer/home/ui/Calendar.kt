@@ -10,7 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -24,13 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.feature_post.PostDialog
 import com.farmer.feature_settings.EditCategoryDialog
 import com.farmer.home.ui.detail.DetailDialogByState
-import com.farmer.navigator.SettingsActivityNavigator
 import kotlinx.datetime.Month
+import java.text.DecimalFormat
 import java.time.format.TextStyle
 import java.util.*
 
@@ -61,6 +60,14 @@ fun Calendar(
                 )
 
                 CalendarDates(state)
+
+                Spacer(modifier = Modifier.height(10.dp))
+                
+                TransactionHistory(
+                    month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
+                    totalIncome = state.totalIncome,
+                    totalSpend = state.totalSpend
+                )
             }
         }
 
@@ -237,4 +244,24 @@ private fun ShowEditCategoryDialogByState(
 
         EditCategoryDialogState.NotShowingEditDialog -> Unit
     }
+}
+
+@Composable
+private fun TransactionHistory(
+    month: Month,
+    totalIncome: Int,
+    totalSpend: Int
+) {
+    val numFormat = DecimalFormat("#,###")
+    Text(
+        text = "${month.value}월 총 수입 금액 : ${numFormat.format(totalIncome)}원",
+        color = Color.Red,
+        fontSize = 12.sp
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    Text(
+        text = "${month.value}월 총 지출 금액 : ${numFormat.format(totalSpend)}원",
+        color = Color.Blue,
+        fontSize = 12.sp
+    )
 }
