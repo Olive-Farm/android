@@ -27,9 +27,11 @@ interface OliveRepository {
 
     suspend fun insertCategory(category: Category)
 
-    suspend fun deleteCategory(category: Category)
+    suspend fun deleteCategory(id: Int)
 
     suspend fun updateCategory(category: Category): Category
+
+    fun getAllCategory(): List<Category>?
 
 
 }
