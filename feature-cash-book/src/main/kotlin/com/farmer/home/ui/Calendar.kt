@@ -10,7 +10,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -19,8 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -61,7 +66,7 @@ fun Calendar(
 
                 CalendarDates(state)
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 
                 TransactionHistory(
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
@@ -195,7 +200,6 @@ private fun CalendarHeader(
             ){
                 DropdownMenuItem(onClick = {
                     viewModel.setShowEditCategoryDialog(true)
-                    //viewModel.setEditCategoryDialog(true)
                     menuExpanded = false
                 }) {
                     Row {
@@ -253,15 +257,59 @@ private fun TransactionHistory(
     totalSpend: Int
 ) {
     val numFormat = DecimalFormat("#,###")
-    Text(
-        text = "${month.value}월 총 수입 금액 : ${numFormat.format(totalIncome)}원",
-        color = Color.Red,
-        fontSize = 12.sp
-    )
-    Spacer(modifier = Modifier.height(4.dp))
-    Text(
-        text = "${month.value}월 총 지출 금액 : ${numFormat.format(totalSpend)}원",
-        color = Color.Blue,
-        fontSize = 12.sp
-    )
+
+    Box(modifier = Modifier
+        .padding(bottom = 50.dp)
+        .fillMaxWidth()
+        .height(130.dp)
+        .background(color = Color(0xFFF6F2E5),
+            shape = RoundedCornerShape(size = 12.dp))
+        .padding(all = 10.dp)) {
+        Column {
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = "이번달 소비 및 지출 내역",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(modifier = Modifier.padding(horizontal = 7.dp)){/*
+                Icon(
+                    Icons.Filled.LocalAtm,
+                    modifier = Modifier.padding(5.dp)
+                        .align(Alignment.Top),
+                    contentDescription = null,
+                    tint = Color(0xFFEAB756)
+                )*/
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color(0xFFEAB756), fontWeight = FontWeight.Bold, fontSize = 17.sp)){
+                            append("${month.value}월 ")
+                        }
+                        append(" 총 지출 금액 : ")
+                        withStyle(style = SpanStyle(color = RedAlpha200, fontWeight = FontWeight.Bold, fontSize = 17.sp)){
+                            append("${numFormat.format(totalIncome)}원") }}
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(modifier = Modifier.padding(horizontal = 7.dp)){/*
+                Icon(
+                    Icons.Filled.Savings,
+                    modifier = Modifier.padding(5.dp)
+                        .align(Alignment.Top),
+                    contentDescription = null,
+                    tint = Color(0x8092C88D)
+                )*/
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color(0xFFEAB756), fontWeight = FontWeight.Bold, fontSize = 17.sp)){
+                            append("${month.value}월 ")
+                        }
+                        append(" 총 수입 금액 : ")
+                        withStyle(style = SpanStyle(color = BlueAlpha200, fontWeight = FontWeight.Bold, fontSize = 17.sp)){
+                            append("${numFormat.format(totalSpend)}원") }}
+                )
+            }
+        }
+    }
 }
