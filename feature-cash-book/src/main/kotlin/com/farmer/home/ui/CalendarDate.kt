@@ -1,5 +1,6 @@
 package com.farmer.home.ui
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,12 +40,17 @@ fun CalendarDate(
     onClick: () -> Unit
 ) {
     val numFormat = DecimalFormat("#,###")
-    val todayDate = LocalDate.now().toString().split("-")
-    val border = if (year == todayDate[0] && month == todayDate[1] && date == todayDate[2]) {
+    val todayDate = LocalDate.now()
+    val todayYear = todayDate.year.toString()
+    val todayMonth = todayDate.monthValue.toString()
+    val todayDay = todayDate.dayOfMonth.toString()
+    val border = if (year == todayYear && month == todayMonth && date == todayDay) {
         BorderStroke(1.dp, Color.Black) // 조건을 만족할 때의 BorderStroke
     } else {
         BorderStroke(0.5.dp, Color(0x80C2C2C2)) // 조건을 만족하지 않을 때의 BorderStroke
     }
+
+    Log.d("@@@오늘 날짜", year+month+date+"\n"+todayDate)
 
     Column(         //일자 한 칸
         modifier = Modifier
