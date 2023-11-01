@@ -21,6 +21,8 @@ interface OliveRepository {
 
     suspend fun getStaticByMonth(month: Int): List<History>
 
+    suspend fun getMonthStatic(year:Int): List<History>
+
 
     //카테고리
     fun getCategoryList(): List<String>?

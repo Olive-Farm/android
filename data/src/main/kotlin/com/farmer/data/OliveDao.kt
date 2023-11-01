@@ -14,7 +14,7 @@ interface OliveDao {
     @Query("SELECT * FROM HistoryList WHERE id = :id")
     suspend fun getHistoryById(id: Long): History?
 
-    // todo year도 추가해야 함.
+    //todo year도 추가해야 함.
     @Query("SELECT * FROM HistoryList WHERE month = :month")
     suspend fun getHistoryByMonth(month: Int): List<History>?
 
@@ -24,8 +24,9 @@ interface OliveDao {
     @Query("DELETE FROM HistoryList WHERE id= :id")
     suspend fun deleteHistory(id: Long)
 
-/*    @Query("SELECT year, month, spendList  FROM HistoryList")
-    fun getStatic(): List<History>?*/
+
+    @Query("SELECT * FROM HistoryList WHERE year = :year")
+    suspend fun getMonthStatic(year: Int): List<History>
 
     //카테고리
     @Insert(onConflict = OnConflictStrategy.REPLACE)

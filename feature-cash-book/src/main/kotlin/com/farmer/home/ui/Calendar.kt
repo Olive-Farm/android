@@ -63,6 +63,7 @@ fun Calendar(
                     onNextClick = viewModel::moveToNextMonth
                     //settingsActivityNavigator = viewModel.settingsActivityNavigator
                 )
+                
 
                 CalendarDates(state)
 
@@ -75,7 +76,6 @@ fun Calendar(
                 )
             }
         }
-
         else -> Unit
     }
     when (val state = dialogUiState) {
@@ -86,6 +86,8 @@ fun Calendar(
             EditCategoryDialog(onDismissRequest = { viewModel.setShowEditCategoryDialog(false) })
         is DialogUiState.NotShowing -> Unit
     }
+
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -180,6 +182,7 @@ private fun CalendarHeader(
                 }
             )
         }
+
 
         Spacer(Modifier.weight(1f))
 

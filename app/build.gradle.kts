@@ -63,6 +63,20 @@ dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0") // 그래프 라이브러리 추가
     implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
     implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
+    // For Jetpack Compose.
+    implementation("com.patrykandpatrick.vico:compose:1.12.0")
+
+    // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m2:1.12.0")
+
+    // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
+
+    // Houses the core logic for charts and other elements. Included in all other modules.
+    implementation("com.patrykandpatrick.vico:core:1.12.0")
+
+    // For the view system.
+    implementation("com.patrykandpatrick.vico:views:1.12.0")
 
     // base
     implementation(libs.bundles.compose)

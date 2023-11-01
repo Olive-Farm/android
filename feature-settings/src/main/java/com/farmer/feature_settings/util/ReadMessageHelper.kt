@@ -118,10 +118,7 @@ fun parseSMS(message: Message): History? {
                         History.Transact.TransactData(price = sms_amount, item = memo)
                     )
                 )
-            )
-
-
-
+           )
 
         }
         catch (e: Exception) {

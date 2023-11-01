@@ -28,12 +28,14 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TempCalendarViewModel @Inject constructor(
-    repository: OliveRepository,
+    private val repository: OliveRepository,
     val settingsActivityNavigator: SettingsActivityNavigator
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
+
+
 
     private val _dialogUiState = MutableStateFlow<DialogUiState>(DialogUiState.NotShowing)
     val dialogUiState: StateFlow<DialogUiState> get() = _dialogUiState.asStateFlow()
@@ -54,6 +56,7 @@ class TempCalendarViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = CalendarUiState.Loading
         )
+
 
     fun moveToNextMonth() {
         _currentLocalDate.value = _currentLocalDate.value.plus(DatePeriod(months = 1))
@@ -91,6 +94,8 @@ class TempCalendarViewModel @Inject constructor(
             if (shouldShow) DialogUiState.EditCategoryDialog
             else DialogUiState.NotShowing
     }
+
+
 }
 
 private fun calendarUiState(

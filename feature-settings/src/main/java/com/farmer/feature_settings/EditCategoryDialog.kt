@@ -25,7 +25,7 @@ fun EditCategoryDialog(onDismissRequest: () -> Unit
     ){
         Surface(
             modifier = Modifier.height(500.dp)
-                .shadow(12.dp, shape = RoundedCornerShape(8.dp)),             //어느 날부터 뒷배경이 흐리게 안 됨.. 고치고싶은데 진짜 안 됨..
+                .shadow(12.dp, shape = RoundedCornerShape(8.dp)),           //어느 날부터 뒷배경이 흐리게 안 됨.. 고치고싶은데 진짜 안 됨..
             shape = RoundedCornerShape(8.dp),
             color = Color.White
         ){

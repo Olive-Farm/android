@@ -206,6 +206,11 @@ class OliveRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getMonthStatic(year: Int): List<History> {
+       val monthList = dao.getMonthStatic(year)
+        return monthList
+    }
+
     private fun getDatesInMonth(currentDate: LocalDate): List<LocalDate> {
         val yearMonth = YearMonth.parse("${currentDate.year}-${currentDate.monthNumber.addZero()}")
         val daysInMonth = yearMonth.month.length(yearMonth.isLeapYear)
