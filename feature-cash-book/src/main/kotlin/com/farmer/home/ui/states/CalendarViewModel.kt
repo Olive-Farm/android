@@ -30,7 +30,7 @@ class CalendarViewModel @Inject constructor(
     private val repo: OliveRepository,
 ) : ViewModel() {
 
-    private val viewModelState: MutableStateFlow<CalendarUiState> =
+    val viewModelState: MutableStateFlow<CalendarUiState> =
         MutableStateFlow(CalendarUiState.Loading(isLoading = true))
 
     private val allUserDateInfoList = mutableListOf<DateUiInfo>()

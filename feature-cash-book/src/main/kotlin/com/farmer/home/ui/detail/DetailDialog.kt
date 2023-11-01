@@ -64,6 +64,8 @@ fun DetailDialog(
     postViewModel: PostDialogViewModel = hiltViewModel()
 ) {
     val deletedTransactionId by postViewModel.deletedId.collectAsState()
+    val uiState = viewModel.viewModelState.collectAsState()
+
     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
@@ -109,55 +111,57 @@ fun DetailDialog(
                 )
             }
         } else {
-            LazyColumn {
-                itemsIndexed(
-                    dateInfo?.history?.spendList?.earnList?.filter { transactData ->
-                        deletedTransactionId.find { it == transactData.id } == null
-                    } ?: emptyList()
-                ) { index, incomeData ->
-                    TransactItem(
-                        index = index,
-                        isSpend = false,
-                        spendData = incomeData,
-                        isDialogEditMode = isDialogEditMode,
-                        onDeleteItem = {
-                            postViewModel.deleteTransactionData(
-                                historyId = dateInfo?.history?.id,
-                                transactionId = incomeData.id
-                            )
-                        },
-                        dateInfo = dateInfo
-                    )
+            //if ()
+                LazyColumn {
+                    itemsIndexed(
+                        dateInfo?.history?.spendList?.earnList?.filter { transactData ->
+                            deletedTransactionId.find { it == transactData.id } == null
+                        } ?: emptyList()
+                    ) { index, incomeData ->
+                        TransactItem(
+                            index = index,
+                            isSpend = false,
+                            spendData = incomeData,
+                            isDialogEditMode = isDialogEditMode,
+                            onDeleteItem = {
+                                postViewModel.deleteTransactionData(
+                                    historyId = dateInfo?.history?.id,
+                                    transactionId = incomeData.id
+                                )
+                            },
+                            dateInfo = dateInfo
+                        )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
+                    itemsIndexed(
+                        dateInfo?.history?.spendList?.spendList?.filter { transactData ->
+                            deletedTransactionId.find { it == transactData.id } == null
+                        } ?: emptyList()
+                    ) { index, spendData ->
+                        TransactItem(
+                            index = index,
+                            isSpend = true,
+                            spendData = spendData,
+                            isDialogEditMode = isDialogEditMode,
+                            onDeleteItem = {
+                                postViewModel.deleteTransactionData(
+                                    historyId = dateInfo?.history?.id,
+                                    transactionId = spendData.id
+                                )
+                            },
+                            dateInfo = dateInfo
+                            //테스팅중
+                            /*onEditItem = {
+                                postViewModel.
+                            }*/
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
                 }
 
-                itemsIndexed(
-                    dateInfo?.history?.spendList?.spendList?.filter { transactData ->
-                        deletedTransactionId.find { it == transactData.id } == null
-                    } ?: emptyList()
-                ) { index, spendData ->
-                    TransactItem(
-                        index = index,
-                        isSpend = true,
-                        spendData = spendData,
-                        isDialogEditMode = isDialogEditMode,
-                        onDeleteItem = {
-                            postViewModel.deleteTransactionData(
-                                historyId = dateInfo?.history?.id,
-                                transactionId = spendData.id
-                            )
-                        },
-                        dateInfo = dateInfo
-                        //테스팅중
-                        /*onEditItem = {
-                            postViewModel.
-                        }*/
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-            }
 
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -277,6 +281,7 @@ fun TransactItem(
     onDeleteItem: () -> Unit,
     isDialogEditMode: Boolean,
     viewModel: TempCalendarViewModel = hiltViewModel(),
+    postViewModel: CalendarViewModel = hiltViewModel(),
     dateInfo: DateInfo?
 ) {
     val roundedCornerShape = RoundedCornerShape(10.dp)
