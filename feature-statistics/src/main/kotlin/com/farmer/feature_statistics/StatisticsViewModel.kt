@@ -14,11 +14,9 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.min
 import javax.inject.Inject
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.core.chart.column.ColumnChart
-import com.patrykandpatrick.vico.core.entry.FloatEntry
-import com.patrykandpatrick.vico.core.entry.entryOf
+
 
 data class StatisticsUiState(
     val year: Int,
@@ -35,7 +33,8 @@ data class StatisticsUiState(
         val categoryName: String,
         val percentage: Float,
         val color: Color,
-        val count: Int
+        val count: Int,
+        val spend: Int
     ) {
         fun toPieChartData(): PieChartData.Slice {
             return PieChartData.Slice(
@@ -95,6 +94,8 @@ class StatisticsViewModel @Inject constructor(
         getCurrentYearMonth()
         viewModelScope.launch {
             getTempChartDataList()
+            getCalculateMonthPrice()
+            getStaticThreeMonth()
         }
     }
 
@@ -102,8 +103,8 @@ class StatisticsViewModel @Inject constructor(
         viewModelScope.launch {
             // 예: 사용자가 달력에서 월을 선택했을 때 호출되는 함수
             getTempChartDataList()
-            getMonthTotalDataList()
             getCalculateMonthPrice()
+            getStaticThreeMonth()
         }
     }
 
@@ -128,9 +129,9 @@ class StatisticsViewModel @Inject constructor(
     }
 
     // 지난달과 지출금액을 비교하는 함수
-    suspend fun compareMonthPrice():Int {
+    suspend fun compareMonthPrice(): Int {
         var lastPrice = 0
-        val lastList =  repository.getStaticByMonth(uiState.value.month-1)
+        val lastList = repository.getStaticByMonth(uiState.value.month - 1)
 
         for (history in lastList) {
             if (history.month == uiState.value.month - 1) {
@@ -139,14 +140,15 @@ class StatisticsViewModel @Inject constructor(
                 }
             }
         }
-       return lastPrice
+        return lastPrice
 
     }
 
 
     // 카테고리별로 가장 많이 카운트 된 카테고리를 return 하는 함수
-     fun findCategoryWithMaxCount(chartDataList: List<StatisticsUiState.ChartData>): String {
-        val categoryCountMap = chartDataList.groupBy { it.categoryName }.mapValues { it.value.sumBy { data -> data.count } }
+    fun findCategoryWithMaxCount(chartDataList: List<StatisticsUiState.ChartData>): String {
+        val categoryCountMap = chartDataList.groupBy { it.categoryName }
+            .mapValues { it.value.sumBy { data -> data.count } }
 
         return categoryCountMap.maxByOrNull { it.value }?.key ?: "No category found"
     }
@@ -160,7 +162,8 @@ class StatisticsViewModel @Inject constructor(
         for (history in staticList) {
             if (history.month == uiState.value.month) {
                 for (transactData in history.spendList.spendList) {
-                    val category = if (transactData.category.isEmpty()) "미분류" else transactData.category
+                    val category =
+                        if (transactData.category.isEmpty()) "미분류" else transactData.category
                     val currentTotal = result.getOrDefault(category, 0)
                     result[category] = currentTotal + transactData.price
 
@@ -192,7 +195,7 @@ class StatisticsViewModel @Inject constructor(
 
     // 월별 총 수입금액을 구하는 삼수
     private suspend fun calculateTotalMonthlyIncome(): Int {
-        var totalIncome= 0
+        var totalIncome = 0
 
         val staticlist = repository.getStaticByMonth(uiState.value.month)
 
@@ -208,7 +211,7 @@ class StatisticsViewModel @Inject constructor(
 
     // 월별 수입, 지출 금액을 update 하는 함수
     private suspend fun getCalculateMonthPrice() {
-        val totalSpend =  calculateTotalMonthlySpend()
+        val totalSpend = calculateTotalMonthlySpend()
         val totalIncome = calculateTotalMonthlyIncome()
         val lastPrice = compareMonthPrice()
         uiState.update {
@@ -238,39 +241,21 @@ class StatisticsViewModel @Inject constructor(
 
     private fun getColorForCategory(category: String): Color {
         return when (category) {
-            "식비" -> Green50
-            "교통비" -> Green100
-            "쇼핑" -> Green200
-            "급여" -> Green300
-            "용돈" -> Green400
-            "이체" -> Green500
-            "카드대금" -> Green700
-            "고정지출" -> Green800
-            "저축" -> Green200
-            "여가비" -> Green200
-            "생활비" -> Green200
-            "병원/의료비" -> Green200
-            "문화/관광비" -> Green200
-            "기타" -> Green200
-            else -> GreenTheme
-        }
-    }
-
-    private fun getColorForMonth(month: Int): Color {
-        return when (month) {
-            1 -> Green50
-            2 -> Green100
-            3 -> Green200
-            4 -> Green300
-            5 -> Green400
-            6 -> Green500
-            7 -> Green700
-            8 -> Green700
-            9 -> Green800
-            10 -> Green50
-            11 -> Green100
-            12 -> Green200
-            else -> GreenTheme
+            "식비" -> Color1
+            "교통비" -> Color2
+            "쇼핑" -> Color3
+            "급여" -> Color4
+            "용돈" -> Color5
+            "이체" -> Color6
+            "카드대금" -> Color7
+            "고정지출" -> Color8
+            "저축" -> Color9
+            "여가비" -> Color10
+            "생활비" -> Color1
+            "병원/의료비" -> Color2
+            "문화/관광비" -> Color3
+            "기타" -> Color10
+            else -> ColorGray
         }
     }
 
@@ -280,7 +265,6 @@ class StatisticsViewModel @Inject constructor(
         val (totalSpendByCategory, categoryCount) = calculateTotalSpendByCategoryForMonth()
         val totalMonthlySpend = calculateTotalMonthlySpend()
 
-
         val chartDataList = totalSpendByCategory.map { (category, totalSpend) ->
             val percentage = (totalSpend.toFloat() / totalMonthlySpend) * 100
             val color = getColorForCategory(category)
@@ -288,7 +272,8 @@ class StatisticsViewModel @Inject constructor(
                 categoryName = category,
                 percentage = percentage,
                 color = color,
-                count = categoryCount[category] ?: 0 // 카테고리별 등장 횟수 추가
+                count = categoryCount[category] ?: 0,
+                spend = totalSpend
             )
         }
 
@@ -298,27 +283,54 @@ class StatisticsViewModel @Inject constructor(
 
     }
 
-    private suspend fun getMonthTotalDataList() {
+//    private suspend fun getMonthTotalDataList() {
+//
+//        val totalMonthSpend = calculateMonth()
+//
+//        val monthDataList = totalMonthSpend.map { (month, totalSpend) ->
+//            val color = getColorForMonth(month)
+//            StatisticsUiState.BarchartData(
+//                label = month.toString(),
+//                value = totalSpend.toFloat(),
+//                color = color
+//            )
+//        }
+//        uiState.update {
+//            it.copy(barchartDataList = monthDataList)
+//        }
+//    }
 
-        val totalMonthSpend = calculateMonth()
+    private suspend fun getStaticThreeMonth() {
 
-        val monthDataList = totalMonthSpend.map { (month, totalSpend) ->
-            val color = getColorForMonth(month)
-            StatisticsUiState.BarchartData(
-                label = month.toString(),
-                value = totalSpend.toFloat(),
-                color = color
-            )
+        val incomeList = mutableListOf<StatisticsUiState.IncomeData>()
+        val spendList = mutableListOf<StatisticsUiState.SpendData>()
+
+        for (i in 0 until 3) {
+            val monthList = repository.getStaticByMonth(uiState.value.month - i)
+
+            var totalSpend = 0
+            var totalIncome = 0
+
+            for (history in monthList) {
+                if (history.month == uiState.value.month - i) {
+
+                    for (transactData in history.spendList.spendList) {
+                        totalSpend += transactData.price
+
+                    }
+
+                    for (transactData in history.spendList.earnList) {
+                        totalIncome += transactData.price
+
+                    }
+                }
+            }
+            spendList.add(StatisticsUiState.SpendData(totalSpend))
+            incomeList.add(StatisticsUiState.IncomeData(totalIncome))
         }
         uiState.update {
-            it.copy(barchartDataList = monthDataList)
+            it.copy(spendList = spendList, incomeList = incomeList)
         }
-    }
-
-    suspend fun getStaticThreeMonth() {
 
     }
-
-
-
 }

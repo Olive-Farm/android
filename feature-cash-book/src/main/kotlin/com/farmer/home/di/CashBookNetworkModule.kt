@@ -42,3 +42,37 @@ internal object CashBookNetworkModule {
     @Singleton
     fun provideCashBookApi(): CashBookApi = provideRetrofit().create(CashBookApi::class.java)
 }
+
+//@Module
+//@InstallIn(SingletonComponent::class)
+//internal object CashBookNetworkModule {
+//
+//    private const val BASE_URL = "http://192.168.1.208:8080/olivebook/" // Your base URL
+//
+//    private fun provideOkHttpClient(): OkHttpClient {
+//        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
+//        return OkHttpClient.Builder()
+//            .addInterceptor(httpLoggingInterceptor)
+//            .build()
+//    }
+//
+//    private fun provideRetrofit(): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .client(provideOkHttpClient())
+//            .addConverterFactory(Json.asConverterFactory("- multipart/form-data".toMediaTypeOrNull()!!)) // Use appropriate converter factory for your needs (Moshi, Gson, etc.)
+//            .build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideCashBookApi(): CashBookApi = provideRetrofit().create(CashBookApi::class.java)
+//
+//}
+
+
+
+
+

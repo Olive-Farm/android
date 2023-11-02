@@ -2,12 +2,14 @@ package com.farmer.feature_statistics
 
 import androidx.compose.ui.graphics.Color
 
-val Green50 = Color(0xFFE8F5E9)
-val Green100 = Color(0xFFC8E6C9)
-val Green200 = Color(0xFFA5D6A7)
-val Green300 = Color(0xFF81C784)
-val Green400 = Color(0xFF66BB6A)
-val Green500 = Color(0xFF355A1E)
-val Green700 = Color(0xFF388E3C)
-val Green800 = Color(0xFF2E7D32)
-val GreenTheme = Color(0xFF355A1E)
+val Color1 = Color(0xFFFB9393)
+val Color2 = Color(0xFFFFB986)
+val Color3= Color(0xFFFFDC83)
+val Color4 = Color(0xFFC8EFA9)
+val Color5 = Color(0xFF8DCB5D)
+val Color6 = Color(0xFFC3E0FC)
+val Color7 = Color(0xFF6BA6FF)
+val Color8 = Color(0xFF2E7D32)
+val Color9 = Color(0xFFBB93FB)
+val Color10 = Color(0xFFFFBBF8)
+val ColorGray = Color(0xFFC2C2C2)

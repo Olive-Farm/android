@@ -1,6 +1,7 @@
 package com.farmer.feature_statistics
 
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -87,6 +88,7 @@ import com.patrykandpatrick.vico.compose.legend.legendItem
 import com.patrykandpatrick.vico.compose.style.ChartStyle
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.DefaultColors
+import com.patrykandpatrick.vico.core.DefaultColors.Dark.axisGuidelineColor
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.chart.column.ColumnChart
 import com.patrykandpatrick.vico.core.chart.composed.plus
@@ -114,50 +116,22 @@ fun StatisticsScreen(
 )
 {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    viewModel.refreshStatic()
+
 
         if (uiState.chartDataList.isNullOrEmpty()) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "입력한 내역이 없습니다!",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF355A1E)
-                            )
-                        ) {
-                            append("OliveBook")
-                        }
-                        withStyle(style = SpanStyle(color = Color.DarkGray)) {
-                            append("을 이용하여\n 편리하게 가계부를 관리해보세요")
-                        }
-                    }, fontSize = 14.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-        else {
-            LazyColumn(
                 Modifier
+                    .fillMaxSize()
                     .background(color = Color(0xFFF7F7F7)),
-                //horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                contentPadding = PaddingValues(bottom = 20.dp)
-            ) {
-
-                item {
+                horizontalAlignment = Alignment.CenterHorizontally,
+                //verticalArrangement = Arrangement.Center,
+            ){
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                    contentAlignment = Alignment.Center)
+                {
                     Spacer(modifier = Modifier.height(10.dp)) // Spacer 추가
                     Text(
                         text = "소비내역 분석 리포트",
@@ -167,24 +141,13 @@ fun StatisticsScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
                     )
-
-                    viewModel.refreshStatic()
                 }
 
-                item{
-                    Box(modifier = Modifier
-                        .padding(start = 30.dp, end = 30.dp,top=10.dp,bottom = 10.dp)
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xFFEDEBE8),
-                            shape = RoundedCornerShape(size = 15.dp)),
-                        contentAlignment = Alignment.Center)
-                    {
-                        ColorChangingButtons()
-                    }
-
-                }
-                item {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 10.dp),
+                    contentAlignment = Alignment.Center)
+                {
                     SelectDate(
                         year = uiState.year,
                         month = uiState.month,
@@ -192,11 +155,134 @@ fun StatisticsScreen(
                     )
                 }
 
+                Box(modifier = Modifier
+                    .padding(start = 25.dp, end = 25.dp, top = 10.dp, bottom = 5.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = Color(0xFFF7F7F7),
+                        shape = RoundedCornerShape(size = 15.dp)
+                    ),
+                    contentAlignment = Alignment.Center)
+                {
+                    ColorChangingButtons()
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize() // 화면 너비에 맞게 넓힘
+                        .padding(start = 25.dp, end = 25.dp, top = 10.dp, bottom = 15.dp)
+                        .background(
+                            color = Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(size = 15.dp)
+                        )
+                        .padding(
+                            start = 30.dp,
+                            end = 30.dp,
+                            top = 10.dp,
+                            bottom = 10.dp
+                        ),
+                    contentAlignment = Alignment.Center
+                ){
+                    Column(){
+                        Text(
+                            text = "입력한 내역이 없습니다!",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF355A1E)
+                                    )
+                                ) {
+                                    append("OliveBook")
+                                }
+                                withStyle(style = SpanStyle(color = Color.DarkGray)) {
+                                    append("을 이용하여\n 편리하게 가계부를 관리해보세요")
+                                }
+                            }, fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                }
+
+
+
+
+                }
+        }
+
+        else {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .background(color = Color(0xFFF7F7F7)),
+                //horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                contentPadding = PaddingValues(bottom = 80.dp)
+            ) {
+
+                item{
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(color = Color(0xFFF7F7F7)),
+                        //horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ){
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp),
+                            contentAlignment = Alignment.Center)
+                        {
+                            Spacer(modifier = Modifier.height(10.dp)) // Spacer 추가
+                            Text(
+                                text = "\uD83D\uDCCA 소비내역 분석 리포트 \uD83D\uDCCA",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                            )
+                        }
+
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, bottom = 10.dp),
+                            contentAlignment = Alignment.Center)
+                        {
+                            SelectDate(
+                                year = uiState.year,
+                                month = uiState.month,
+                                onNewDateSelect = viewModel::onNewDateSelect
+                            )
+                        }
+
+                        Box(modifier = Modifier
+                            .padding(start = 25.dp, end = 25.dp, top = 10.dp, bottom = 5.dp)
+                            .fillMaxWidth()
+                            .background(
+                                color = Color(0xFFEDEBE8),
+                                shape = RoundedCornerShape(size = 15.dp)
+                            ),
+                            contentAlignment = Alignment.Center)
+                        {
+                            ColorChangingButtons()
+                        }
+                    }
+                }
+
+
                 item {
                     Box(
                         Modifier
                             .fillMaxWidth() // 화면 너비에 맞게 넓힘
-                            .padding(start = 25.dp, end = 25.dp, top = 15.dp, bottom = 15.dp)
+                            .padding(start = 25.dp, end = 25.dp, top = 10.dp, bottom = 15.dp)
                             .background(
                                 color = Color(0xFFFFFFFF),
                                 shape = RoundedCornerShape(size = 15.dp)
@@ -206,28 +292,29 @@ fun StatisticsScreen(
                                 end = 30.dp,
                                 top = 10.dp,
                                 bottom = 10.dp
-                            ) // 양 옆에 16dp의 패딩 추가
+                            )
                     ) {
                         Spacer(modifier = Modifier.height(8.dp)) // Spacer 추가
 
                         Row(
-                            modifier = Modifier,
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                //modifier = Modifier
-                                    //.padding(start = 30.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .padding(start = 40.dp),
                                 text = "수입",
                                 fontSize = 19.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF626262),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Right
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                //modifier = Modifier
-                                    //.padding(start = 30.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .padding(end = 40.dp),
                                 text = "지출",
                                 fontSize = 19.sp,
                                 fontWeight = FontWeight.Bold,
@@ -245,9 +332,7 @@ fun StatisticsScreen(
                             GetTotalIncome(totalIncome = uiState.totalIncome)
                             Spacer(modifier = Modifier.weight(1f))
 
-                            GetTotalPrice(
-                                totalPrice = uiState.totalPrice
-                            )
+                            GetTotalPrice(totalPrice = uiState.totalPrice)
                         }
 
                     }
@@ -269,7 +354,7 @@ fun StatisticsScreen(
                     )
                 }
 
-                item {
+                item{
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -280,9 +365,10 @@ fun StatisticsScreen(
                             )
                             .padding(start = 30.dp, end = 30.dp, top = 10.dp, bottom = 10.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.align(Alignment.Center)
-                        ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                        )  {
                             PieChart(
                                 modifier = Modifier
                                     .height(280.dp)
@@ -291,17 +377,16 @@ fun StatisticsScreen(
                                 animation = simpleChartAnimation(),
                                 sliceDrawer = SimpleSliceDrawer(50f)
                             )
+                            uiState.chartDataList.forEach { chartData ->
+                                ChartDataCategoryItem(chartData)}
                         }
                     }
-                }
-                items(uiState.chartDataList) { chartData ->
-                    ChartDataCategoryItem(chartData)
                 }
 
 
                 item {
                 Text(
-                    text = "이번 달 코멘트",
+                    text = "이번 달 코멘트\uD83D\uDCE2",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight(700),
@@ -324,8 +409,9 @@ fun StatisticsScreen(
                                 shape = RoundedCornerShape(size = 15.dp)
                             )
                     ) {
+                        Column( modifier = Modifier.padding(bottom = 5.dp)){
                         Row(
-                            modifier = Modifier.padding(bottom = 20.dp),
+                            modifier = Modifier.padding(bottom = 5.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ){
@@ -345,51 +431,70 @@ fun StatisticsScreen(
 
 
                         Row(
-                            modifier = Modifier
-                                .padding(top = 20.dp),
+                            modifier = Modifier.padding(top = 5.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         )
                         {
                             Text(
                                 modifier = Modifier
-                                    .padding(start = 20.dp, end = 10.dp),
+                                    .padding(start = 20.dp, end = 15.dp),
                                 text = "가장 많이 쓴 내역은",
-                                style = TextStyle(
-                                    fontSize = 19.sp,
-                                    fontWeight = FontWeight(600),
-                                    color = Color(0xFF626262),
-                                    textAlign = TextAlign.Left,
-                                )
+                                fontSize = 19.sp,
+                                fontWeight = FontWeight(600),
+                                color = Color(0xFF626262),
+                                textAlign = TextAlign.Left,
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             CategoryTextWithMaxCount(chartDataList = uiState.chartDataList)
                         }
+                        }
 
                     }
                 }
-
-              /*  item{
-                BarChart(
-                    modifier = Modifier
-                        .height(250.dp)
-                        .padding(top = 24.dp),
-                    barChartData = BarChartData(
-                        uiState.barchartDataList.map { it.toBarChartData() }
-                    ),
-                    animation = simpleChartAnimation(),
-                    barDrawer = SimpleBarDrawer(),
-                    xAxisDrawer = SimpleXAxisDrawer(),
-                    yAxisDrawer = SimpleYAxisDrawer(),
-                    labelDrawer = SimpleValueDrawer(SimpleValueDrawer.DrawLocation.XAxis)
-                )}*/
+                item {
+                    Text(
+                        text = "월간 내역",
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF626262),
+                        modifier = Modifier.padding(
+                            start = 25.dp,
+                            end = 25.dp,
+                            top = 20.dp,
+                            bottom = 10.dp
+                        )
+                    )
+                }
 
                 item {
-                    ComposedChart(
-                        columnChartColors = listOf(Color(0xffEB7257), Color(0xff6E90C4)),
-                        completedIncomeList = listOf(100, 150, 200, 300), // 수입
-                        completedSpendList = listOf(50, 75, 100, 150) // 지출
-                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth() // 화면 너비에 맞게 넓힘
+                            .padding(start = 25.dp, end = 25.dp, bottom = 20.dp)
+                            .background(
+                                color = Color(0xFFFFFFFF),
+                                shape = RoundedCornerShape(size = 15.dp)
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(top = 5.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        )
+                        {
+                            val incomeList = uiState.incomeList.map { it.incomePrice }
+                            val spendList = uiState.spendList.map { it.spendPrice }
+                            ComposedChart(
+                                columnChartColors = listOf(Color(0xff6E90C4), Color(0xffEB7257)),
+                                completedIncomeList = incomeList, // 수입
+                                completedSpendList = spendList // 지출
+                            )
+                            IncomeSpendItem()
+                            Log.e("@@수입 내역 확인", "$incomeList")
+                            Log.e("@@지출 내역 확인", "$spendList")
+                        }
+                    }
                 }
 
             }
@@ -418,15 +523,14 @@ fun SelectDate(
 
     Row(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
             .clickable {
                 timePickerDialog.show()
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier
-                .padding(start = 10.dp),
+            modifier = Modifier,
+                //.padding(start = 10.dp),
             text = "${year}년 ${month}월 ",
             fontSize = 19.sp,
             fontWeight = FontWeight.Bold,
@@ -434,32 +538,90 @@ fun SelectDate(
 
         )
         Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
-        Spacer(modifier = Modifier.padding(horizontal = 14.dp)) // Spacer 추가
+        //Spacer(modifier = Modifier.padding(horizontal = 14.dp)) // Spacer 추가
     }
 
 }
 
 @Composable
-fun ChartDataCategoryItem(chartData: ChartData) {
-    Row() {
+fun IncomeSpendItem() {
+
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically) {
+
         Box(
             modifier = Modifier
-                .size(16.dp)
+                .size(10.dp)
                 .clip(CircleShape)
-                .background(chartData.color)
+                .background(Color(0xff6E90C4))
         )
         Text(
-            modifier = Modifier.padding(start = 12.dp),
-            text = chartData.categoryName,
+            modifier = Modifier.padding(start = 8.dp),
+            text = "수입",
             color = Color.Black,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
+            textAlign = TextAlign.Left
         )
+        //Spacer(modifier = Modifier.weight(1f))
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .clip(CircleShape)
+                .background( Color(0xffEB7257))
+        )
+
         Text(
-            text = " (${chartData.percentage.toInt()}%)",
+            modifier = Modifier.padding(start = 8.dp),
+            text = "지출",
             color = Color.Black,
             fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Left
         )
+
+    }
+}
+
+@Composable
+fun ChartDataCategoryItem(chartData: ChartData) {
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically) {
+
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .background(chartData.color)
+            )
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = chartData.categoryName,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Left
+            )
+
+            Text(
+                text = " (${chartData.percentage.toInt()}%)",
+                color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Left
+            )
+        Spacer(modifier = Modifier.weight(1f))
+
+        val formattedNumber = "%,d".format(chartData.spend)
+            Text(
+                text = "${formattedNumber}원",
+                color = Color.Black,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Right
+            )
+
         Spacer(
             modifier = Modifier.padding(top = 15.dp, bottom = 15.dp)
         )
@@ -469,7 +631,7 @@ fun ChartDataCategoryItem(chartData: ChartData) {
 
 @Composable
 fun ColorChangingButtons() {
-    var isCategoryClicked by remember { mutableStateOf(false) }
+    var isCategoryClicked by remember { mutableStateOf(true) }
     var isIntegrationClicked by remember { mutableStateOf(false) }
 
     val backgroundColorCategory = if (isCategoryClicked) Color(0xFF94D0af) else Color(0xFFEDEBE8)
@@ -478,6 +640,19 @@ fun ColorChangingButtons() {
     val backgroundColorIntegration =
         if (isIntegrationClicked)  Color(0xFF94D0af) else Color(0xFFEDEBE8) // 배경
     val textColorIntegration = if (isIntegrationClicked) Color.White else Color(0xFF626262)
+
+    // 카테고리 버튼을 클릭했을 때, 월간 내역 버튼 상태 업데이트
+    val onClickCategory: () -> Unit = {
+        isCategoryClicked = true
+        isIntegrationClicked = false
+    }
+
+    // 월간 내역 버튼을 클릭했을 때, 카테고리 버튼 상태 업데이트
+    val onClickIntegration: () -> Unit = {
+        isIntegrationClicked = true
+        isCategoryClicked = false
+    }
+
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -488,16 +663,11 @@ fun ColorChangingButtons() {
             modifier = Modifier
                 .weight(1f)
                 .height(IntrinsicSize.Min)
-            .padding(start = 3.dp,end=3.dp),
+                .padding(start = 3.dp, end = 3.dp),
             contentAlignment = Alignment.Center
         ) {
             Button(
-                onClick = {
-                    isCategoryClicked = !isCategoryClicked
-                    if (isCategoryClicked) {
-                        isIntegrationClicked = false
-                    }
-                },
+                onClick = onClickCategory, // 카테고리 버튼에 대한 클릭 핸들러 할당
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = backgroundColorCategory,
                     contentColor = textColorCategory
@@ -506,7 +676,7 @@ fun ColorChangingButtons() {
                 border = BorderStroke(0.dp, Color.Transparent), // 테두리 제거
                 elevation = null, // 그림자 제거
                 modifier = Modifier
-                    .padding(start = 2.dp,end=2.dp)
+                    .padding(start = 2.dp, end = 2.dp)
                     .fillMaxWidth()
 
             ) {
@@ -522,16 +692,11 @@ fun ColorChangingButtons() {
             modifier = Modifier
                 .weight(1f)
                 .height(IntrinsicSize.Min)
-            .padding(start = 3.dp,end=3.dp),
+                .padding(start = 3.dp, end = 3.dp),
             contentAlignment = Alignment.Center
         ) {
             Button(
-                onClick = {
-                    isIntegrationClicked = !isIntegrationClicked
-                    if (isIntegrationClicked) {
-                        isCategoryClicked = false
-                    }
-                },
+                onClick = onClickIntegration, // 월간 내역 버튼에 대한 클릭 핸들러 할당
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = backgroundColorIntegration,
                     contentColor = textColorIntegration
@@ -540,7 +705,7 @@ fun ColorChangingButtons() {
                 border = BorderStroke(0.dp, Color.Transparent), // 테두리 제거
                 elevation = null, // 그림자 제거
                 modifier = Modifier
-                    .padding(start = 2.dp,end=2.dp)
+                    .padding(start = 2.dp, end = 2.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -566,12 +731,13 @@ fun GetTotalPrice(totalPrice: Int) {
                 SpanStyle(
                     fontSize = 19.sp,
                     color = Color(0xFFEB7257),
+                    fontWeight = FontWeight.SemiBold
                 )
             ) {
                 append("$formattedPrice 원")
             }
         },
-        modifier = Modifier.padding(start = 10.dp, end = 20.dp, top = 30.dp)
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 30.dp)
     )
 }
 @Composable
@@ -584,12 +750,13 @@ fun GetTotalIncome(totalIncome: Int) {
                 SpanStyle(
                     fontSize = 19.sp,
                     color = Color(0xFF6E90C4),
+                    fontWeight = FontWeight.SemiBold
                 )
             ) {
                 append("$formattedPrice 원")
             }
         },
-        modifier = Modifier.padding(start = 10.dp, end = 20.dp, top = 30.dp)
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 30.dp)
     )
 }
 
@@ -602,14 +769,13 @@ fun CategoryTextWithMaxCount(
 
     Text(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp),
+            .padding(start = 20.dp, end = 15.dp),
         text = categoryWithMaxCount,
-        style = TextStyle(
-            fontSize = 19.sp,
-            color = Color(0xFFFF9A01),
-            fontWeight =FontWeight(700),
-            textAlign = TextAlign.Right
-        )
+        fontSize = 19.sp,
+        color = Color(0xFFFF9A01),
+        fontWeight =FontWeight.SemiBold,
+        textAlign = TextAlign.Right
+
     )
 
 }
@@ -617,18 +783,19 @@ fun CategoryTextWithMaxCount(
 @Composable
 fun compareExpenses(lastPrice:Int, totalPrice: Int) {
 
-    val diffrence = totalPrice - lastPrice
+    val difference = totalPrice - lastPrice
+
+    val formattedDifference = "%,d원".format(difference)
 
     Text(
         modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp),
-        text = "${diffrence}원",
-        style = TextStyle(
-            fontSize = 19.sp,
-            color = Color(0xFF799E81),
-            fontWeight =FontWeight(700),
-            textAlign = TextAlign.Right
-        )
+            .padding(start = 20.dp, end = 15.dp, top = 10.dp,),
+        text = if (difference > 0) "+${formattedDifference}" else formattedDifference,
+        fontSize = 19.sp,
+        color = Color(0xFF799E81),
+        fontWeight =FontWeight.SemiBold,
+        textAlign = TextAlign.Right
+
     )
 }
 
@@ -640,8 +807,8 @@ fun rememberChartStyle(columnChartColors: List<Color>): ChartStyle {
 
         ChartStyle(
             axis = ChartStyle.Axis(
-                axisLabelColor = Color(defaultColors.axisLabelColor), // 축 색깔 설정 나중에 바꾸기
-                axisGuidelineColor = Color(defaultColors.axisGuidelineColor),
+                axisLabelColor = Color(defaultColors.axisLabelColor),
+               axisGuidelineColor = Color( 0x00ffffff), // 축 색깔 설정 나중에 바꾸기
                 axisLineColor = Color(defaultColors.axisLineColor)
             ),
             columnChart = ChartStyle.ColumnChart(
@@ -649,7 +816,7 @@ fun rememberChartStyle(columnChartColors: List<Color>): ChartStyle {
                     LineComponent(
                         color = columnColor.toArgb(),
                         thicknessDp = 25f,
-                        shape = com.patrykandpatrick.vico.core.component.shape.Shapes.cutCornerShape(topRightPercent = 20, topLeftPercent = 20)
+                        shape = com.patrykandpatrick.vico.core.component.shape.Shapes.roundedCornerShape(topRightPercent = 20, topLeftPercent = 20)
                     )
                 },
                 dataLabel = TextComponent.Builder().build()
@@ -661,27 +828,27 @@ fun rememberChartStyle(columnChartColors: List<Color>): ChartStyle {
     }
 }
 
-@Composable
-fun rememberLegend(colors: List<Color>): HorizontalLegend {
-    val labelTextList = listOf("수입", "지출")
-
-    return horizontalLegend(
-        items = List(labelTextList.size) { index ->
-            legendItem(
-                icon = shapeComponent(
-                    shape = com.patrykandpatrick.vico.core.component.shape.Shapes.pillShape,
-                    color = colors[index]
-                ),
-                label = textComponent(),
-                labelText = labelTextList[index]
-            )
-        },
-        iconSize = 10.dp,
-        iconPadding = 8.dp,
-        spacing = 10.dp,
-        padding = dimensionsOf(top = 8.dp)
-    )
-}
+//@Composable
+//fun rememberLegend(colors: List<Color>): HorizontalLegend {
+//    val labelTextList = listOf("수입", "지출")
+//
+//    return horizontalLegend(
+//        items = List(labelTextList.size) { index ->
+//            legendItem(
+//                icon = shapeComponent(
+//                    shape = com.patrykandpatrick.vico.core.component.shape.Shapes.pillShape,
+//                    color = colors[index]
+//                ),
+//                label = textComponent(),
+//                labelText = labelTextList[index]
+//            )
+//        },
+//        iconSize = 10.dp,
+//        iconPadding = 8.dp,
+//        spacing = 10.dp,
+//        padding = dimensionsOf(top = 8.dp),
+//    )
+//}
 
 private fun intListAsFloatEntryList(list: List<Int>): List<FloatEntry> {
     val floatEntryList = arrayListOf<FloatEntry>()
@@ -695,7 +862,7 @@ private fun intListAsFloatEntryList(list: List<Int>): List<FloatEntry> {
 }
 
 @Composable
-fun ComposedChart(columnChartColors: List<Color>, completedIncomeList: List<Int>, completedSpendList: List<Int>) {
+fun ComposedChart(columnChartColors: List<Color>, completedIncomeList: List<Int>, completedSpendList: List<Int>, viewModel: StatisticsViewModel = hiltViewModel()) {
     val completedPlanEntry = ChartEntryModelProducer(intListAsFloatEntryList(completedIncomeList))
     val completedRateEntry = ChartEntryModelProducer(intListAsFloatEntryList(completedSpendList))
 
@@ -704,33 +871,38 @@ fun ComposedChart(columnChartColors: List<Color>, completedIncomeList: List<Int>
     ProvideChartStyle(rememberChartStyle(columnChartColors = colorList)) {
         val completedPlanChart = columnChart(
             mergeMode = ColumnChart.MergeMode.Grouped,
-            spacing = 50.dp
+            spacing = 25.dp
         )
         val completedRateChart = columnChart(
             mergeMode = ColumnChart.MergeMode.Grouped,
-            spacing = 50.dp
+            spacing = 25.dp
         )
 
-        Chart(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 5.dp),
-            chart = remember(completedPlanChart, completedRateChart) {
-                completedPlanChart + completedRateChart
-            },
-            legend = rememberLegend(colors = colorList),
-            chartModelProducer = ComposedChartEntryModelProducer(completedPlanEntry.plus(completedRateEntry)),
-            //startAxis = rememberStartAxis(
-               // itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = maxYRange / 10 + 1)
-           // ),
-            bottomAxis = rememberBottomAxis(
-                valueFormatter = { value, _ ->
-                    ("${value.toInt()+1}월")
-                }
-            ),
-            runInitialAnimation = true,
-            chartScrollState = rememberChartScrollState()
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Chart(
+                modifier = Modifier
+                    .padding(horizontal = 15.dp, vertical = 5.dp),
+                chart = remember(completedPlanChart, completedRateChart) {
+                    completedPlanChart + completedRateChart
+                },
+               // legend = rememberLegend(colors = colorList),
+                chartModelProducer = ComposedChartEntryModelProducer(completedPlanEntry.plus(completedRateEntry)),
+                //startAxis = rememberStartAxis(
+                // itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = maxYRange / 10 + 1)
+                // ),
+                bottomAxis = rememberBottomAxis(
+                    valueFormatter = { value, _->
+                        ("${value.toInt()+1}월")
+                    }
+                ),
+                runInitialAnimation = true,
+                chartScrollState = rememberChartScrollState()
+            )
+        }
+
     }
 }
 
