@@ -119,7 +119,7 @@ private fun TransactionHistory(
     Box(modifier = Modifier
         .padding(bottom = 50.dp)
         .fillMaxWidth()
-        .height(130.dp)
+        .height(127.dp)
         .background(color = Color(0xFFF6F2E5),
             shape = RoundedCornerShape(size = 12.dp)
         )
