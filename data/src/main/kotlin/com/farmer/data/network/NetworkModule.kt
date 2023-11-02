@@ -24,28 +24,24 @@ object NetworkModule {
     private const val BASE_URL = "https://aeox4la6gs.apigw.ntruss.com/custom/v1/"
 
     @OptIn(ExperimentalSerializationApi::class)
-    private fun provideRetrofit(appContext: Context): Retrofit {
-        val chuckerInterceptor = ChuckerInterceptor.Builder(appContext)
+    private fun provideRetrofit(
+        appContext: Context
+    ): Retrofit {
+       /* val chuckerInterceptor = ChuckerInterceptor.Builder(appContext)
             .collector(ChuckerCollector(appContext))
             .alwaysReadResponseBody(true)
-            .build()
-
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC // 필요한 레벨로 변경
-        }
-
-        val httpClient = OkHttpClient.Builder().apply {
-            addInterceptor(httpLoggingInterceptor)
-            addInterceptor(chuckerInterceptor)
-            connectTimeout(30, TimeUnit.SECONDS) // 연결 시간 제한을 조정합니다.
-            readTimeout(30, TimeUnit.SECONDS)
-            writeTimeout(30, TimeUnit.SECONDS)
-        }
-
+            .build()*/
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        val httpClient = OkHttpClient.Builder()
         val json = Json {
             ignoreUnknownKeys = true
         }
-
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpClient.addInterceptor(httpLoggingInterceptor)
+        //httpClient.addInterceptor(chuckerInterceptor)
+        httpClient.connectTimeout(60, TimeUnit.SECONDS)
+        httpClient.writeTimeout(60, TimeUnit.SECONDS)
+        httpClient.readTimeout(60, TimeUnit.SECONDS)
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaTypeOrNull()!!))
