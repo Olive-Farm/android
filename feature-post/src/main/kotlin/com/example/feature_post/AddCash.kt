@@ -163,6 +163,7 @@ fun AddCash(
                 ) {
                     DropdownMenuItem(onClick = {
                         cameraPermissionState.launchPermissionRequest()
+                        isDropDownMenuExpanded = false
                     }) {
                         Row {
                             Icon(
@@ -176,6 +177,7 @@ fun AddCash(
                     }
                     DropdownMenuItem(onClick = {
                         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        isDropDownMenuExpanded = false
                     }) {
                         Row {
                             Icon(
@@ -189,6 +191,7 @@ fun AddCash(
                     }
                     DropdownMenuItem(onClick = {
                          readSMSMessage(cr, viewModel)
+                        isDropDownMenuExpanded = false
                     }) {
                         Row {
                             Icon(
@@ -505,7 +508,7 @@ fun AddCash(
                                 .size(30.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text(text = "로딩 중입니다.")
+                        Text(text = "로딩 중입니다")
                     }
                 }
             }
