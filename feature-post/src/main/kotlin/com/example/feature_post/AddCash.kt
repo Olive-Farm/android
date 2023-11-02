@@ -121,9 +121,9 @@ fun AddCash(
     var yearState by remember { mutableStateOf(todayDate[0].toInt()) }
     var monthState by remember { mutableStateOf(todayDate[1].toInt() - 1) }
     var dayState by remember { mutableStateOf(todayDate[2].toInt()) }
-    viewModel.yearState.value = yearState
+    /*viewModel.yearState.value = yearState
     viewModel.monthState.value = monthState
-    viewModel.dayOfMonthState.value = dayState
+    viewModel.dayOfMonthState.value = dayState*/
 
 
     Column(
@@ -133,9 +133,9 @@ fun AddCash(
         val timePickerDialog = DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                yearState = year
-                monthState = month
-                dayState = dayOfMonth
+                viewModel.yearState.value = year
+                viewModel.monthState.value = month
+                viewModel.dayOfMonthState.value = dayOfMonth
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
