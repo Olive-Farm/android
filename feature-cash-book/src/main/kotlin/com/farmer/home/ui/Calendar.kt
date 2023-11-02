@@ -12,7 +12,9 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -69,11 +71,11 @@ fun Calendar(
 
                 Spacer(modifier = Modifier.weight(1f))
                 
-                TransactionHistory(
+                /*TransactionHistory(
                     month = state.dateViewInfo.last().dateInfo?.date?.month ?: Month.JANUARY,
                     totalIncome = state.totalIncome,
                     totalSpend = state.totalSpend
-                )
+                )*/
             }
         }
         else -> Unit
@@ -267,7 +269,8 @@ private fun TransactionHistory(
         .height(130.dp)
         .background(color = Color(0xFFF6F2E5),
             shape = RoundedCornerShape(size = 12.dp))
-        .padding(all = 10.dp)) {
+        .padding(all = 10.dp)
+        .verticalScroll(rememberScrollState())) {
         Column {
             Text(
                 modifier = Modifier.padding(5.dp),
