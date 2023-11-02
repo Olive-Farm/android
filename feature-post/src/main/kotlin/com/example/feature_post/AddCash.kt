@@ -133,9 +133,9 @@ fun AddCash(
         val timePickerDialog = DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                yearState = year
-                monthState = month
-                dayState = dayOfMonth
+                viewModel.yearState.value = year
+                viewModel.monthState.value = month
+                viewModel.dayOfMonthState.value = dayOfMonth
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
