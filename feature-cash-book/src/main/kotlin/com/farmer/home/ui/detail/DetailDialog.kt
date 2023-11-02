@@ -233,7 +233,7 @@ fun DetailDialog(
                     Spacer(modifier = Modifier.weight(1f))
                 }
 
-                IconButton(onClick = { viewModel.changeEditModeState() }) {
+                /*IconButton(onClick = { viewModel.changeEditModeState() }) {
                     if (isDialogEditMode) {
                         Icon(
                             imageVector = Icons.Default.Check,
@@ -264,7 +264,7 @@ fun DetailDialog(
                         contentDescription = null,
                         tint = Color.Gray,
                     )
-                }
+                }*/
             }
 
         }
@@ -382,7 +382,7 @@ fun TransactContent(
             fontWeight = FontWeight.SemiBold
         )
 
-        Text(text = " ￦") // 나중에 이거 삭제하기 지금 테스트
+        Text(text = " ￦")
 
         if (isDialogEditMode) {
             IconButton(

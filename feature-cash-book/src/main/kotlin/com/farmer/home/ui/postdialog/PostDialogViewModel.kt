@@ -39,12 +39,13 @@ class PostDialogViewModel @Inject constructor(
     ) {
         if (historyId == null) return
         viewModelScope.launch {
+
             kotlin.runCatching {
                 repo.deleteTransactionData(historyId, transactionId)
             }.onSuccess {
-                _deletedId.update {
+                /*_deletedId.update {
                     it + transactionId
-                }
+                }*/
             }.onFailure {
                 Log.e("@@@PostDialogViewModel", "로그가 아닌 진짜 실패 : $it")
             }
