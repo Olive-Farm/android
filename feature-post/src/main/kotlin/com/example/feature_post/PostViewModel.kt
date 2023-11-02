@@ -29,6 +29,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Instant
+import java.time.LocalDate
 import javax.inject.Inject
 import java.util.UUID
 
@@ -39,12 +40,14 @@ class PostViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PostViewState())
     val uiState: StateFlow<PostViewState> get() = _uiState.asStateFlow()
 
+    val todayDate = LocalDate.now().toString().split("-")
+
     val name = mutableStateOf(TextFieldValue(""))
     val amount = mutableStateOf(TextFieldValue(""))
     val category = mutableStateOf(String())
-    val yearState = mutableStateOf(0)
-    val monthState = mutableStateOf(-1)
-    val dayOfMonthState = mutableStateOf(0)
+    val yearState = mutableStateOf(todayDate[0].toInt())
+    val monthState = mutableStateOf(todayDate[1].toInt() - 1)
+    val dayOfMonthState = mutableStateOf(todayDate[2].toInt())
     var nameSMS = ""
     var amountSMS = 0
     var yearSMS = 0

@@ -2,7 +2,9 @@
 <resources>
 
     <style name="Theme.Olive" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/green_800</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenBackground">@color/main_green</item>
     </style>
 </resources>
