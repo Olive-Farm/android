@@ -27,10 +27,10 @@ object NetworkModule {
     private fun provideRetrofit(
         appContext: Context
     ): Retrofit {
-        val chuckerInterceptor = ChuckerInterceptor.Builder(appContext)
+       /* val chuckerInterceptor = ChuckerInterceptor.Builder(appContext)
             .collector(ChuckerCollector(appContext))
             .alwaysReadResponseBody(true)
-            .build()
+            .build()*/
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         val httpClient = OkHttpClient.Builder()
         val json = Json {
@@ -38,7 +38,7 @@ object NetworkModule {
         }
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         httpClient.addInterceptor(httpLoggingInterceptor)
-        httpClient.addInterceptor(chuckerInterceptor)
+        //httpClient.addInterceptor(chuckerInterceptor)
         httpClient.connectTimeout(60, TimeUnit.SECONDS)
         httpClient.writeTimeout(60, TimeUnit.SECONDS)
         httpClient.readTimeout(60, TimeUnit.SECONDS)
