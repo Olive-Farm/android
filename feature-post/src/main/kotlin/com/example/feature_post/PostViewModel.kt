@@ -2,36 +2,31 @@ package com.example.feature_post
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import android.util.Base64
-import android.util.Log
-import com.farmer.data.Category
 import com.farmer.data.History
 import com.farmer.data.network.model.Image
 import com.farmer.data.network.model.ImageRequest
 import com.farmer.data.repository.OliveRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Instant
 import java.time.LocalDate
-import javax.inject.Inject
 import java.util.UUID
+import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
@@ -92,6 +87,7 @@ class PostViewModel @Inject constructor(
                             )
                         )
                     }
+
                     _uiState.value.isSpendState -> {
                         History.Transact(
                             spendList = listOf(
@@ -103,11 +99,12 @@ class PostViewModel @Inject constructor(
                             )
                         )
                     }
+
                     else -> History.Transact()
                 }
                 val userInputHistory = History(
                     year = yearState.value,
-                    month = monthState.value +1, // 달에는 1월을 추가해야 함.
+                    month = monthState.value + 1, // 달에는 1월을 추가해야 함.
                     date = dayOfMonthState.value,
                     dayOfWeek = "",
                     tool = "", // todo
@@ -123,7 +120,7 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun postSMSData(){
+    fun postSMSData() {
         if (nameSMS == "" || amountSMS == 0 || (yearSMS == 0 || monthSMS == 0 || daySMS == 0)) return
         viewModelScope.launch {
             val spendTransact = History.Transact(
@@ -152,7 +149,8 @@ class PostViewModel @Inject constructor(
 
     suspend fun deleteDataToEdit(
         historyId: Long?,
-        transactionId: Long) {
+        transactionId: Long
+    ) {
         if (historyId == null) return
         /*viewModelScope.launch {
             kotlin.runCatching {
@@ -236,11 +234,34 @@ class PostViewModel @Inject constructor(
     fun requestOcr(imageInputStream: InputStream?) {
         if (imageInputStream == null) return
 
+        val loadingTextList = listOf(
+            "날짜를 확인 중",
+            "얼마인지 확인 중",
+            "과소비 하지는 않았는 지 보는 중",
+            "입력 중",
+            "영수증을 보는 중"
+        )
+
         _uiState.update {
             it.copy(isLoading = true)
         }
 
         viewModelScope.launch {
+            var loadingTextIndex = 0
+            while (true) {
+                delay(2000)
+                _uiState.update {
+                    it.copy(loadingText = loadingTextList[loadingTextIndex])
+                }
+                loadingTextIndex += 1
+                if (loadingTextIndex > loadingTextList.lastIndex) {
+                    loadingTextIndex = 0
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            delay(5000)
             val selectedImage = BitmapFactory.decodeStream(imageInputStream)
             val compressedImage = compressImage(selectedImage) // 이미지 압축
             val imageString = encodeImageToString(compressedImage) // 이미지를 문자열로 변환
@@ -291,7 +312,11 @@ class PostViewModel @Inject constructor(
     // 이미지를 Base64 문자열로 인코딩하는 함수
     private fun encodeImageToString(image: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        image.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream) // 압축 수준 변경 (0~100 사이의 값으로 변경)
+        image.compress(
+            Bitmap.CompressFormat.PNG,
+            30,
+            byteArrayOutputStream
+        ) // 압축 수준 변경 (0~100 사이의 값으로 변경)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
