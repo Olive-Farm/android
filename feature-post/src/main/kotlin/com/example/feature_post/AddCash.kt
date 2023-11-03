@@ -1,66 +1,82 @@
 package com.example.feature_post
 
 import android.Manifest
-import android.app.Application
 import android.app.DatePickerDialog
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.text.BoringLayout
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.progressSemantics
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Savings
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.farmer.data.BASIC_CATEGORY
-import com.farmer.data.DatabaseModule
-import com.farmer.data.History
-import com.farmer.feature_post.R
-import com.farmer.data.repository.OliveRepository
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
@@ -508,7 +524,7 @@ fun AddCash(
                                 .size(30.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text(text = "로딩 중입니다")
+                        Text(text = uiState.value.loadingText)
                     }
                 }
             }
